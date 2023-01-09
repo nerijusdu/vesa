@@ -1,16 +1,17 @@
 package main
 
 import (
+	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 	"github.com/nerijusdu/vesa/pkg/web"
 )
 
 func main() {
-	// ctrl, err := dockerctrl.NewDockerCtrlClient()
-	// if err != nil {
-	// 	panic(err)
-	// }
+	ctrl, err := dockerctrl.NewDockerCtrlClient()
+	if err != nil {
+		panic(err)
+	}
 
-	// ctrl.RunContainer()
+	api := web.NewVesaApi(ctrl)
 
-	web.ServeFiles()
+	api.ServeHTTP("8080")
 }
