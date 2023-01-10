@@ -1,6 +1,7 @@
 import { ArrowRightIcon, DeleteIcon, NotAllowedIcon } from '@chakra-ui/icons';
-import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import { Button, Flex, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { deleteContainer, getContainers, stopContainer, startContainer } from '../api';
 import { Container } from '../types';
 
@@ -11,21 +12,30 @@ const Containers: React.FC = () => {
   });
 
   return (
-    <Table>
-      <Thead>
-        <Tr>
-          <Th>Containers</Th>
-          <Th>Image</Th>
-          <Th>State</Th>
-          <Th>Actions</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {containers?.map((container) => (
-          <ContainerRow key={container.id} container={container} />
-        ))}
-      </Tbody>
-    </Table>
+    <Flex flexDir="column">
+      <Flex my={4} w="100%" justifyContent="flex-end">
+        <Link to="/containers/new">
+          <Button colorScheme="purple" mr={4}>
+          New container
+          </Button>
+        </Link>
+      </Flex>
+      <Table>
+        <Thead>
+          <Tr>
+            <Th>Containers</Th>
+            <Th>Image</Th>
+            <Th>State</Th>
+            <Th>Actions</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {containers?.map((container) => (
+            <ContainerRow key={container.id} container={container} />
+          ))}
+        </Tbody>
+      </Table>
+    </Flex>
   );
 };
 

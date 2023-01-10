@@ -47,10 +47,10 @@ func (d *DockerCtrlClient) GetContainers() ([]Container, error) {
 	return res, nil
 }
 
-func (d *DockerCtrlClient) RunContainer(image string) (string, error) {
+func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error) {
 	ctx := context.Background()
 
-	out, err := d.Client.ImagePull(ctx, image, types.ImagePullOptions{})
+	out, err := d.Client.ImagePull(ctx, req.Image, types.ImagePullOptions{})
 	if err != nil {
 		return "", err
 	}
@@ -59,8 +59,8 @@ func (d *DockerCtrlClient) RunContainer(image string) (string, error) {
 	io.Copy(os.Stdout, out)
 
 	resp, err := d.Client.ContainerCreate(ctx, &container.Config{
-		Image: image,
-	}, nil, nil, nil, "")
+		Image: req.Image,
+	}, nil, nil, nil, req.Name)
 	if err != nil {
 		return "", err
 	}

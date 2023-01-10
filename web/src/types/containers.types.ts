@@ -16,3 +16,8 @@ export type Ports = {
   publicPort?: string;
   type: string;
 };
+
+export type RunContainerRequest = {
+  image: string;
+  name?: string;
+};

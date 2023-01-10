@@ -10,6 +10,11 @@ func handleError(w http.ResponseWriter, err error) {
 	w.Write([]byte(err.Error()))
 }
 
+func validationError(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte(err.Error()))
+}
+
 func sendJson(w http.ResponseWriter, data any) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {

@@ -1,17 +1,17 @@
-import { Container } from '../types/containers.types';
+import { Container, RunContainerRequest } from '../types/containers.types';
 
-const apiUrl = window.location.host.endsWith(':5173') ? 'http://localhost:8080' : '';
+const apiUrl = window.location.host.endsWith(':5173') ? 'http://localhost:8989' : '';
 
 export const getContainers = async (): Promise<Container[]> => {
   const response = await fetch(`${apiUrl}/api/containers`);
   return response.json();
 };
 
-export const runContainer = async (image: string): Promise<string> => {
+export const runContainer = async (req: RunContainerRequest): Promise<string> => {
   const response = await fetch(`${apiUrl}/api/containers`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image }),
+    body: JSON.stringify(req),
   });
 
   const result = await response.json();

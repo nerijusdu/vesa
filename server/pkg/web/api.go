@@ -8,12 +8,15 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-playground/validator/v10"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 )
 
-type dockerCtrl interface {
+var validate *validator.Validate
+
+type dockerCtrlClient interface {
 	GetContainers() ([]dockerctrl.Container, error)
-	RunContainer(image string) (string, error)
+	RunContainer(dockerctrl.RunContainerRequest) (string, error)
 	DeleteContainer(id string) error
 	StopContainer(id string) error
 	StartContainer(id string) error
@@ -21,10 +24,11 @@ type dockerCtrl interface {
 
 type VesaApi struct {
 	router     *chi.Mux
-	dockerctrl dockerCtrl
+	dockerctrl dockerCtrlClient
 }
 
-func NewVesaApi(dockerCtrl dockerCtrl) *VesaApi {
+func NewVesaApi(dockerCtrl dockerCtrlClient) *VesaApi {
+	validate = validator.New()
 	api := &VesaApi{
 		router:     chi.NewRouter(),
 		dockerctrl: dockerCtrl,
@@ -55,14 +59,20 @@ func (api *VesaApi) registerRoutes() {
 	})
 
 	api.router.Post("/api/containers", func(w http.ResponseWriter, r *http.Request) {
-		req := &CreateContainerRequest{}
+		req := &dockerctrl.RunContainerRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
 		if err != nil {
 			handleError(w, err)
 			return
 		}
 
-		id, err := api.dockerctrl.RunContainer(req.Image)
+		err = validate.Struct(req)
+		if err != nil {
+			validationError(w, err)
+			return
+		}
+
+		id, err := api.dockerctrl.RunContainer(*req)
 		if err != nil {
 			handleError(w, err)
 			return

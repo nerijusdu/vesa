@@ -15,8 +15,12 @@
     "@emotion/styled": "^11.10.5",
     "@tanstack/react-query": "^4.22.0",
     "framer-motion": "^6.5.1",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.6.2",
+    "sort-by": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",

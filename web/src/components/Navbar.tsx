@@ -1,5 +1,6 @@
 import { Button, Flex } from '@chakra-ui/react';
 import { PropsWithChildren } from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   return (
@@ -7,6 +8,7 @@ const Navbar: React.FC = () => {
       <Flex fontWeight="bold">VESA</Flex>
       <Flex gap={4}>
         <NavLink href="/">Home</NavLink>
+        <NavLink href="/containers">Containers</NavLink>
       </Flex>
     </Flex>
   );
@@ -20,9 +22,9 @@ type NavLinkProps = PropsWithChildren & {
 const NavLink: React.FC<NavLinkProps> = ({ href, onClick, children }) => {
   if (href) {
     return (
-      // <Link href={href}>
+      <Link to={href}>
         <Button variant="link" colorScheme="purple">{children}</Button>
-      // </Link>
+      </Link>
     );
   }
   if (onClick) {
