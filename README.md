@@ -19,3 +19,11 @@ Nginx:
 Other:
 - [X] Web GUI
 - [ ] Generate github actions for deployment
+  - [ ] Ping api to deploy newer version instead of ssh
+- [ ] Authentication
+
+## Implementation details
+
+- `Project` will be the main entity
+- You can add docker containers to projects
+- You can add nginx sites to projects
