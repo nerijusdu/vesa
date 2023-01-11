@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/go-playground/validator/v10"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 )
@@ -34,7 +34,11 @@ func NewVesaApi(dockerCtrl dockerCtrlClient) *VesaApi {
 		dockerctrl: dockerCtrl,
 	}
 
-	api.router.Use(middleware.SetHeader("Access-Control-Allow-Origin", "*"))
+	api.router.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"https://*", "http://*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		MaxAge:         300,
+	}))
 	api.registerRoutes()
 
 	fileServer(api.router, "/", http.Dir("public"))

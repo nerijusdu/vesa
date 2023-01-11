@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export type Container = {
   id: string;
   names: string[];
@@ -21,3 +23,8 @@ export type RunContainerRequest = {
   image: string;
   name?: string;
 };
+
+export const runContainerSchema = z.object({
+  image: z.string(),
+  name: z.string().optional(),
+});

@@ -16,7 +16,7 @@ const Containers: React.FC = () => {
       <Flex my={4} w="100%" justifyContent="flex-end">
         <Link to="/containers/new">
           <Button colorScheme="purple" mr={4}>
-          New container
+            New container
           </Button>
         </Link>
       </Flex>
