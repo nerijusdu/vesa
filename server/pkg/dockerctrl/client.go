@@ -37,7 +37,7 @@ func (d *DockerCtrlClient) GetContainers() ([]Container, error) {
 		return nil, err
 	}
 
-	res := util.Map(containers, MapContainer)
+	res := util.Map(containers, mapContainer)
 	util.Sort(res, func(a, b Container) bool {
 		if a.State == b.State {
 			return a.Names[0] > b.Names[0]
@@ -58,9 +58,16 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 
 	io.Copy(os.Stdout, out)
 
+	ports, err := mapPortBindings(req.Ports)
+	if err != nil {
+		return "", err
+	}
+
 	resp, err := d.Client.ContainerCreate(ctx, &container.Config{
 		Image: req.Image,
-	}, nil, nil, nil, req.Name)
+	}, &container.HostConfig{
+		PortBindings: ports,
+	}, nil, nil, req.Name)
 	if err != nil {
 		return "", err
 	}

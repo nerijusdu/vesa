@@ -5,6 +5,13 @@ const theme = extendTheme({
     initialColorMode: 'dark',
     useSystemColorMode: false,
   },
+  components: {
+    Button: {
+      defaultProps: {
+        colorScheme: 'purple',
+      },
+    },
+  },
 } as Theme);
 
 export default theme;

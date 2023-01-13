@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   return (
-    <Flex py={4} borderBottom="solid 1px" borderColor="purple.700" justifyContent="space-between">
+    <Flex py={4} mb={4} borderBottom="solid 1px" borderColor="purple.700" justifyContent="space-between">
       <Flex fontWeight="bold">VESA</Flex>
       <Flex gap={4}>
         <NavLink href="/">Home</NavLink>
@@ -23,13 +23,13 @@ const NavLink: React.FC<NavLinkProps> = ({ href, onClick, children }) => {
   if (href) {
     return (
       <Link to={href}>
-        <Button variant="link" colorScheme="purple">{children}</Button>
+        <Button variant="link">{children}</Button>
       </Link>
     );
   }
   if (onClick) {
     return (
-      <Button variant="link" colorScheme="purple" onClick={onClick}>{children}</Button>
+      <Button variant="link" onClick={onClick}>{children}</Button>
     );
   }
 

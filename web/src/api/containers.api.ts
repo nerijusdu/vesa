@@ -7,12 +7,19 @@ export const getContainers = async (): Promise<Container[]> => {
   return response.json();
 };
 
-export const runContainer = async (req: RunContainerRequest): Promise<string> => {
+type RunContainerApiRequest = Omit<RunContainerRequest, 'ports'> & { ports: string[] };
+
+export const runContainer = async (req: RunContainerApiRequest): Promise<string> => {
   const response = await fetch(`${apiUrl}/api/containers`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(req),
   });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error('Failed to run container: ' + body || 'Unknown error');
+  }
 
   const result = await response.json();
   return result.id;

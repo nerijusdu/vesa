@@ -20,6 +20,7 @@ type Port struct {
 }
 
 type RunContainerRequest struct {
-	Image string `json:"image" validate:"required"`
-	Name  string `json:"name"`
+	Image string   `json:"image" validate:"required"`
+	Name  string   `json:"name"`
+	Ports []string `json:"ports"`
 }

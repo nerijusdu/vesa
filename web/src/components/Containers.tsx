@@ -1,8 +1,9 @@
 import { ArrowRightIcon, DeleteIcon, NotAllowedIcon } from '@chakra-ui/icons';
-import { Button, Flex, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import { Button, Flex, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { deleteContainer, getContainers, stopContainer, startContainer } from '../api';
+import { useDefaultToast } from '../hooks';
 import { Container } from '../types';
 
 const Containers: React.FC = () => {
@@ -15,7 +16,7 @@ const Containers: React.FC = () => {
     <Flex flexDir="column">
       <Flex my={4} w="100%" justifyContent="flex-end">
         <Link to="/containers/new">
-          <Button colorScheme="purple" mr={4}>
+          <Button mr={4}>
             New container
           </Button>
         </Link>
@@ -45,7 +46,7 @@ type ContainerProps = {
 
 const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
   const name = container.names[0].replace('/', '');
-  const toast = useToast();
+  const toast = useDefaultToast();
   const queryClient = useQueryClient();
   const mutationParams = (action: string) => ({
     onError: (error: Error) => {
@@ -53,16 +54,12 @@ const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
         title: `Error ${action}`,
         description: error?.message,
         status: 'error',
-        duration: 3000,
-        isClosable: true,
       });
     },
     onSuccess: () => {
       toast({
         title: `Success ${action}`,
         status: 'success',
-        duration: 3000,
-        isClosable: true,
       });
       queryClient.invalidateQueries(['containers']);
     },

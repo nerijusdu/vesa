@@ -19,12 +19,12 @@ export type Ports = {
   type: string;
 };
 
-export type RunContainerRequest = {
-  image: string;
-  name?: string;
-};
-
 export const runContainerSchema = z.object({
   image: z.string(),
   name: z.string().optional(),
+  ports: z.array(z.object({
+    value: z.string().optional(),
+  })),
 });
+
+export type RunContainerRequest = z.infer<typeof runContainerSchema>;
