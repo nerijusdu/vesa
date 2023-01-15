@@ -32,3 +32,33 @@ func (d *DockerCtrlClient) GetNetwork(id string) (Network, error) {
 
 	return mapNetwork(network), nil
 }
+
+func (d *DockerCtrlClient) CreateNetwork(req CreateNetworkRequest) (string, error) {
+	ctx := context.Background()
+	network, err := d.Client.NetworkCreate(ctx, req.Name, types.NetworkCreate{
+		CheckDuplicate: true,
+		Driver:         req.Driver,
+		Internal:       req.Internal,
+		Attachable:     req.Attachable,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return network.ID, nil
+}
+
+func (d *DockerCtrlClient) RemoveNetwork(id string) error {
+	ctx := context.Background()
+	return d.Client.NetworkRemove(ctx, id)
+}
+
+func (d *DockerCtrlClient) ConnectNetwork(networkID, containerID string) error {
+	ctx := context.Background()
+	return d.Client.NetworkConnect(ctx, networkID, containerID, nil)
+}
+
+func (d *DockerCtrlClient) DisconnectNetwork(networkID, containerID string) error {
+	ctx := context.Background()
+	return d.Client.NetworkDisconnect(ctx, networkID, containerID, true)
+}

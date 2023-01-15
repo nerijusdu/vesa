@@ -39,7 +39,7 @@ func (api *VesaApi) registerContainerRoutes() {
 			return
 		}
 
-		res := &ContainerCreatedResponse{Id: id}
+		res := &CreatedResponse{Id: id}
 
 		w.WriteHeader(http.StatusCreated)
 		sendJson(w, res)

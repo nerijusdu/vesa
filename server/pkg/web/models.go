@@ -1,5 +1,9 @@
 package web
 
-type ContainerCreatedResponse struct {
+type CreatedResponse struct {
 	Id string `json:"id"`
+}
+
+type ConnectNetworkRequest struct {
+	ContainerId string `json:"containerId" validate:"required"`
 }

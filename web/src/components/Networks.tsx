@@ -1,8 +1,10 @@
-import { Button, Flex, Table, Tbody, Td, Th, Thead, Tr, Link } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { Button, Flex, Table, Tbody, Td, Th, Thead, Tr, Link, IconButton } from '@chakra-ui/react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Link as RouterLink } from 'react-router-dom';
-import { getNetworks } from '../api';
+import { deleteNetwork, getNetworks } from '../api';
+import { useDefaultToast } from '../hooks';
 import { Network } from '../types';
 
 const Networks: React.FC = () => {
@@ -27,6 +29,7 @@ const Networks: React.FC = () => {
             <Th>Driver</Th>
             <Th>Scope</Th>
             <Th>Created</Th>
+            <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -44,6 +47,27 @@ type NetworkRowProps = {
 };
 
 const NetworkRow: React.FC<NetworkRowProps> = ({ network }) => {
+  const toast = useDefaultToast();
+  const queryClient = useQueryClient();
+  const mutationParams = (action: string) => ({
+    onError: (error: Error) => {
+      toast({
+        title: `Error ${action}`,
+        description: error?.message,
+        status: 'error',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: `Success ${action}`,
+        status: 'success',
+      });
+      queryClient.invalidateQueries(['networks']);
+    },
+  });
+
+  const { mutate: remove } = useMutation(deleteNetwork, mutationParams('removing network'));
+
   return (
     <Tr key={network.id}>
       <Td>
@@ -54,6 +78,15 @@ const NetworkRow: React.FC<NetworkRowProps> = ({ network }) => {
       <Td>{network.driver}</Td>
       <Td>{network.scope}</Td>
       <Td>{dayjs(network.created).utc().format('YYYY-MM-DD HH:mm')}</Td>
+      <Td>
+        <IconButton
+          aria-label="Delete network"
+          icon={<DeleteIcon />}
+          variant="ghost"
+          size="sm"
+          onClick={() => remove(network.id)}
+        />
+      </Td>
     </Tr>
   );
 };

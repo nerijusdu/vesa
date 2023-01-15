@@ -22,6 +22,10 @@ type dockerCtrlClient interface {
 
 	GetNetworks() ([]dockerctrl.Network, error)
 	GetNetwork(id string) (dockerctrl.Network, error)
+	CreateNetwork(dockerctrl.CreateNetworkRequest) (string, error)
+	RemoveNetwork(id string) error
+	ConnectNetwork(networkID, containerID string) error
+	DisconnectNetwork(networkID, containerID string) error
 }
 
 type VesaApi struct {

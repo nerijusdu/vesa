@@ -45,3 +45,10 @@ type NetworkContainer struct {
 	IPv4Address string `json:"ipv4Address"`
 	IPv6Address string `json:"ipv6Address"`
 }
+
+type CreateNetworkRequest struct {
+	Name       string `json:"name" validate:"required"`
+	Driver     string `json:"driver"`
+	Internal   bool   `json:"internal"`
+	Attachable bool   `json:"attachable"`
+}
