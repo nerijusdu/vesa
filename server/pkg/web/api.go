@@ -5,8 +5,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/go-chi/oauth"
 	"github.com/go-playground/validator/v10"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 )
@@ -29,27 +31,41 @@ type dockerCtrlClient interface {
 }
 
 type VesaApi struct {
-	router     *chi.Mux
-	dockerctrl dockerCtrlClient
+	router       chi.Router
+	publicRouter chi.Router
+	dockerctrl   dockerCtrlClient
 }
 
 func NewVesaApi(dockerCtrl dockerCtrlClient) *VesaApi {
 	validate = validator.New()
-	api := &VesaApi{
-		router:     chi.NewRouter(),
-		dockerctrl: dockerCtrl,
-	}
+	router := chi.NewRouter()
 
-	api.router.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"https://*", "http://*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		MaxAge:         300,
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Authorization", "User-Agent", "Content-Type", "Accept", "Accept-Encoding", "Accept-Language", "Cache-Control", "Connection", "DNT", "Host", "Origin", "Pragma", "Referer"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
 	}))
 
-	api.registerContainerRoutes()
-	api.registerNetworkRoutes()
+	setupAuth(router)
 
-	fileServer(api.router, "/", http.Dir("public"))
+	api := &VesaApi{
+		router:       router,
+		publicRouter: router,
+		dockerctrl:   dockerCtrl,
+	}
+
+	router.Route("/api", func(r chi.Router) {
+		r.Use(oauth.Authorize("secret", nil))
+		api.registerContainerRoutes(r)
+		api.registerNetworkRoutes(r)
+	})
+
+	fileServer(api.publicRouter, "/", http.Dir("public"))
 
 	return api
 }

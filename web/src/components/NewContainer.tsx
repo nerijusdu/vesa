@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Flex, FormLabel, Heading, IconButton } from '@chakra-ui/react';
+import { Button, Checkbox, Divider, Flex, FormLabel, IconButton } from '@chakra-ui/react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RunContainerRequest, runContainerSchema } from '../types';
@@ -9,6 +9,7 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import FormSelect from './form/formSelect';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import FormContainer from './form/formContainer';
 
 const NewContainer: React.FC = () => {
   const { mutate } = useDefaultMutation(runContainer, {
@@ -27,8 +28,7 @@ const NewContainer: React.FC = () => {
   );
 
   return (
-    <Flex 
-      as="form" 
+    <FormContainer
       onSubmit={handleSubmit(data => mutate({
         ...data,
         ports: (data.ports || []).map(x => x.value).filter(Boolean) as string[],
@@ -36,11 +36,9 @@ const NewContainer: React.FC = () => {
           ? networks?.find(x => x.id === data.networkId)?.name
           : undefined,
       }))} 
-      flexDir="column" 
-      maxW="400px" 
-      gap={2}
+      label="New Container"
+      buttonLabel="Run"
     >
-      <Heading size="md">New Container</Heading>
       <FormInput
         {...register('image')}
         errors={errors}
@@ -88,10 +86,7 @@ const NewContainer: React.FC = () => {
 
       <Divider my={2} />
 
-      <Button type="submit">
-        Run
-      </Button>
-    </Flex>
+    </FormContainer>
   );
 };
 

@@ -8,8 +8,8 @@ import (
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 )
 
-func (api *VesaApi) registerNetworkRoutes() {
-	api.router.Get("/api/networks", func(w http.ResponseWriter, r *http.Request) {
+func (api *VesaApi) registerNetworkRoutes(router chi.Router) {
+	router.Get("/networks", func(w http.ResponseWriter, r *http.Request) {
 		res, err := api.dockerctrl.GetNetworks()
 		if err != nil {
 			handleError(w, err)
@@ -19,7 +19,7 @@ func (api *VesaApi) registerNetworkRoutes() {
 		sendJson(w, res)
 	})
 
-	api.router.Get("/api/networks/{id}", func(w http.ResponseWriter, r *http.Request) {
+	router.Get("/networks/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 		res, err := api.dockerctrl.GetNetwork(id)
 		if err != nil {
@@ -30,7 +30,7 @@ func (api *VesaApi) registerNetworkRoutes() {
 		sendJson(w, res)
 	})
 
-	api.router.Post("/api/networks", func(w http.ResponseWriter, r *http.Request) {
+	router.Post("/networks", func(w http.ResponseWriter, r *http.Request) {
 		req := &dockerctrl.CreateNetworkRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
 		if err != nil {
@@ -56,7 +56,7 @@ func (api *VesaApi) registerNetworkRoutes() {
 		sendJson(w, res)
 	})
 
-	api.router.Delete("/api/networks/{id}", func(w http.ResponseWriter, r *http.Request) {
+	router.Delete("/networks/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 		err := api.dockerctrl.RemoveNetwork(id)
 		if err != nil {
@@ -67,7 +67,7 @@ func (api *VesaApi) registerNetworkRoutes() {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	api.router.Post("/api/networks/{id}/connect", func(w http.ResponseWriter, r *http.Request) {
+	router.Post("/networks/{id}/connect", func(w http.ResponseWriter, r *http.Request) {
 		networkId := chi.URLParam(r, "id")
 		req := &ConnectNetworkRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
@@ -91,7 +91,7 @@ func (api *VesaApi) registerNetworkRoutes() {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	api.router.Post("/api/networks/{id}/disconnect", func(w http.ResponseWriter, r *http.Request) {
+	router.Post("/networks/{id}/disconnect", func(w http.ResponseWriter, r *http.Request) {
 		networkId := chi.URLParam(r, "id")
 		req := &ConnectNetworkRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)

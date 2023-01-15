@@ -1,9 +1,16 @@
 import { Container, RunContainerRequest } from '../types/containers.types';
+import { authHeaders } from './auth.api';
 
 const apiUrl = window.location.host.endsWith(':5173') ? 'http://localhost:8989' : '';
 
 export const getContainers = async (): Promise<Container[]> => {
-  const response = await fetch(`${apiUrl}/api/containers`);
+  const response = await fetch(`${apiUrl}/api/containers`, { headers: await authHeaders() });
+  if (!response.ok) {
+    if (response.status === 401) {
+      window.location.href = '/login';
+    }
+    throw new Error('Failed to get containers');
+  }
   return response.json();
 };
 

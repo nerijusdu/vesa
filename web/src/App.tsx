@@ -5,12 +5,17 @@ import NetworkDetails from './components/NetworkDetails';
 import Networks from './components/Networks';
 import NewContainer from './components/NewContainer';
 import NewNetwork from './components/NewNetwork';
+import Login from './components/Login';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
     children: [
+      {
+        path: '/login',
+        element: <Login />,
+      },
       {
         path: '/containers',
         element: <Containers />,

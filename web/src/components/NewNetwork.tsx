@@ -1,9 +1,9 @@
-import { Button, Flex, Heading } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createNetwork } from '../api';
 import { useDefaultMutation } from '../hooks';
 import { CreateNetworkRequest, createNetworkScheme } from '../types';
+import FormContainer from './form/formContainer';
 import FormInput from './form/formInput';
 
 const NewNetwork: React.FC = () => {
@@ -17,15 +17,11 @@ const NewNetwork: React.FC = () => {
   });
 
   return (
-    <Flex
-      as="form"
+    <FormContainer
       onSubmit={handleSubmit(data => mutate(data))}
-      flexDir="column"
-      maxW="400px"
-      gap={2}
+      label="New Network"
+      buttonLabel="Create"
     >
-      <Heading size="md">New Network</Heading>
-
       <FormInput
         {...register('name')}
         errors={errors}
@@ -38,9 +34,7 @@ const NewNetwork: React.FC = () => {
         label="Driver"
         placeholder="bridge"
       />
-      
-      <Button type="submit">Create</Button>
-    </Flex>
+    </FormContainer>
   );
 };
 
