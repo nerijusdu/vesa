@@ -44,3 +44,26 @@ func mapPortBindings(ports []string) (nat.PortMap, error) {
 
 	return portBindings, nil
 }
+
+func mapNetwork(n types.NetworkResource) Network {
+	return Network{
+		ID:         n.ID,
+		Name:       n.Name,
+		Scope:      n.Scope,
+		Created:    n.Created,
+		Driver:     n.Driver,
+		Internal:   n.Internal,
+		Attachable: n.Attachable,
+		Containers: util.MapDict(n.Containers, mapNetworkContainer),
+	}
+}
+
+func mapNetworkContainer(c types.EndpointResource) NetworkContainer {
+	return NetworkContainer{
+		Name:        c.Name,
+		EndpointID:  c.EndpointID,
+		MacAddress:  c.MacAddress,
+		IPv4Address: c.IPv4Address,
+		IPv6Address: c.IPv6Address,
+	}
+}

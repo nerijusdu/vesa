@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Containers from './components/Containers';
 import Layout from './components/Layout';
+import NetworkDetails from './components/NetworkDetails';
+import Networks from './components/Networks';
 import NewContainer from './components/NewContainer';
 
 const router = createBrowserRouter([
@@ -15,6 +17,14 @@ const router = createBrowserRouter([
       {
         path: '/containers/new',
         element: <NewContainer />,
+      },
+      {
+        path: '/networks',
+        element: <Networks />,
+      },
+      {
+        path: '/networks/:id',
+        element: <NetworkDetails />,
       },
     ],
   },

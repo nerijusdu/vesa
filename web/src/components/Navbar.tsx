@@ -9,6 +9,7 @@ const Navbar: React.FC = () => {
       <Flex gap={4}>
         <NavLink href="/">Home</NavLink>
         <NavLink href="/containers">Containers</NavLink>
+        <NavLink href="/networks">Networks</NavLink>
       </Flex>
     </Flex>
   );

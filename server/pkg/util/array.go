@@ -25,3 +25,15 @@ func Sort[T any](arr []T, fn func(T, T) bool) {
 		}
 	}
 }
+
+func MapDict[T any, R any](dict map[string]T, fn func(T) R) map[string]R {
+	if dict == nil {
+		return nil
+	}
+
+	b := make(map[string]R)
+	for k, v := range dict {
+		b[k] = fn(v)
+	}
+	return b
+}

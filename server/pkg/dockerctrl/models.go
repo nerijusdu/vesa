@@ -1,5 +1,7 @@
 package dockerctrl
 
+import "time"
+
 type Container struct {
 	ID      string            `json:"id"`
 	Names   []string          `json:"names"`
@@ -23,4 +25,23 @@ type RunContainerRequest struct {
 	Image string   `json:"image" validate:"required"`
 	Name  string   `json:"name"`
 	Ports []string `json:"ports"`
+}
+
+type Network struct {
+	Name       string                      `json:"name"`
+	ID         string                      `json:"id"`
+	Created    time.Time                   `json:"created"`
+	Scope      string                      `json:"scope"`
+	Driver     string                      `json:"driver"`
+	Internal   bool                        `json:"internal"`
+	Attachable bool                        `json:"attachable"`
+	Containers map[string]NetworkContainer `json:"containers"`
+}
+
+type NetworkContainer struct {
+	Name        string `json:"name"`
+	EndpointID  string `json:"endpointId"`
+	MacAddress  string `json:"macAddress"`
+	IPv4Address string `json:"ipv4Address"`
+	IPv6Address string `json:"ipv6Address"`
 }
