@@ -11,6 +11,11 @@ const theme = extendTheme({
         colorScheme: 'purple',
       },
     },
+    Checkbox: {
+      defaultProps: {
+        colorScheme: 'purple',
+      },
+    },
   },
 } as Theme);
 

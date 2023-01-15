@@ -7,6 +7,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
 
@@ -32,24 +33,36 @@ func (d *DockerCtrlClient) GetContainers() ([]Container, error) {
 func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error) {
 	ctx := context.Background()
 
-	out, err := d.Client.ImagePull(ctx, req.Image, types.ImagePullOptions{})
-	if err != nil {
-		return "", err
-	}
-	defer out.Close()
+	if !req.IsLocal {
+		out, err := d.Client.ImagePull(ctx, req.Image, types.ImagePullOptions{})
+		if err != nil {
+			return "", err
+		}
+		defer out.Close()
 
-	io.Copy(os.Stdout, out)
+		io.Copy(os.Stdout, out)
+	}
 
 	ports, err := mapPortBindings(req.Ports)
 	if err != nil {
 		return "", err
 	}
 
+	endpoitns := map[string]*network.EndpointSettings{}
+
+	if req.NetworkId != "" && req.NetworkName != "" {
+		endpoitns[req.NetworkName] = &network.EndpointSettings{
+			NetworkID: req.NetworkId,
+		}
+	}
+
 	resp, err := d.Client.ContainerCreate(ctx, &container.Config{
 		Image: req.Image,
 	}, &container.HostConfig{
 		PortBindings: ports,
-	}, nil, nil, req.Name)
+	}, &network.NetworkingConfig{
+		EndpointsConfig: endpoitns,
+	}, nil, req.Name)
 	if err != nil {
 		return "", err
 	}

@@ -1,4 +1,4 @@
-import { Network } from '../types';
+import { CreateNetworkRequest, Network } from '../types';
 
 const apiUrl = window.location.host.endsWith(':5173') ? 'http://localhost:8989' : '';
 
@@ -12,7 +12,7 @@ export const getNetwork = async (id?: string): Promise<Network> => {
   return response.json();
 };
 
-export const createNetwork = async (req: Network): Promise<string> => {
+export const createNetwork = async (req: CreateNetworkRequest): Promise<string> => {
   const response = await fetch(`${apiUrl}/api/networks`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

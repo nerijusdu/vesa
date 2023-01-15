@@ -10,30 +10,40 @@ const useDefaultMutation = <
     fn: MutationFunction<TData, TVariables>, 
     opts: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> & {
       invalidateQueries?: (string | undefined)[];
+      successMessage?: string | ((data: TData) => string);
       action: string;
     },
   ): UseMutationResult<TData, TError, TVariables, TContext> => {
-  const { invalidateQueries, action, ...rest } = opts;
+  const { invalidateQueries, action, successMessage, onSuccess, onError, ...rest } = opts;
   const queryClient = useQueryClient();
   const toast = useDefaultToast();
   
   return useMutation<TData, TError, TVariables, TContext>(fn, {
     ...rest,
-    onError: (error: TError) => {
+    onError: (error, variables, ctx) => {
       toast({
         title: `Error ${action}`,
         description: error?.message,
         status: 'error',
       });
+
+      onError?.(error, variables, ctx);
     },
-    onSuccess: () => {
+    onSuccess: (data, variables, ctx) => {
+      const msg = typeof successMessage === 'function' 
+        ? successMessage(data) 
+        : successMessage;
+
       toast({
-        title: `Success ${action}`,
+        title: msg || `Success ${action}`,
         status: 'success',
       });
+
       if (invalidateQueries?.length) {
         queryClient.invalidateQueries(invalidateQueries);
       }
+
+      onSuccess?.(data, variables, ctx);
     },
   });
 };

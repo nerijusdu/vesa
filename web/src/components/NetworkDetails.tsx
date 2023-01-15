@@ -1,10 +1,12 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { Text, Flex, Heading, VStack, IconButton } from '@chakra-ui/react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Text, Flex, Heading, VStack, IconButton, Button } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { disconnectNetwork, getNetwork } from '../api';
+import { connectNetwork, disconnectNetwork, getContainers, getNetwork } from '../api';
 import { useDefaultMutation } from '../hooks';
+import FormSelect, { NamedValue } from './form/formSelect';
 
 const NetworkDetails: React.FC = () => {
   const params = useParams<{ id: string }>();
@@ -12,10 +14,26 @@ const NetworkDetails: React.FC = () => {
     refetchOnWindowFocus: false,
     retryOnMount: false,
   });
+  const { data: containers } = useQuery(['containers'], getContainers);
   const { mutate: disconnect } = useDefaultMutation(disconnectNetwork, {
     action: 'disconnecting container from network',
     invalidateQueries: ['network', params.id],
   });
+
+  const containerOptions = useMemo(() => {
+    if (!containers) {
+      return [];
+    }
+
+    const existingContainers = Object.keys(network?.containers || {});
+
+    return containers
+      .filter(container => !existingContainers.includes(container.id))
+      .map((container) => ({
+        name: container.names[0]?.replace('/', ''),
+        value: container.id,
+      }));
+  }, [containers, network?.containers]);
 
   if (!network) {
     return null;
@@ -41,7 +59,6 @@ const NetworkDetails: React.FC = () => {
               <Flex key={containerId} px={2} py={1} alignItems="center" _hover={{
                 bg: 'purple.900',
                 borderRadius: 'md',
-                cursor: 'pointer',
               }}>
                 <Text w="400px">{container.name}</Text>
                 <IconButton
@@ -57,11 +74,61 @@ const NetworkDetails: React.FC = () => {
               </Flex>
             );
           })}
+
+          <ConnectContainer networkId={network.id} containerOptions={containerOptions} />
         </VStack>
       </Flex>
     </VStack>
   );
 };
+
+type ConnectContainerProps = {
+  networkId: string;
+  containerOptions: NamedValue<string>[];
+};
+
+const ConnectContainer: React.FC<ConnectContainerProps> = ({ networkId, containerOptions }) => {
+  const [containerId, setContainerId] = useState<string | null>(null);
+  const [showSelection, setShowSelection] = useState(false);
+
+  const { mutate: connect } = useDefaultMutation(connectNetwork, {
+    action: 'connecting container to network',
+    invalidateQueries: ['network', networkId],
+    onSuccess: () => {
+      setContainerId(null);
+      setShowSelection(false);
+    },
+  });
+
+  if (!showSelection) {
+    return (
+      <Button onClick={() => setShowSelection(true)}>
+        Connect container to network
+      </Button>
+    );
+  }
+  
+  return (
+    <Flex gap={4} justifyContent="stretch" w="450px">
+      <FormSelect
+        name="containerId"
+        data={containerOptions}
+        value={containerId || ''}
+        onChange={(e) => setContainerId(e.target.value)}
+      />
+      <Button onClick={() => {
+        if (!containerId) return;
+        connect({ networkId, containerId });
+      }}>
+        Connect
+      </Button>
+      <Button variant="outline" onClick={() => setShowSelection(false)}>
+        Cancel
+      </Button>
+    </Flex>
+  );
+};
+
 
 type FieldValueProps = {
   label: string;

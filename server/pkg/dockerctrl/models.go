@@ -22,9 +22,12 @@ type Port struct {
 }
 
 type RunContainerRequest struct {
-	Image string   `json:"image" validate:"required"`
-	Name  string   `json:"name"`
-	Ports []string `json:"ports"`
+	Image       string   `json:"image" validate:"required"`
+	Name        string   `json:"name"`
+	Ports       []string `json:"ports"`
+	IsLocal     bool     `json:"isLocal"`
+	NetworkId   string   `json:"networkId"`
+	NetworkName string   `json:"networkName"`
 }
 
 type Network struct {

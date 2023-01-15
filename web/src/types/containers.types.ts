@@ -25,6 +25,9 @@ export const runContainerSchema = z.object({
   ports: z.array(z.object({
     value: z.string().optional(),
   })),
+  isLocal: z.boolean().optional(),
+  networkId: z.string().optional(),
+  networkName: z.string().optional(),
 });
 
 export type RunContainerRequest = z.infer<typeof runContainerSchema>;

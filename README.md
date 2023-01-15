@@ -6,9 +6,9 @@ Docker:
 - [X] View containers
 - [X] Create a container for image
 - [X] Assign ports
-- [ ] Container networking (connect to other containers)
+- [X] Container networking (connect to other containers)
   - [X] Preview networks
-  - [ ] Create a network
+  - [X] Create a network
 - [ ] Container volumes (mount host directories)
 - [ ] Container environment variables
 - [ ] Container logs

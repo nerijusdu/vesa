@@ -23,9 +23,7 @@ func (d *DockerCtrlClient) GetNetworks() ([]Network, error) {
 
 func (d *DockerCtrlClient) GetNetwork(id string) (Network, error) {
 	ctx := context.Background()
-	network, err := d.Client.NetworkInspect(ctx, id, types.NetworkInspectOptions{
-		Verbose: true,
-	})
+	network, err := d.Client.NetworkInspect(ctx, id, types.NetworkInspectOptions{})
 	if err != nil {
 		return Network{}, err
 	}
