@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { LoginData, LoginRequest } from '../types';
+import { apiUrl } from './api';
 
-const apiUrl = window.location.host.endsWith(':5173') ? 'http://localhost:8989' : '';
 
 export const login = async (data: LoginRequest): Promise<LoginData> => {
   const form = new FormData();
@@ -49,7 +49,7 @@ export const authHeaders = async (): Promise<{ Authorization?: string }> => {
     const newData = await refreshToken(data.refresh_token);
 
     localStorage.setItem('auth', JSON.stringify({
-      ...data,
+      ...newData,
       expires_at: dayjs().add(newData.expires_in, 'second').toISOString(),
     }));
 
