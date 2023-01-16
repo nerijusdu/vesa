@@ -1,5 +1,20 @@
 package util
 
+func Find[T any](arr []T, fn func(T) bool) (T, bool) {
+	var res T
+	if arr == nil {
+		return res, false
+	}
+
+	for _, v := range arr {
+		if fn(v) {
+			return v, true
+		}
+	}
+
+	return res, false
+}
+
 func Map[T any, R any](arr []T, fn func(T) R) []R {
 	if arr == nil {
 		return nil

@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/oauth"
 	"github.com/go-playground/validator/v10"
+	"github.com/nerijusdu/vesa/pkg/config"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 )
 
@@ -34,9 +35,10 @@ type VesaApi struct {
 	router       chi.Router
 	publicRouter chi.Router
 	dockerctrl   dockerCtrlClient
+	config       *config.Config
 }
 
-func NewVesaApi(dockerCtrl dockerCtrlClient) *VesaApi {
+func NewVesaApi(dockerCtrl dockerCtrlClient, c *config.Config) *VesaApi {
 	validate = validator.New()
 	router := chi.NewRouter()
 
@@ -51,16 +53,17 @@ func NewVesaApi(dockerCtrl dockerCtrlClient) *VesaApi {
 		MaxAge:           300,
 	}))
 
-	setupAuth(router)
+	setupAuth(router, c)
 
 	api := &VesaApi{
 		router:       router,
 		publicRouter: router,
 		dockerctrl:   dockerCtrl,
+		config:       c,
 	}
 
 	router.Route("/api", func(r chi.Router) {
-		r.Use(oauth.Authorize("secret", nil))
+		r.Use(oauth.Authorize(c.JWTSecret, nil))
 		api.registerContainerRoutes(r)
 		api.registerNetworkRoutes(r)
 	})
@@ -70,7 +73,7 @@ func NewVesaApi(dockerCtrl dockerCtrlClient) *VesaApi {
 	return api
 }
 
-func (api *VesaApi) ServeHTTP(port string) {
-	fmt.Println("Listening on port :" + port)
-	log.Fatal(http.ListenAndServe(":"+port, api.router))
+func (api *VesaApi) ServeHTTP() {
+	fmt.Println("Listening on port :" + api.config.Port)
+	log.Fatal(http.ListenAndServe(":"+api.config.Port, api.router))
 }
