@@ -1,10 +1,10 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, Flex, Table, Tbody, Td, Th, Thead, Tr, Link, IconButton } from '@chakra-ui/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Link as RouterLink } from 'react-router-dom';
 import { deleteNetwork, getNetworks } from '../api';
-import { useDefaultToast } from '../hooks';
+import { useDefaultMutation } from '../hooks';
 import { Network } from '../types';
 
 const Networks: React.FC = () => {
@@ -47,26 +47,10 @@ type NetworkRowProps = {
 };
 
 const NetworkRow: React.FC<NetworkRowProps> = ({ network }) => {
-  const toast = useDefaultToast();
-  const queryClient = useQueryClient();
-  const mutationParams = (action: string) => ({
-    onError: (error: Error) => {
-      toast({
-        title: `Error ${action}`,
-        description: error?.message,
-        status: 'error',
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: `Success ${action}`,
-        status: 'success',
-      });
-      queryClient.invalidateQueries(['networks']);
-    },
+  const { mutate: remove } = useDefaultMutation(deleteNetwork, {
+    action: 'removing network',
+    invalidateQueries: ['networks'],
   });
-
-  const { mutate: remove } = useMutation(deleteNetwork, mutationParams('removing network'));
 
   return (
     <Tr key={network.id}>

@@ -10,6 +10,7 @@ Docker:
   - [X] Preview networks
   - [X] Create a network
 - [ ] Container volumes (mount host directories)
+  - [ ] Manage volumes
 - [ ] Container environment variables
 - [ ] Container logs
 

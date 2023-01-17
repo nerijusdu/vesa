@@ -1,9 +1,9 @@
 import { ArrowRightIcon, DeleteIcon, NotAllowedIcon } from '@chakra-ui/icons';
 import { Button, Flex, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { deleteContainer, getContainers, stopContainer, startContainer } from '../api';
-import { useDefaultToast } from '../hooks';
+import { useDefaultMutation } from '../hooks';
 import { Container } from '../types';
 
 const Containers: React.FC = () => {
@@ -46,28 +46,19 @@ type ContainerProps = {
 
 const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
   const name = container.names[0].replace('/', '');
-  const toast = useDefaultToast();
-  const queryClient = useQueryClient();
-  const mutationParams = (action: string) => ({
-    onError: (error: Error) => {
-      toast({
-        title: `Error ${action}`,
-        description: error?.message,
-        status: 'error',
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: `Success ${action}`,
-        status: 'success',
-      });
-      queryClient.invalidateQueries(['containers']);
-    },
-  });
 
-  const { mutate: stop } = useMutation(stopContainer, mutationParams('stopping container'));
-  const { mutate: start } = useMutation(startContainer, mutationParams('starting container'));
-  const { mutate: remove } = useMutation(deleteContainer, mutationParams('deleting container'));
+  const { mutate: stop } = useDefaultMutation(stopContainer, {
+    action: 'stopping container',
+    invalidateQueries: ['containers'],
+  });
+  const { mutate: start } = useDefaultMutation(startContainer, {
+    action: 'starting container',
+    invalidateQueries: ['containers'],
+  });
+  const { mutate: remove } = useDefaultMutation(deleteContainer, {
+    action: 'deleting container',
+    invalidateQueries: ['containers'],
+  });
 
   return (
     <Tr key={container.id}>
