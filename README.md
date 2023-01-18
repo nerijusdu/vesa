@@ -4,6 +4,7 @@ Very Easy Sys Admin - deploy projects to a VPS without having 153948 years of sy
 ## TODO
 Docker:
 - [X] View containers
+  - [ ] Inspect containers
 - [X] Create a container for image
 - [X] Assign ports
 - [X] Container networking (connect to other containers)
@@ -12,7 +13,7 @@ Docker:
 - [X] Container volumes (mount host directories)
   - [ ] Mount volumes (not just directories)
   - [ ] Manage volumes
-- [ ] Container environment variables
+- [X] Container environment variables
 - [ ] Container logs
 
 Nginx:
@@ -24,7 +25,8 @@ Other:
 - [X] Web GUI
 - [ ] Generate github actions for deployment
   - [ ] Ping api to deploy newer version instead of ssh
-- [ ] Authentication
+- [X] Authentication
+- [ ] Secret manager
 
 ## Implementation details
 

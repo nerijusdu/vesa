@@ -59,6 +59,7 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 
 	resp, err := d.Client.ContainerCreate(ctx, &container.Config{
 		Image: req.Image,
+		Env:   req.EnvVars,
 	}, &container.HostConfig{
 		PortBindings: ports,
 		Mounts:       mounts,

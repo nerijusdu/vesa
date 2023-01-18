@@ -26,6 +26,7 @@ type RunContainerRequest struct {
 	Name        string   `json:"name"`
 	Ports       []string `json:"ports"`
 	Mounts      []Mount  `json:"mounts" validate:"dive"`
+	EnvVars     []string `json:"envVars"`
 	IsLocal     bool     `json:"isLocal"`
 	NetworkId   string   `json:"networkId"`
 	NetworkName string   `json:"networkName"`

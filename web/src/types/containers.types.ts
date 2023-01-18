@@ -30,6 +30,10 @@ export const runContainerSchema = z.object({
     source: z.string(),
     target: z.string(),
   })),
+  envVars: z.array(z.object({
+    key: z.string(),
+    value: z.string(),
+  })),
   isLocal: z.boolean().optional(),
   networkId: z.string().optional(),
   networkName: z.string().optional(),

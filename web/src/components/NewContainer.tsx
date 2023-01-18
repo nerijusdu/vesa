@@ -28,9 +28,10 @@ const NewContainer: React.FC = () => {
   return (
     <FormProvider {...form}>
       <FormContainer
-        onSubmit={handleSubmit(data => mutate({
+        onSubmit={handleSubmit(({ envVars, ports, ...data }) => mutate({
           ...data,
-          ports: (data.ports || []).map(x => x.value).filter(Boolean) as string[],
+          ports: (ports || []).map(x => x.value).filter(Boolean) as string[],
+          envVars: (envVars || []).map(x => `${x.key}=${x.value}`).filter(Boolean) as string[],
           networkName: data.networkId
             ? networks?.find(x => x.id === data.networkId)?.name
             : undefined,
@@ -65,6 +66,8 @@ const NewContainer: React.FC = () => {
         <PortFields />
 
         <MountFields />
+
+        <EnvVarFields />
 
         <Divider my={2} />
 
@@ -139,6 +142,46 @@ const MountFields: React.FC = () => {
 
       <Button variant="outline" onClick={() => append({ type: 'bind', source: '', target: '' })}>
         Add mount
+      </Button>
+    </>
+  );
+};
+
+const EnvVarFields: React.FC = () => {
+  const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { fields, append, remove } = useFieldArray({ control, name: 'envVars' });
+
+  return (
+    <>
+      <FormLabel>Environment Variables</FormLabel>
+      {fields.map((field, i) => (
+        <Flex key={field.id} gap={2}>
+          <FormInput
+            {...register(`envVars.${i}.key` as const)}
+            errors={errors}
+            label="Key"
+            placeholder="POSTGRES_PASSWORD"
+          />
+          <FormInput
+            {...register(`envVars.${i}.value` as const)}
+            errors={errors}
+            label="Value"
+            placeholder="password"
+          />
+          <IconButton
+            icon={<DeleteIcon />}
+            aria-label='Remove Environment Variable'
+            size="md"
+            colorScheme="red"
+            onClick={() => remove(i)}
+            alignSelf="flex-end"
+            mb={2}
+          />
+        </Flex>
+      ))}
+
+      <Button variant="outline" onClick={() => append({ key: '', value: '' })}>
+        Add environment variable
       </Button>
     </>
   );

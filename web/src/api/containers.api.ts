@@ -6,7 +6,10 @@ export const getContainers = async (): Promise<Container[]> => {
   return response.json();
 };
 
-type RunContainerApiRequest = Omit<RunContainerRequest, 'ports'> & { ports: string[] };
+type RunContainerApiRequest = Omit<RunContainerRequest, 'ports' | 'envVars'> & { 
+  ports: string[];
+  envVars: string[];
+};
 
 export const runContainer = async (req: RunContainerApiRequest): Promise<string> => {
   const response = await authRequest('/api/containers', {
