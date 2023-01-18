@@ -2,6 +2,7 @@ package dockerctrl
 
 import (
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/go-connections/nat"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
@@ -65,5 +66,13 @@ func mapNetworkContainer(c types.EndpointResource) NetworkContainer {
 		MacAddress:  c.MacAddress,
 		IPv4Address: c.IPv4Address,
 		IPv6Address: c.IPv6Address,
+	}
+}
+
+func mapMount(m Mount) mount.Mount {
+	return mount.Mount{
+		Type:   mount.Type(m.Type),
+		Source: m.Source,
+		Target: m.Target,
 	}
 }

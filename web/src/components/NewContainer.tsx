@@ -1,5 +1,5 @@
 import { Button, Checkbox, Divider, Flex, FormLabel, IconButton } from '@chakra-ui/react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RunContainerRequest, runContainerSchema } from '../types';
 import FormInput from './form/formInput';
@@ -16,10 +16,8 @@ const NewContainer: React.FC = () => {
     action: 'creating container',
     successMessage: (res) => 'Container created with ID: ' + res,
   });
-  const { control, register, handleSubmit, formState: { errors } } = useForm<RunContainerRequest>({ 
-    resolver: zodResolver(runContainerSchema),
-  });
-  const { fields, append, remove } = useFieldArray({ control, name: 'ports' }); 
+  const form = useForm<RunContainerRequest>({ resolver: zodResolver(runContainerSchema) });
+  const { register, handleSubmit, formState: { errors } } = form;
   const { data: networks } = useQuery(['networks'], getNetworks);
 
   const networkOptions = useMemo(
@@ -28,41 +26,59 @@ const NewContainer: React.FC = () => {
   );
 
   return (
-    <FormContainer
-      onSubmit={handleSubmit(data => mutate({
-        ...data,
-        ports: (data.ports || []).map(x => x.value).filter(Boolean) as string[],
-        networkName: data.networkId
-          ? networks?.find(x => x.id === data.networkId)?.name
-          : undefined,
-      }))} 
-      label="New Container"
-      buttonLabel="Run"
-    >
-      <FormInput
-        {...register('image')}
-        errors={errors}
-        label="Image"
-        placeholder="postgres:latest"
-        required
-      />
-      <Checkbox {...register('isLocal')}>
-        Local image
-      </Checkbox>
-      <FormInput
-        {...register('name')}
-        errors={errors}
-        label="Name"
-        placeholder="postgres instance"
-      />
-      <FormSelect
-        {...register('networkId')}
-        data={networkOptions}
-        errors={errors}
-        label="Network"
-        placeholder="Select network (optional)"
-      />
+    <FormProvider {...form}>
+      <FormContainer
+        onSubmit={handleSubmit(data => mutate({
+          ...data,
+          ports: (data.ports || []).map(x => x.value).filter(Boolean) as string[],
+          networkName: data.networkId
+            ? networks?.find(x => x.id === data.networkId)?.name
+            : undefined,
+        }))} 
+        label="New Container"
+        buttonLabel="Run"
+      >
+        <FormInput
+          {...register('image')}
+          errors={errors}
+          label="Image"
+          placeholder="postgres:latest"
+          required
+        />
+        <Checkbox {...register('isLocal')}>
+          Local image
+        </Checkbox>
+        <FormInput
+          {...register('name')}
+          errors={errors}
+          label="Name"
+          placeholder="postgres instance"
+        />
+        <FormSelect
+          {...register('networkId')}
+          data={networkOptions}
+          errors={errors}
+          label="Network"
+          placeholder="Select network (optional)"
+        />
 
+        <PortFields />
+
+        <MountFields />
+
+        <Divider my={2} />
+
+      </FormContainer>
+    </FormProvider>
+  );
+};
+
+const PortFields: React.FC = () => {
+  const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { fields, append, remove } = useFieldArray({ control, name: 'ports' }); 
+
+  return (
+    <>
       <FormLabel>Ports</FormLabel>
       {fields.map((field, i) => (
         <Flex key={field.id} gap={2}>
@@ -80,13 +96,51 @@ const NewContainer: React.FC = () => {
           />
         </Flex>
       ))}
+        
       <Button variant="outline" onClick={() => append({ value: '' })}>
-        Assign port
+          Assign port
       </Button>
+    </>
+  );
+};
 
-      <Divider my={2} />
+const MountFields: React.FC = () => {
+  const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { fields, append, remove } = useFieldArray({ control, name: 'mounts' });
 
-    </FormContainer>
+  return (
+    <>
+      <FormLabel>Mounts</FormLabel>
+      {fields.map((field, i) => (
+        <Flex key={field.id} gap={2}>
+          <FormInput
+            {...register(`mounts.${i}.source` as const)}
+            errors={errors}
+            label="Source"
+            placeholder="/path/to/host"
+          />
+          <FormInput
+            {...register(`mounts.${i}.target` as const)}
+            errors={errors}
+            label="Target"
+            placeholder="/path/to/container"
+          />
+          <IconButton
+            icon={<DeleteIcon />}
+            aria-label='Remove Mount'
+            size="md"
+            colorScheme="red"
+            onClick={() => remove(i)}
+            alignSelf="flex-end"
+            mb={2}
+          />
+        </Flex>
+      ))}
+
+      <Button variant="outline" onClick={() => append({ type: 'bind', source: '', target: '' })}>
+        Add mount
+      </Button>
+    </>
   );
 };
 

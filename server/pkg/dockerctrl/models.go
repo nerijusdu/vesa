@@ -25,9 +25,16 @@ type RunContainerRequest struct {
 	Image       string   `json:"image" validate:"required"`
 	Name        string   `json:"name"`
 	Ports       []string `json:"ports"`
+	Mounts      []Mount  `json:"mounts" validate:"dive"`
 	IsLocal     bool     `json:"isLocal"`
 	NetworkId   string   `json:"networkId"`
 	NetworkName string   `json:"networkName"`
+}
+
+type Mount struct {
+	Type   string `json:"type" validate:"required,contains=bind"`
+	Source string `json:"source" validate:"required"`
+	Target string `json:"target" validate:"required"`
 }
 
 type Network struct {

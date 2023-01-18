@@ -19,7 +19,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
       as="form"
       onSubmit={onSubmit}
       flexDir="column"
-      w="400px"
+      w="500px"
       gap={2}
     >
       <Heading size="md">{label}</Heading>

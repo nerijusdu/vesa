@@ -25,6 +25,11 @@ export const runContainerSchema = z.object({
   ports: z.array(z.object({
     value: z.string().optional(),
   })),
+  mounts: z.array(z.object({
+    type: z.string().default('bind'),
+    source: z.string(),
+    target: z.string(),
+  })),
   isLocal: z.boolean().optional(),
   networkId: z.string().optional(),
   networkName: z.string().optional(),

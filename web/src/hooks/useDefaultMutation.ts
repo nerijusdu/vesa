@@ -1,9 +1,10 @@
 import { MutationFunction, useMutation, UseMutationOptions, UseMutationResult, useQueryClient } from '@tanstack/react-query';
+import { ApiError } from '../api/api';
 import useDefaultToast from './useDefaultToast';
 
 const useDefaultMutation = <
     TData = unknown, 
-    TError extends Error = Error, 
+    TError extends ApiError = ApiError, 
     TVariables = void, 
     TContext = unknown,
   >( 
@@ -21,11 +22,10 @@ const useDefaultMutation = <
   return useMutation<TData, TError, TVariables, TContext>(fn, {
     ...rest,
     onError: (error, variables, ctx) => {
-      toast({
-        title: `Error ${action}`,
-        description: error?.message,
-        status: 'error',
-      });
+      const title = error?.description ?  error?.message : `Error ${action}`;
+      const description = error?.description || error?.message;
+
+      toast({ title, description, status: 'error' });
 
       onError?.(error, variables, ctx);
     },
@@ -34,10 +34,7 @@ const useDefaultMutation = <
         ? successMessage(data) 
         : successMessage;
 
-      toast({
-        title: msg || `Success ${action}`,
-        status: 'success',
-      });
+      toast({ title: msg || `Success ${action}`, status: 'success' });
 
       if (invalidateQueries?.length) {
         queryClient.invalidateQueries(invalidateQueries);
