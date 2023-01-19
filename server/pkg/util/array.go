@@ -41,12 +41,12 @@ func Sort[T any](arr []T, fn func(T, T) bool) {
 	}
 }
 
-func MapDict[T any, R any](dict map[string]T, fn func(T) R) map[string]R {
+func MapDict[T any, K comparable, R any](dict map[K]T, fn func(T) R) map[K]R {
 	if dict == nil {
 		return nil
 	}
 
-	b := make(map[string]R)
+	b := make(map[K]R)
 	for k, v := range dict {
 		b[k] = fn(v)
 	}

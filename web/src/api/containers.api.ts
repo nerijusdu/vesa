@@ -1,4 +1,4 @@
-import { Container, RunContainerRequest } from '../types/containers.types';
+import { Container, ContainerDetails, RunContainerRequest } from '../types/containers.types';
 import { authRequest } from './api';
 
 export const getContainers = async (): Promise<Container[]> => {
@@ -19,6 +19,11 @@ export const runContainer = async (req: RunContainerApiRequest): Promise<string>
 
   const result = await response.json();
   return result.id;
+};
+
+export const getContainer = async (id?: string): Promise<ContainerDetails> => {
+  const response = await authRequest(`/api/containers/${id}`);
+  return response.json();
 };
 
 export const deleteContainer = async (id: string): Promise<void> => {

@@ -1,6 +1,10 @@
 package dockerctrl
 
-import "time"
+import (
+	"time"
+
+	"github.com/docker/go-connections/nat"
+)
 
 type Container struct {
 	ID      string            `json:"id"`
@@ -21,6 +25,52 @@ type Port struct {
 	Type        string `json:"type"`
 }
 
+type PortBinding struct {
+	HostIP   string `json:"hostIp"`
+	HostPort string `json:"hostPort"`
+}
+
+type ContainerDetails struct {
+	ID              string           `json:"id"`
+	Created         string           `json:"created"`
+	Path            string           `json:"path"`
+	Args            []string         `json:"args"`
+	State           string           `json:"state"`
+	Image           string           `json:"image"`
+	Name            string           `json:"name"`
+	Driver          string           `json:"driver"`
+	Platform        string           `json:"platform"`
+	HostConfig      *HostConfig      `json:"hostConfig"`
+	NetworkSettings *NetworkSettings `json:"networkSettings"`
+	Config          *ContainerConfig `json:"config"`
+	Mounts          []Mount          `json:"mounts"`
+}
+
+type HostConfig struct {
+	NetworkMode   string                     `json:"networkMode"`
+	PortBindings  map[nat.Port][]PortBinding `json:"portBindings"`
+	RestartPolicy RestartPolicy              `json:"restartPolicy"`
+	AutoRemove    bool                       `json:"autoRemove"`
+}
+
+type RestartPolicy struct {
+	Name              string `json:"name"`
+	MaximumRetryCount int    `json:"maximumRetryCount"`
+}
+
+type NetworkSettings struct {
+	Networks map[string]NetworkSettingsNetwork `json:"networks"`
+}
+
+type NetworkSettingsNetwork struct {
+	NetworkID string `json:"networkId"`
+}
+
+type ContainerConfig struct {
+	Env   []string `json:"env"`
+	Image string   `json:"image"`
+}
+
 type RunContainerRequest struct {
 	Image       string   `json:"image" validate:"required"`
 	Name        string   `json:"name"`
@@ -36,6 +86,7 @@ type Mount struct {
 	Type   string `json:"type" validate:"required,contains=bind"`
 	Source string `json:"source" validate:"required"`
 	Target string `json:"target" validate:"required"`
+	Name   string `json:"name"`
 }
 
 type Network struct {

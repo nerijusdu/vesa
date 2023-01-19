@@ -3,6 +3,7 @@ package dockerctrl
 import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/mount"
+	"github.com/docker/docker/api/types/network"
 	"github.com/docker/go-connections/nat"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
@@ -30,7 +31,53 @@ func mapPort(p types.Port) Port {
 	}
 }
 
-func mapPortBindings(ports []string) (nat.PortMap, error) {
+func mapContainerDetails(c types.ContainerJSON) ContainerDetails {
+	return ContainerDetails{
+		ID:       c.ID,
+		Created:  c.Created,
+		Path:     c.Path,
+		Args:     c.Args,
+		State:    c.State.Status,
+		Image:    c.Image,
+		Name:     c.Name,
+		Driver:   c.Driver,
+		Platform: c.Platform,
+		Mounts:   util.Map(c.Mounts, mapMountPoint),
+		HostConfig: &HostConfig{
+			NetworkMode:  string(c.HostConfig.NetworkMode),
+			PortBindings: util.MapDict(c.HostConfig.PortBindings, mapPortBinding),
+			RestartPolicy: RestartPolicy{
+				Name:              c.HostConfig.RestartPolicy.Name,
+				MaximumRetryCount: c.HostConfig.RestartPolicy.MaximumRetryCount,
+			},
+			AutoRemove: c.HostConfig.AutoRemove,
+		},
+		Config: &ContainerConfig{
+			Env:   c.Config.Env,
+			Image: c.Config.Image,
+		},
+		NetworkSettings: &NetworkSettings{
+			Networks: util.MapDict(c.NetworkSettings.Networks, mapNetworkSettingsNetwork),
+		},
+	}
+}
+
+func mapPortBinding(p []nat.PortBinding) []PortBinding {
+	return util.Map(p, func(b nat.PortBinding) PortBinding {
+		return PortBinding{
+			HostIP:   b.HostIP,
+			HostPort: b.HostPort,
+		}
+	})
+}
+
+func mapNetworkSettingsNetwork(n *network.EndpointSettings) NetworkSettingsNetwork {
+	return NetworkSettingsNetwork{
+		NetworkID: n.NetworkID,
+	}
+}
+
+func getPortMap(ports []string) (nat.PortMap, error) {
 	portBindings := nat.PortMap{}
 	for _, portStr := range ports {
 		p, err := nat.ParsePortSpec(portStr)
@@ -74,5 +121,14 @@ func mapMount(m Mount) mount.Mount {
 		Type:   mount.Type(m.Type),
 		Source: m.Source,
 		Target: m.Target,
+	}
+}
+
+func mapMountPoint(m types.MountPoint) Mount {
+	return Mount{
+		Type:   string(m.Type),
+		Source: m.Source,
+		Target: m.Destination,
+		Name:   m.Name,
 	}
 }

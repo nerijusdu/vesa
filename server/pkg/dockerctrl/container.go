@@ -43,7 +43,7 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		io.Copy(os.Stdout, out)
 	}
 
-	ports, err := mapPortBindings(req.Ports)
+	ports, err := getPortMap(req.Ports)
 	if err != nil {
 		return "", err
 	}
@@ -75,6 +75,15 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 	}
 
 	return resp.ID, nil
+}
+
+func (d *DockerCtrlClient) GetContainer(id string) (ContainerDetails, error) {
+	ctx := context.Background()
+	container, err := d.Client.ContainerInspect(ctx, id)
+	if err != nil {
+		return ContainerDetails{}, err
+	}
+	return mapContainerDetails(container), nil
 }
 
 func (d *DockerCtrlClient) DeleteContainer(id string) error {

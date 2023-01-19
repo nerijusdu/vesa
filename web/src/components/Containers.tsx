@@ -1,7 +1,7 @@
 import { ArrowRightIcon, DeleteIcon, NotAllowedIcon } from '@chakra-ui/icons';
-import { Button, Flex, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Button, Flex, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, Link } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { deleteContainer, getContainers, stopContainer, startContainer } from '../api';
 import { useDefaultMutation } from '../hooks';
 import { Container } from '../types';
@@ -15,11 +15,11 @@ const Containers: React.FC = () => {
   return (
     <Flex flexDir="column">
       <Flex my={4} w="100%" justifyContent="flex-end">
-        <Link to="/containers/new">
+        <RouterLink to="/containers/new">
           <Button mr={4}>
             New container
           </Button>
-        </Link>
+        </RouterLink>
       </Flex>
       <Table>
         <Thead>
@@ -62,7 +62,11 @@ const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
 
   return (
     <Tr key={container.id}>
-      <Td>{name}</Td>
+      <Td>
+        <Link as={RouterLink} to={`/containers/${container.id}`}>
+          {name}
+        </Link>
+      </Td>
       <Td>{container.image}</Td>
       <Td>{container.state}</Td>
       <Td>

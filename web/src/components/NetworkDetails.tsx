@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { connectNetwork, disconnectNetwork, getContainers, getNetwork } from '../api';
 import { useDefaultMutation } from '../hooks';
+import FieldValue from './FieldValue';
 import FormSelect, { NamedValue } from './form/formSelect';
 
 const NetworkDetails: React.FC = () => {
@@ -125,25 +126,6 @@ const ConnectContainer: React.FC<ConnectContainerProps> = ({ networkId, containe
       <Button variant="outline" onClick={() => setShowSelection(false)}>
         Cancel
       </Button>
-    </Flex>
-  );
-};
-
-
-type FieldValueProps = {
-  label: string;
-  value?: string | number | boolean | null;
-};
-
-const FieldValue: React.FC<FieldValueProps> = ({ label, value }) => {
-  if (value === true || value === false) {
-    value = value ? 'true' : 'false';
-  }
-
-  return (
-    <Flex minW="400px">
-      <Text w="200px" fontWeight="medium">{label}</Text>
-      <Text>{value}</Text>
     </Flex>
   );
 };

@@ -45,6 +45,17 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 		sendJson(w, res)
 	})
 
+	router.Get("/containers/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		res, err := api.dockerctrl.GetContainer(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		sendJson(w, res)
+	})
+
 	router.Delete("/containers/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 		err := api.dockerctrl.DeleteContainer(id)
