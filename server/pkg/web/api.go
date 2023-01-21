@@ -13,6 +13,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/nerijusdu/vesa/pkg/config"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
+	"github.com/nerijusdu/vesa/pkg/projects"
 )
 
 var validate *validator.Validate
@@ -34,18 +35,23 @@ type dockerCtrlClient interface {
 }
 
 type projectsRepository interface {
+	GetProjects() ([]projects.Project, error)
+	GetProject(id string) (projects.Project, error)
+	SaveProject(projects.Project) error
+	DeleteProject(id string) error
 }
 
 type VesaApi struct {
 	router       chi.Router
 	publicRouter chi.Router
 	dockerctrl   dockerCtrlClient
+	projects     projectsRepository
 	config       *config.Config
 }
 
 func NewVesaApi(
 	dockerCtrl dockerCtrlClient,
-	projectsRepo projectsRepository,
+	projects projectsRepository,
 	c *config.Config,
 	staticContent embed.FS,
 ) *VesaApi {
@@ -69,6 +75,7 @@ func NewVesaApi(
 		router:       router,
 		publicRouter: router,
 		dockerctrl:   dockerCtrl,
+		projects:     projects,
 		config:       c,
 	}
 
@@ -76,6 +83,7 @@ func NewVesaApi(
 		r.Use(oauth.Authorize(c.JWTSecret, nil))
 		api.registerContainerRoutes(r)
 		api.registerNetworkRoutes(r)
+		api.registerProjectRoutes(r)
 	})
 
 	fileServer(api.publicRouter, "/", staticContent)

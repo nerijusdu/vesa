@@ -1,9 +1,7 @@
 package config
 
 import (
-	"encoding/json"
-	"errors"
-	"os"
+	"github.com/nerijusdu/vesa/pkg/util"
 )
 
 type Config struct {
@@ -20,14 +18,14 @@ type Client struct {
 }
 
 func NewConfig() *Config {
-	dirname, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
+	configFile := "config.json"
+	if util.FileExists(configFile) {
+		c, err := util.ReadFile[Config](configFile)
+		if err != nil {
+			panic(err)
+		}
 
-	configPath := dirname + "/.config/vesa/config.json"
-	if fileExists(configPath) {
-		return readConfig(configPath)
+		return c
 	}
 
 	defaultConfig := &Config{
@@ -43,47 +41,10 @@ func NewConfig() *Config {
 		},
 	}
 
-	writeConfig(defaultConfig, configPath)
+	err := util.WriteFile(defaultConfig, configFile)
+	if err != nil {
+		panic(err)
+	}
 
 	return defaultConfig
-}
-
-func readConfig(configPath string) *Config {
-	f, err := os.Open(configPath)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	var config Config
-	if err := json.NewDecoder(f).Decode(&config); err != nil {
-		panic(err)
-	}
-
-	return &config
-}
-
-func writeConfig(config *Config, configPath string) {
-	os.MkdirAll(configPath[:len(configPath)-len("config.json")], 0755)
-	f, err := os.Create(configPath)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	if err := json.NewEncoder(f).Encode(config); err != nil {
-		panic(err)
-	}
-}
-
-func fileExists(filename string) bool {
-	_, err := os.Stat(filename)
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return false
-		}
-		panic(err)
-	}
-
-	return true
 }

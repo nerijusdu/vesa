@@ -7,6 +7,7 @@ import NewContainer from './components/NewContainer';
 import NewNetwork from './components/NewNetwork';
 import Login from './components/Login';
 import ContainerDetails from './components/ContainerDetails';
+import Projects from './components/Projects';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: '/networks/:id',
         element: <NetworkDetails />,
+      },
+      {
+        path: '/projects',
+        element: <Projects />,
       },
     ],
   },
