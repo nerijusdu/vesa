@@ -4,7 +4,7 @@ Very Easy Sys Admin - deploy projects to a VPS without having 153948 years of sy
 ## TODO
 Docker:
 - [X] View containers
-  - [ ] Inspect containers
+  - [X] Inspect containers
 - [X] Create a container for image
 - [X] Assign ports
 - [X] Container networking (connect to other containers)

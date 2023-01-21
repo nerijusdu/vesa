@@ -1,6 +1,7 @@
 package web
 
 import (
+	"embed"
 	"fmt"
 	"log"
 	"net/http"
@@ -39,7 +40,11 @@ type VesaApi struct {
 	config       *config.Config
 }
 
-func NewVesaApi(dockerCtrl dockerCtrlClient, c *config.Config) *VesaApi {
+func NewVesaApi(
+	dockerCtrl dockerCtrlClient,
+	c *config.Config,
+	staticContent embed.FS,
+) *VesaApi {
 	validate = validator.New()
 	router := chi.NewRouter()
 
@@ -69,7 +74,7 @@ func NewVesaApi(dockerCtrl dockerCtrlClient, c *config.Config) *VesaApi {
 		api.registerNetworkRoutes(r)
 	})
 
-	fileServer(api.publicRouter, "/", http.Dir("public"))
+	fileServer(api.publicRouter, "/", staticContent)
 
 	return api
 }
