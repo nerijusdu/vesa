@@ -33,6 +33,9 @@ type dockerCtrlClient interface {
 	DisconnectNetwork(networkID, containerID string) error
 }
 
+type projectsRepository interface {
+}
+
 type VesaApi struct {
 	router       chi.Router
 	publicRouter chi.Router
@@ -42,6 +45,7 @@ type VesaApi struct {
 
 func NewVesaApi(
 	dockerCtrl dockerCtrlClient,
+	projectsRepo projectsRepository,
 	c *config.Config,
 	staticContent embed.FS,
 ) *VesaApi {

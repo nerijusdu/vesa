@@ -5,11 +5,13 @@ go 1.19
 require (
 	github.com/docker/docker v20.10.22+incompatible
 	github.com/docker/go-connections v0.4.0
+	github.com/doug-martin/goqu/v9 v9.18.0
 	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/oauth v0.0.0-20210913085627-d937e221b3ef
 	github.com/go-playground/validator/v10 v10.11.1
+	github.com/mattn/go-sqlite3 v1.14.16
 )
 
 require (

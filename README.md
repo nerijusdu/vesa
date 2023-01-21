@@ -27,6 +27,7 @@ Other:
   - [ ] Ping api to deploy newer version instead of ssh
 - [X] Authentication
 - [ ] Secret manager
+- [ ] Project management
 
 ## Implementation details
 

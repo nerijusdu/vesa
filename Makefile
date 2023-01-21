@@ -10,6 +10,10 @@ build-server:
 
 build: build-web build-server
 
+build-linux:
+	echo "Building for linux..."
+	GOOS=linux GOARCH=amd64 make build
+
 run-web:
 	echo "Starting dev..."
 	cd web && npm run dev
