@@ -90,14 +90,14 @@ type ConnectContainerProps = {
 };
 
 const ConnectContainer: React.FC<ConnectContainerProps> = ({ networkId, containerOptions }) => {
-  const [containerId, setContainerId] = useState<string | null>(null);
+  const [containerId, setContainerId] = useState<string | null>(containerOptions[0]?.value);
   const [showSelection, setShowSelection] = useState(false);
 
   const { mutate: connect } = useDefaultMutation(connectNetwork, {
     action: 'connecting container to network',
     invalidateQueries: ['network', networkId],
     onSuccess: () => {
-      setContainerId(null);
+      setContainerId(containerOptions[0]?.value);
       setShowSelection(false);
     },
   });

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 	"github.com/nerijusdu/vesa/pkg/projects"
 )
 
@@ -42,6 +43,20 @@ func (api *VesaApi) registerProjectRoutes(router chi.Router) {
 		if err != nil {
 			handleError(w, err)
 			return
+		}
+
+		if req.NetworkId == "" {
+			networkId, err := api.dockerctrl.CreateNetwork(dockerctrl.CreateNetworkRequest{
+				Name:   req.NetworkName,
+				Driver: "bridge",
+			})
+
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+
+			req.NetworkId = networkId
 		}
 
 		id, err := api.projects.SaveProject(*req)

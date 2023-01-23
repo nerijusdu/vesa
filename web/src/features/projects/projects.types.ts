@@ -12,6 +12,8 @@ export const saveProjectSchema = z.object({
   containers: z.array(z.object({
     id: z.string(),
   })),
+  networkId: z.string().optional(),
+  networkName: z.string().optional(),
 });
 
 export type SaveProjectRequest = z.infer<typeof saveProjectSchema>;
