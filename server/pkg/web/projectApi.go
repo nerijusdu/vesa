@@ -44,14 +44,14 @@ func (api *VesaApi) registerProjectRoutes(router chi.Router) {
 			return
 		}
 
-		err = api.projects.SaveProject(*req)
+		id, err := api.projects.SaveProject(*req)
 		if err != nil {
 			handleError(w, err)
 			return
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		sendJson(w, req)
+		sendJson(w, &CreatedResponse{Id: id})
 	})
 
 	router.Delete("/projects/{id}", func(w http.ResponseWriter, r *http.Request) {

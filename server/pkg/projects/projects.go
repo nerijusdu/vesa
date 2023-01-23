@@ -1,6 +1,9 @@
 package projects
 
 import (
+	"fmt"
+
+	"github.com/google/uuid"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
 
@@ -44,26 +47,27 @@ func (p *ProjectsRepository) GetProject(id string) (Project, error) {
 	return emptyProj, nil
 }
 
-func (p *ProjectsRepository) SaveProject(project Project) error {
+func (p *ProjectsRepository) SaveProject(project Project) (string, error) {
 	projects, err := p.GetProjects()
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	found := false
-	for i, proj := range projects {
-		if proj.ID == project.ID {
-			projects[i] = project
-			found = true
-			break
+	fmt.Println(project.ID == "")
+	if project.ID == "" {
+		project.ID = uuid.NewString()
+		projects = append(projects, project)
+	} else {
+		for i, proj := range projects {
+			if proj.ID == project.ID {
+				projects[i] = project
+				break
+			}
 		}
 	}
 
-	if !found {
-		projects = append(projects, project)
-	}
-
-	return util.WriteFile(&Projects{Projects: projects}, "projects.json")
+	err = util.WriteFile(&Projects{Projects: projects}, "projects.json")
+	return project.ID, err
 }
 
 func (p *ProjectsRepository) DeleteProject(id string) error {

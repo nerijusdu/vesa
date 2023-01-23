@@ -25,6 +25,7 @@ const Projects: React.FC = () => {
         <Thead>
           <Tr>
             <Th>Project</Th>
+            <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>

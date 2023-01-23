@@ -1,5 +1,5 @@
 import { authRequest } from '../../api/api';
-import { Project } from './projects.types';
+import { Project, SaveProjectRequest } from './projects.types';
 
 export const getProjects = async (): Promise<Project[]> => {
   const response = await authRequest('/api/projects');
@@ -11,11 +11,18 @@ export const getProject = async (id?: string): Promise<Project> => {
   return response.json();
 };
 
-export const saveProject = async (project: Project): Promise<void> => {
-  await authRequest(`/api/projects/${project.id}`, {
+export type SaveProjectApiRequest = Omit<SaveProjectRequest, 'containers'> & {
+  containers: string[];
+};
+
+export const saveProject = async (project: SaveProjectApiRequest): Promise<void> => {
+  const response = await authRequest('/api/projects', {
     method: 'POST',
     body: JSON.stringify(project),
   });
+
+  const result = await response.json();
+  return result.id;
 };
 
 export const deleteProject = async (id: string): Promise<void> => {

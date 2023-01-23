@@ -37,7 +37,7 @@ type dockerCtrlClient interface {
 type projectsRepository interface {
 	GetProjects() ([]projects.Project, error)
 	GetProject(id string) (projects.Project, error)
-	SaveProject(projects.Project) error
+	SaveProject(projects.Project) (string, error)
 	DeleteProject(id string) error
 }
 

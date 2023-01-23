@@ -8,6 +8,7 @@ import Containers from './features/containers/Containers';
 import NewContainer from './features/containers/NewContainer';
 import Networks from './features/networks/Networks';
 import NewNetwork from './features/networks/NewNetwork';
+import NewProject from './features/projects/NewProject';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: '/projects',
         element: <Projects />,
+      },
+      {
+        path: '/projects/new',
+        element: <NewProject />,
       },
     ],
   },
