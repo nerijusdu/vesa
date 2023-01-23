@@ -3,20 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export type FieldValueProps = {
   label: string;
-  value?: string | number | boolean | null;
-};
-
-const FieldValue: React.FC<FieldValueProps> = ({ label, value }) => {
-  if (value === true || value === false) {
-    value = value ? 'true' : 'false';
-  }
-
-  return (
-    <Flex minW="400px">
-      <Text w="200px" fontWeight="medium">{label}</Text>
-      <Text fontFamily="mono">{value}</Text>
-    </Flex>
-  );
+  value?: Value;
 };
 
 export type LinkedValue = {
@@ -29,6 +16,21 @@ export type FieldValuesProps = {
   values?: string[] | number[] | boolean[] | LinkedValue[] | null;
 }
 
+type Value = string | number | boolean | LinkedValue | null;
+
+const FieldValue: React.FC<FieldValueProps> = ({ label, value }) => {
+  if (value === true || value === false) {
+    value = value ? 'true' : 'false';
+  }
+
+  return (
+    <Flex minW="400px">
+      <Text w="200px" fontWeight="medium">{label}</Text>
+      <Value value={value} />
+    </Flex>
+  );
+};
+
 export const FieldValues: React.FC<FieldValuesProps> = ({ label, values }) => {
   if (!values) {
     return null;
@@ -38,30 +40,37 @@ export const FieldValues: React.FC<FieldValuesProps> = ({ label, values }) => {
     <Flex minW="400px">
       <Text w="200px" fontWeight="medium">{label}</Text>
       <VStack align="flex-start">
-        {values.map((value) => {
-          if (value === true || value === false) {
-            value = value ? 'true' : 'false';
-          }
-
-          if (typeof value === 'object') {
-            return (
-              <Link 
-                as={RouterLink} 
-                to={value.link} 
-                key={value.label} 
-                fontFamily="mono"
-              >
-                {value.label}
-              </Link>
-            );
-          }
-
-          return (
-            <Text key={value} fontFamily="mono">{value}</Text>
-          );
-        })}
+        {values.map((value, i) => (
+          <Value key={i} value={value} />
+        ))}
       </VStack>
     </Flex>
+  );
+};
+
+const Value: React.FC<{ value?: Value }> = ({ value }) => {
+  if (value === null) {
+    return null;
+  }
+
+  if (value === true || value === false) {
+    value = value ? 'true' : 'false';
+  }
+
+  if (typeof value === 'object') {
+    return (
+      <Link 
+        as={RouterLink} 
+        to={value.link} 
+        fontFamily="mono"
+      >
+        {value.label}
+      </Link>
+    );
+  }
+
+  return (
+    <Text fontFamily="mono">{value}</Text>
   );
 };
 

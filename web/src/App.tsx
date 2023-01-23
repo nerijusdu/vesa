@@ -9,6 +9,7 @@ import NewContainer from './features/containers/NewContainer';
 import Networks from './features/networks/Networks';
 import NewNetwork from './features/networks/NewNetwork';
 import NewProject from './features/projects/NewProject';
+import ProjectDetails from './features/projects/ProjectDetails';
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: '/projects/new',
         element: <NewProject />,
+      },
+      {
+        path: '/projects/:id',
+        element: <ProjectDetails />,
       },
     ],
   },

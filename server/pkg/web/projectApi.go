@@ -59,6 +59,25 @@ func (api *VesaApi) registerProjectRoutes(router chi.Router) {
 			req.NetworkId = networkId
 		}
 
+		if req.NetworkName == "" {
+			network, err := api.dockerctrl.GetNetwork(req.NetworkId)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+
+			req.NetworkName = network.Name
+		}
+
+		for _, containerId := range req.Containers {
+			err = api.dockerctrl.ConnectNetwork(req.NetworkId, containerId)
+
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+		}
+
 		id, err := api.projects.SaveProject(*req)
 		if err != nil {
 			handleError(w, err)

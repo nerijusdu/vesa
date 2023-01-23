@@ -4,6 +4,8 @@ export type Project = {
   id: string;
   name: string;
   containers: string[];
+  networkId: string;
+  networkName: string;
 }
 
 export const saveProjectSchema = z.object({

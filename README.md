@@ -27,7 +27,12 @@ Other:
   - [ ] Ping api to deploy newer version instead of ssh
 - [X] Authentication
 - [ ] Secret manager
-- [ ] Project management
+- [X] Project management
+  - [ ] Edit project
+  - [ ] Delete project with all resources
+  - [ ] Start, stop, restart containers
+  - [ ] Pull latest containers
+  - [ ] Cascade projects when deleting resources
 
 ## Implementation details
 
