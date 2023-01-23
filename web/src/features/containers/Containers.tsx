@@ -2,9 +2,9 @@ import { ArrowRightIcon, DeleteIcon, NotAllowedIcon } from '@chakra-ui/icons';
 import { Button, Flex, HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr, Link } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink } from 'react-router-dom';
-import { deleteContainer, getContainers, stopContainer, startContainer } from '../api';
-import { useDefaultMutation } from '../hooks';
-import { Container } from '../types';
+import { deleteContainer, getContainers, stopContainer, startContainer } from './containers.api';
+import { useDefaultMutation } from '../../hooks';
+import { Container } from './containers.types';
 
 const Containers: React.FC = () => {
   const { data: containers } = useQuery(['containers'], getContainers, {

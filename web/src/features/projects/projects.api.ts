@@ -1,5 +1,5 @@
-import { Project } from '../types';
-import { authRequest } from './api';
+import { authRequest } from '../../api/api';
+import { Project } from './projects.types';
 
 export const getProjects = async (): Promise<Project[]> => {
   const response = await authRequest('/api/projects');

@@ -1,5 +1,5 @@
-import { CreateNetworkRequest, Network } from '../types';
-import { authRequest } from './api';
+import { CreateNetworkRequest, Network } from './networks.types';
+import { authRequest } from '../../api/api';
 
 export const getNetworks = async (): Promise<Network[]> => {
   const response = await authRequest('/api/networks');

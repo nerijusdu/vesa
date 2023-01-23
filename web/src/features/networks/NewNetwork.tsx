@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { createNetwork } from '../api';
-import { useDefaultMutation } from '../hooks';
-import { CreateNetworkRequest, createNetworkScheme } from '../types';
-import FormContainer from './form/formContainer';
-import FormInput from './form/formInput';
+import FormContainer from '../../components/form/formContainer';
+import FormInput from '../../components/form/formInput';
+import { useDefaultMutation } from '../../hooks';
+import { createNetwork } from './networks.api';
+import { CreateNetworkRequest, createNetworkScheme } from './networks.types';
 
 const NewNetwork: React.FC = () => {
   const { mutate } = useDefaultMutation(createNetwork, {

@@ -4,10 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { connectNetwork, disconnectNetwork, getContainers, getNetwork } from '../api';
-import { useDefaultMutation } from '../hooks';
-import FieldValue from './FieldValue';
-import FormSelect, { NamedValue } from './form/formSelect';
+import { connectNetwork, disconnectNetwork, getNetwork } from './networks.api';
+import { getContainers } from '../containers/containers.api';
+import { useDefaultMutation } from '../../hooks';
+import FieldValue from '../../components/FieldValue';
+import FormSelect, { NamedValue } from '../../components/form/formSelect';
 
 const NetworkDetails: React.FC = () => {
   const params = useParams<{ id: string }>();

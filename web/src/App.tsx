@@ -1,13 +1,13 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Containers from './components/Containers';
 import Layout from './components/Layout';
-import NetworkDetails from './components/NetworkDetails';
-import Networks from './components/Networks';
-import NewContainer from './components/NewContainer';
-import NewNetwork from './components/NewNetwork';
 import Login from './components/Login';
-import ContainerDetails from './components/ContainerDetails';
-import Projects from './components/Projects';
+import NetworkDetails from './features/networks/NetworkDetails';
+import ContainerDetails from './features/containers/ContainerDetails';
+import Projects from './features/projects/Projects';
+import Containers from './features/containers/Containers';
+import NewContainer from './features/containers/NewContainer';
+import Networks from './features/networks/Networks';
+import NewNetwork from './features/networks/NewNetwork';
 
 const router = createBrowserRouter([
   {

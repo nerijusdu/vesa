@@ -1,5 +1,5 @@
-import { Container, ContainerDetails, RunContainerRequest } from '../types/containers.types';
-import { authRequest } from './api';
+import { Container, ContainerDetails, RunContainerRequest } from './containers.types';
+import { authRequest } from '../../api/api';
 
 export const getContainers = async (): Promise<Container[]> => {
   const response = await authRequest('/api/containers');

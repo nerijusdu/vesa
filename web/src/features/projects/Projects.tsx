@@ -2,9 +2,9 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, Flex, Table, Tbody, Td, Th, Thead, Tr, Link, IconButton } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink } from 'react-router-dom';
-import { deleteProject, getProjects } from '../api';
-import { useDefaultMutation } from '../hooks';
-import { Project } from '../types';
+import { deleteProject, getProjects } from './projects.api';
+import { useDefaultMutation } from '../../hooks';
+import { Project } from './projects.types';
 
 const Projects: React.FC = () => {
   const { data: projects } = useQuery(['projects'], getProjects, {

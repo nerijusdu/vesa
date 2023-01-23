@@ -3,9 +3,9 @@ import { Button, Flex, Table, Tbody, Td, Th, Thead, Tr, Link, IconButton } from 
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Link as RouterLink } from 'react-router-dom';
-import { deleteNetwork, getNetworks } from '../api';
-import { useDefaultMutation } from '../hooks';
-import { Network } from '../types';
+import { useDefaultMutation } from '../../hooks';
+import { deleteNetwork, getNetworks } from './networks.api';
+import { Network } from './networks.types';
 
 const Networks: React.FC = () => {
   const { data: networks } = useQuery(['networks'], getNetworks, {

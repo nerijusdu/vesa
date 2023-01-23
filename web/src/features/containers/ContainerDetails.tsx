@@ -1,8 +1,8 @@
 import { Heading, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { getContainer } from '../api';
-import FieldValue, { FieldValues } from './FieldValue';
+import { getContainer } from './containers.api';
+import FieldValue, { FieldValues } from '../../components/FieldValue';
 
 const ContainerDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();

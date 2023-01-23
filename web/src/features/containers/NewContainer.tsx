@@ -1,15 +1,16 @@
 import { Button, Checkbox, Divider, Flex, FormLabel, IconButton } from '@chakra-ui/react';
 import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { RunContainerRequest, runContainerSchema } from '../types';
-import FormInput from './form/formInput';
-import { getNetworks, runContainer } from '../api';
-import { useDefaultMutation } from '../hooks';
+import { RunContainerRequest, runContainerSchema } from './containers.types';
+import FormInput from '../../components/form/formInput';
 import { DeleteIcon } from '@chakra-ui/icons';
-import FormSelect from './form/formSelect';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import FormContainer from './form/formContainer';
+import FormContainer from '../../components/form/formContainer';
+import FormSelect from '../../components/form/formSelect';
+import { useDefaultMutation } from '../../hooks';
+import { getNetworks } from '../networks/networks.api';
+import { runContainer } from './containers.api';
 
 const NewContainer: React.FC = () => {
   const { mutate } = useDefaultMutation(runContainer, {
