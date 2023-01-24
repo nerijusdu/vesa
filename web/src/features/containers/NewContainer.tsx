@@ -11,11 +11,14 @@ import FormSelect from '../../components/form/formSelect';
 import { useDefaultMutation } from '../../hooks';
 import { getNetworks } from '../networks/networks.api';
 import { runContainer } from './containers.api';
+import { useNavigate } from 'react-router-dom';
 
 const NewContainer: React.FC = () => {
+  const navigate = useNavigate();
   const { mutate } = useDefaultMutation(runContainer, {
     action: 'creating container',
     successMessage: (res) => 'Container created with ID: ' + res,
+    onSuccess: () => navigate('/containers'),
   });
   const form = useForm<RunContainerRequest>({ resolver: zodResolver(runContainerSchema) });
   const { register, handleSubmit, formState: { errors } } = form;

@@ -4,22 +4,39 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 import FormContainer from '../../components/form/formContainer';
 import FormInput from '../../components/form/formInput';
 import FormSelect from '../../components/form/formSelect';
 import { useDefaultMutation } from '../../hooks';
 import { getContainers } from '../containers/containers.api';
 import { getNetworks } from '../networks/networks.api';
-import { saveProject } from './projects.api';
+import { getProject, saveProject } from './projects.api';
 import { SaveProjectRequest, saveProjectSchema } from './projects.types';
 
 const NewNetwork: React.FC = () => {
+  const params = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { mutate } = useDefaultMutation(saveProject, {
-    action: 'creating project',
-    successMessage: (res) => 'Project created with ID: ' + res,
+    action: params.id ? 'updating project' : 'creating project',
+    successMessage: (res) => params.id ? 'Project saved' : 'Project created with ID: ' + res,
+    onSuccess: () => navigate('/projects'),
   });
 
-  const form = useForm<SaveProjectRequest>({ resolver: zodResolver(saveProjectSchema) });
+  const form = useForm<SaveProjectRequest>({ 
+    resolver: zodResolver(saveProjectSchema), 
+    defaultValues: async () => {
+      if (!params.id) {
+        return { containers: [], name: '' };
+      }
+
+      const proj = await getProject(params.id);
+      return {
+        ...proj,
+        containers: proj.containers.map(x => ({ id: x })),
+      };
+    },
+  });
   const { register, handleSubmit, formState: { errors } } = form;
 
   return (
@@ -29,8 +46,8 @@ const NewNetwork: React.FC = () => {
           ...data,
           containers: data.containers.map(c => c.id),
         }))}
-        label="New Project"
-        buttonLabel="Create"
+        label={params.id ? 'Edit project' : 'New project'}
+        buttonLabel="Save"
       >
         <FormInput
           {...register('name')}

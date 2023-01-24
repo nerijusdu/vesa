@@ -34,6 +34,7 @@ const FormSelect = forwardRef<FormSelectProps, 'select'>(({
       <Select
         data-cy={`form-select-${name}`}
         {...inputProps}
+        defaultValue={inputProps.value}
         name={name}
         label={label}
         ref={ref}

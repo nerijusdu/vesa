@@ -1,4 +1,4 @@
-import { DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Button, Flex, Table, Tbody, Td, Th, Thead, Tr, Link, IconButton } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink } from 'react-router-dom';
@@ -60,9 +60,16 @@ const ProjectRow: React.FC<ProjectRowProps> = ({ project }) => {
           aria-label="Delete project"
           icon={<DeleteIcon />}
           variant="ghost"
-          size="sm"
           onClick={() => remove(project.id)}
+          ml={2}
         />
+        <RouterLink to={`/projects/${project.id}/edit`}>
+          <IconButton
+            aria-label="Edit project"
+            icon={<EditIcon />}
+            variant="ghost"
+          />
+        </RouterLink>
       </Td>
     </Tr>
   );

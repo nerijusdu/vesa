@@ -1,16 +1,23 @@
-import { Heading, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
+import { useDefaultMutation } from '../../hooks';
 import { getContainers } from '../containers/containers.api';
-import { getProject } from './projects.api';
+import { deleteProject, getProject } from './projects.api';
 
 
 const ProjectDetails: React.FC = () => {
   const params = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { data: project } = useQuery(['project', params.id], () => getProject(params.id));
   const { data: containers } = useQuery(['containers'], () => getContainers());
+  const { mutate: deleteProj } = useDefaultMutation(deleteProject, {
+    action: 'deleting project',
+    invalidateQueries: ['projects'],
+    onSuccess: () => navigate('/projects'),
+  });
 
   const conatinerMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -38,6 +45,15 @@ const ProjectDetails: React.FC = () => {
           link: `/containers/${x}`,
         }))} 
       />
+
+      <Flex>
+        <Link to={`/projects/${project.id}/edit`}>
+          <Button variant="outline">Edit</Button>
+        </Link>
+        <Button variant="outline" colorScheme="red" ml={2} onClick={() => deleteProj(project.id)}>
+          Delete
+        </Button>
+      </Flex>
     </VStack>
   );
 };

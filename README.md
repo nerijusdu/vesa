@@ -28,7 +28,7 @@ Other:
 - [X] Authentication
 - [ ] Secret manager
 - [X] Project management
-  - [ ] Edit project
+  - [X] Edit project
   - [ ] Delete project with all resources
   - [ ] Start, stop, restart containers
   - [ ] Pull latest containers
