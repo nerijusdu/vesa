@@ -28,3 +28,15 @@ export const saveProject = async (project: SaveProjectApiRequest): Promise<void>
 export const deleteProject = async (id: string): Promise<void> => {
   await authRequest(`/api/projects/${id}`, { method: 'DELETE' });
 };
+
+export const startProject = async (id: string): Promise<void> => {
+  await authRequest(`/api/projects/${id}/start`, { method: 'POST' });
+};
+
+export const stopProject = async (id: string): Promise<void> => {
+  await authRequest(`/api/projects/${id}/stop`, { method: 'POST' });
+};
+
+export const pullProjectImages = async (id: string): Promise<void> => {
+  await authRequest(`/api/projects/${id}/pull`, { method: 'POST' });
+};

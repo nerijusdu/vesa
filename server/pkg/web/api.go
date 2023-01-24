@@ -25,6 +25,7 @@ type dockerCtrlClient interface {
 	DeleteContainer(id string) error
 	StopContainer(id string) error
 	StartContainer(id string) error
+	PullImage(image string) error
 
 	GetNetworks() ([]dockerctrl.Network, error)
 	GetNetwork(id string) (dockerctrl.Network, error)

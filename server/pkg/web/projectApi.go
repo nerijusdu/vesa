@@ -108,4 +108,67 @@ func (api *VesaApi) registerProjectRoutes(router chi.Router) {
 
 		w.WriteHeader(http.StatusNoContent)
 	})
+
+	router.Post("/projects/{id}/start", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		project, err := api.projects.GetProject(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		for _, containerId := range project.Containers {
+			err = api.dockerctrl.StartContainer(containerId)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	router.Post("/projects/{id}/stop", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		project, err := api.projects.GetProject(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		for _, containerId := range project.Containers {
+			err = api.dockerctrl.StopContainer(containerId)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	router.Post("/projects/{id}/pull", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		project, err := api.projects.GetProject(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		for _, containerId := range project.Containers {
+			container, err := api.dockerctrl.GetContainer(containerId)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+
+			err = api.dockerctrl.PullImage(container.Config.Image)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	})
 }

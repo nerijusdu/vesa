@@ -30,8 +30,8 @@ Other:
 - [X] Project management
   - [X] Edit project
   - [ ] Delete project with all resources
-  - [ ] Start, stop, restart containers
-  - [ ] Pull latest containers
+  - [X] Start, stop, restart containers
+  - [X] Pull latest containers
   - [ ] Cascade projects when deleting resources
 
 ## Implementation details

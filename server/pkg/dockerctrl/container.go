@@ -100,3 +100,15 @@ func (d *DockerCtrlClient) StartContainer(id string) error {
 	ctx := context.Background()
 	return d.Client.ContainerStart(ctx, id, types.ContainerStartOptions{})
 }
+
+func (d *DockerCtrlClient) PullImage(image string) error {
+	ctx := context.Background()
+	out, err := d.Client.ImagePull(ctx, image, types.ImagePullOptions{})
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	io.Copy(os.Stdout, out)
+	return nil
+}

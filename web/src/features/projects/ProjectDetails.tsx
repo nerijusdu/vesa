@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
 import { getContainers } from '../containers/containers.api';
-import { deleteProject, getProject } from './projects.api';
+import { deleteProject, getProject, pullProjectImages, startProject, stopProject } from './projects.api';
 
 
 const ProjectDetails: React.FC = () => {
@@ -18,6 +18,9 @@ const ProjectDetails: React.FC = () => {
     invalidateQueries: ['projects'],
     onSuccess: () => navigate('/projects'),
   });
+  const { mutate: start } = useDefaultMutation(startProject, { action: 'starting project' });
+  const { mutate: stop } = useDefaultMutation(stopProject, { action: 'stopping project' });
+  const { mutate: pull } = useDefaultMutation(pullProjectImages, { action: 'pulling project images' });
 
   const conatinerMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -31,7 +34,16 @@ const ProjectDetails: React.FC = () => {
 
   return (
     <VStack align="flex-start">
-      <Heading>{project.name}</Heading>
+      <Heading display="flex" gap={2}>
+        {project.name}
+        
+        <Button as={Link} to={`/projects/${project.id}/edit`} variant="link">
+          Edit
+        </Button>
+        <Button variant="link" colorScheme="red" onClick={() => deleteProj(project.id)}>
+          Delete
+        </Button>
+      </Heading>
 
       <FieldValue label="ID" value={project.id} />
       <FieldValue label="Network" value={{
@@ -46,14 +58,12 @@ const ProjectDetails: React.FC = () => {
         }))} 
       />
 
-      <Flex>
-        <Link to={`/projects/${project.id}/edit`}>
-          <Button variant="outline">Edit</Button>
-        </Link>
-        <Button variant="outline" colorScheme="red" ml={2} onClick={() => deleteProj(project.id)}>
-          Delete
-        </Button>
+      <Flex gap={2}>
+        <Button variant="outline" onClick={() => start(project.id)}>Start</Button>
+        <Button variant="outline" onClick={() => stop(project.id)}>Stop</Button>
+        <Button variant="outline" onClick={() => pull(project.id)}>Pull</Button>
       </Flex>
+
     </VStack>
   );
 };
