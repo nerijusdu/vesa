@@ -12,10 +12,7 @@ import FormSelect, { NamedValue } from '../../components/form/formSelect';
 
 const NetworkDetails: React.FC = () => {
   const params = useParams<{ id: string }>();
-  const { data: network } = useQuery(['network', params.id], () => getNetwork(params.id), {
-    refetchOnWindowFocus: false,
-    retryOnMount: false,
-  });
+  const { data: network } = useQuery(['network', params.id], () => getNetwork(params.id));
   const { data: containers } = useQuery(['containers'], getContainers);
   const { mutate: disconnect } = useDefaultMutation(disconnectNetwork, {
     action: 'disconnecting container from network',

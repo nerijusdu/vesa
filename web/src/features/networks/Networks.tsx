@@ -8,10 +8,7 @@ import { deleteNetwork, getNetworks } from './networks.api';
 import { Network } from './networks.types';
 
 const Networks: React.FC = () => {
-  const { data: networks } = useQuery(['networks'], getNetworks, {
-    refetchOnWindowFocus: false,
-    retryOnMount: false,
-  });
+  const { data: networks } = useQuery(['networks'], getNetworks);
 
   return (
     <Flex flexDir="column">

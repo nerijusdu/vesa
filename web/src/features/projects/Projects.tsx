@@ -7,10 +7,7 @@ import { useDefaultMutation } from '../../hooks';
 import { Project } from './projects.types';
 
 const Projects: React.FC = () => {
-  const { data: projects } = useQuery(['projects'], getProjects, {
-    refetchOnWindowFocus: false,
-    retryOnMount: false,
-  });
+  const { data: projects } = useQuery(['projects'], getProjects);
 
   return (
     <Flex flexDir="column">

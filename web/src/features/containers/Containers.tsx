@@ -7,10 +7,7 @@ import { useDefaultMutation } from '../../hooks';
 import { Container } from './containers.types';
 
 const Containers: React.FC = () => {
-  const { data: containers } = useQuery(['containers'], getContainers, {
-    refetchOnWindowFocus: false,
-    retryOnMount: false,
-  });
+  const { data: containers } = useQuery(['containers'], getContainers);
 
   return (
     <Flex flexDir="column">

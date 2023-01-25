@@ -15,6 +15,8 @@ Docker:
   - [ ] Manage volumes
 - [X] Container environment variables
 - [ ] Container logs
+- [ ] Registry auth
+- [ ] Button to hide/show env values
 
 Nginx:
 - [ ] Edit config to add new site
