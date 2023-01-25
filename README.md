@@ -17,6 +17,7 @@ Docker:
 - [ ] Container logs
 - [ ] Registry auth
 - [ ] Button to hide/show env values
+- [ ] Save container templates
 
 Nginx:
 - [ ] Edit config to add new site

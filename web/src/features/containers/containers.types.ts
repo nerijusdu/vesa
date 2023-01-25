@@ -78,6 +78,12 @@ export const runContainerSchema = z.object({
   isLocal: z.boolean().optional(),
   networkId: z.string().optional(),
   networkName: z.string().optional(),
+  saveAsTemplate: z.boolean().optional(),
 });
 
 export type RunContainerRequest = z.infer<typeof runContainerSchema>;
+
+export type RunContainerApiRequest = Omit<RunContainerRequest, 'ports' | 'envVars'> & { 
+  ports: string[];
+  envVars: string[];
+};

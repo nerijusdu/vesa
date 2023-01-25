@@ -64,7 +64,6 @@ const NetworkRow: React.FC<NetworkRowProps> = ({ network }) => {
           aria-label="Delete network"
           icon={<DeleteIcon />}
           variant="ghost"
-          size="sm"
           onClick={() => remove(network.id)}
         />
       </Td>

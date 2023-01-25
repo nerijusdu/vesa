@@ -12,8 +12,8 @@ import (
 	"github.com/go-chi/oauth"
 	"github.com/go-playground/validator/v10"
 	"github.com/nerijusdu/vesa/pkg/config"
+	"github.com/nerijusdu/vesa/pkg/data"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
-	"github.com/nerijusdu/vesa/pkg/projects"
 )
 
 var validate *validator.Validate
@@ -36,10 +36,17 @@ type dockerCtrlClient interface {
 }
 
 type projectsRepository interface {
-	GetProjects() ([]projects.Project, error)
-	GetProject(id string) (projects.Project, error)
-	SaveProject(projects.Project) (string, error)
+	GetProjects() ([]data.Project, error)
+	GetProject(id string) (data.Project, error)
+	SaveProject(data.Project) (string, error)
 	DeleteProject(id string) error
+}
+
+type templateRepository interface {
+	GetTemplates() ([]data.Template, error)
+	GetTemplate(id string) (data.Template, error)
+	SaveTemplate(data.Template) (string, error)
+	DeleteTemplate(id string) error
 }
 
 type VesaApi struct {
@@ -47,12 +54,14 @@ type VesaApi struct {
 	publicRouter chi.Router
 	dockerctrl   dockerCtrlClient
 	projects     projectsRepository
+	templates    templateRepository
 	config       *config.Config
 }
 
 func NewVesaApi(
 	dockerCtrl dockerCtrlClient,
 	projects projectsRepository,
+	templates templateRepository,
 	c *config.Config,
 	staticContent embed.FS,
 ) *VesaApi {
@@ -77,6 +86,7 @@ func NewVesaApi(
 		publicRouter: router,
 		dockerctrl:   dockerCtrl,
 		projects:     projects,
+		templates:    templates,
 		config:       c,
 	}
 
@@ -85,6 +95,7 @@ func NewVesaApi(
 		api.registerContainerRoutes(r)
 		api.registerNetworkRoutes(r)
 		api.registerProjectRoutes(r)
+		api.registerTemplateRoutes(r)
 	})
 
 	fileServer(api.publicRouter, "/", staticContent)

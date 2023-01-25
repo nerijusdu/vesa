@@ -72,14 +72,15 @@ type ContainerConfig struct {
 }
 
 type RunContainerRequest struct {
-	Image       string   `json:"image" validate:"required"`
-	Name        string   `json:"name"`
-	Ports       []string `json:"ports"`
-	Mounts      []Mount  `json:"mounts" validate:"dive"`
-	EnvVars     []string `json:"envVars"`
-	IsLocal     bool     `json:"isLocal"`
-	NetworkId   string   `json:"networkId"`
-	NetworkName string   `json:"networkName"`
+	Image          string   `json:"image" validate:"required"`
+	Name           string   `json:"name"`
+	Ports          []string `json:"ports"`
+	Mounts         []Mount  `json:"mounts" validate:"dive"`
+	EnvVars        []string `json:"envVars"`
+	IsLocal        bool     `json:"isLocal"`
+	NetworkId      string   `json:"networkId"`
+	NetworkName    string   `json:"networkName"`
+	SaveAsTemplate bool     `json:"saveAsTemplate"`
 }
 
 type Mount struct {

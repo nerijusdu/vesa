@@ -1,4 +1,6 @@
-package projects
+package data
+
+import "github.com/nerijusdu/vesa/pkg/dockerctrl"
 
 type Project struct {
 	ID          string   `json:"id"`
@@ -10,4 +12,13 @@ type Project struct {
 
 type Projects struct {
 	Projects []Project `json:"projects"`
+}
+
+type Template struct {
+	ID        string                         `json:"id"`
+	Container dockerctrl.RunContainerRequest `json:"container"`
+}
+
+type Templates struct {
+	Templates []Template `json:"templates"`
 }

@@ -4,8 +4,8 @@ import (
 	"embed"
 
 	"github.com/nerijusdu/vesa/pkg/config"
+	"github.com/nerijusdu/vesa/pkg/data"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
-	"github.com/nerijusdu/vesa/pkg/projects"
 	"github.com/nerijusdu/vesa/pkg/web"
 )
 
@@ -20,9 +20,10 @@ func main() {
 	}
 	defer ctrl.Close()
 
-	proj := projects.NewProjectsRepository()
+	proj := data.NewProjectsRepository()
+	templ := data.NewTemplateRepository()
 
-	api := web.NewVesaApi(ctrl, proj, c, content)
+	api := web.NewVesaApi(ctrl, proj, templ, c, content)
 
 	api.ServeHTTP()
 }

@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/nerijusdu/vesa/pkg/data"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
-	"github.com/nerijusdu/vesa/pkg/projects"
 )
 
 func (api *VesaApi) registerProjectRoutes(router chi.Router) {
@@ -32,7 +32,7 @@ func (api *VesaApi) registerProjectRoutes(router chi.Router) {
 	})
 
 	router.Post("/projects", func(w http.ResponseWriter, r *http.Request) {
-		req := &projects.Project{}
+		req := &data.Project{}
 		err := json.NewDecoder(r.Body).Decode(req)
 		if err != nil {
 			handleError(w, err)

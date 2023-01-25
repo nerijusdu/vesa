@@ -1,8 +1,6 @@
-package projects
+package data
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
@@ -53,7 +51,6 @@ func (p *ProjectsRepository) SaveProject(project Project) (string, error) {
 		return "", err
 	}
 
-	fmt.Println(project.ID == "")
 	if project.ID == "" {
 		project.ID = uuid.NewString()
 		projects = append(projects, project)

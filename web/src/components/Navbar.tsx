@@ -11,6 +11,7 @@ const Navbar: React.FC = () => {
         <NavLink href="/containers">Containers</NavLink>
         <NavLink href="/networks">Networks</NavLink>
         <NavLink href="/projects">Projects</NavLink>
+        <NavLink href="/templates">Templates</NavLink>
       </Flex>
     </Flex>
   );

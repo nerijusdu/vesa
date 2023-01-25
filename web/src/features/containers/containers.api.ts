@@ -1,14 +1,9 @@
-import { Container, ContainerDetails, RunContainerRequest } from './containers.types';
+import { Container, ContainerDetails, RunContainerApiRequest } from './containers.types';
 import { authRequest } from '../../api/api';
 
 export const getContainers = async (): Promise<Container[]> => {
   const response = await authRequest('/api/containers');
   return response.json();
-};
-
-type RunContainerApiRequest = Omit<RunContainerRequest, 'ports' | 'envVars'> & { 
-  ports: string[];
-  envVars: string[];
 };
 
 export const runContainer = async (req: RunContainerApiRequest): Promise<string> => {

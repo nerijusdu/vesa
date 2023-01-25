@@ -10,6 +10,8 @@ import Networks from './features/networks/Networks';
 import NewNetwork from './features/networks/NewNetwork';
 import NewProject from './features/projects/NewProject';
 import ProjectDetails from './features/projects/ProjectDetails';
+import Templates from './features/templates/Templates';
+import TemplateDetails from './features/templates/TemplateDetails';
 
 const router = createBrowserRouter([
   {
@@ -59,6 +61,14 @@ const router = createBrowserRouter([
       {
         path: '/projects/:id/edit',
         element: <NewProject />,
+      },
+      {
+        path: '/templates',
+        element: <Templates />,
+      },
+      {
+        path: '/templates/:id',
+        element: <TemplateDetails />,
       },
     ],
   },

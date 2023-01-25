@@ -73,6 +73,10 @@ const NewContainer: React.FC = () => {
 
         <EnvVarFields />
 
+        <Checkbox {...register('saveAsTemplate')}>
+          Save as a template
+        </Checkbox>
+
         <Divider my={2} />
 
       </FormContainer>

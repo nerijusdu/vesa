@@ -37,11 +37,11 @@ const Containers: React.FC = () => {
   );
 };
 
-type ContainerProps = {
+type ContainerRowProps = {
   container: Container;
 };
 
-const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
+const ContainerRow: React.FC<ContainerRowProps> = ({ container }) => {
   const name = container.names[0].replace('/', '');
 
   const { mutate: stop } = useDefaultMutation(stopContainer, {
@@ -74,7 +74,6 @@ const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
               icon={<NotAllowedIcon />}
               onClick={() => stop(container.id)}
               variant="ghost"
-              size="sm"
             />
           ) : (
             <IconButton
@@ -82,7 +81,6 @@ const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
               icon={<ArrowRightIcon />}
               onClick={() => start(container.id)}
               variant="ghost"
-              size="sm"
             />
           )}
           <IconButton
@@ -90,7 +88,6 @@ const ContainerRow: React.FC<ContainerProps> = ({ container }) => {
             icon={<DeleteIcon />}
             onClick={() => remove(container.id)}
             variant="ghost"
-            size="sm"
           />
         </HStack>
       </Td>

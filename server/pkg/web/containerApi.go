@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/nerijusdu/vesa/pkg/data"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 )
 
@@ -37,6 +38,14 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 		if err != nil {
 			handleError(w, err)
 			return
+		}
+
+		if req.SaveAsTemplate {
+			_, err = api.templates.SaveTemplate(data.Template{Container: *req})
+			if err != nil {
+				handleError(w, err)
+				return
+			}
 		}
 
 		res := &CreatedResponse{Id: id}
