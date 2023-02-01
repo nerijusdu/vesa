@@ -21,3 +21,6 @@ run-web:
 run-server:
 	echo "Starting server..."
 	cd server && go run .
+
+host-bin:
+	python3 -m servefile ./bin/vesa & ngrok http 8080

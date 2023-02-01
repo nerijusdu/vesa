@@ -20,8 +20,8 @@ export type Ports = {
 };
 
 export type PortBinding = {
-  HostIp: string;
-  HostPort: string;
+  hostIp: string;
+  hostPort: string;
 }
 
 export type Mount = {

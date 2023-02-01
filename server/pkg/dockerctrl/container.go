@@ -48,6 +48,8 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		return "", err
 	}
 
+	portSet := getPortSet(ports)
+
 	mounts := util.Map(req.Mounts, mapMount)
 	endpoitns := map[string]*network.EndpointSettings{}
 
@@ -58,8 +60,9 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 	}
 
 	resp, err := d.Client.ContainerCreate(ctx, &container.Config{
-		Image: req.Image,
-		Env:   req.EnvVars,
+		Image:        req.Image,
+		Env:          req.EnvVars,
+		ExposedPorts: portSet,
 	}, &container.HostConfig{
 		PortBindings: ports,
 		Mounts:       mounts,

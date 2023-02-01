@@ -93,6 +93,16 @@ func getPortMap(ports []string) (nat.PortMap, error) {
 	return portBindings, nil
 }
 
+func getPortSet(ports nat.PortMap) nat.PortSet {
+	portSet := nat.PortSet{}
+
+	for k := range ports {
+		portSet[k] = struct{}{}
+	}
+
+	return portSet
+}
+
 func mapNetwork(n types.NetworkResource) Network {
 	return Network{
 		ID:         n.ID,

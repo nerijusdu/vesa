@@ -24,6 +24,14 @@ const ContainerDetails: React.FC = () => {
       <FieldValue label="Created" value={container.created} />
       <FieldValue label="Platform" value={container.platform} />
       <FieldValue label="Driver" value={container.driver} />
+      <FieldValues 
+        label="ports" 
+        values={Object.keys(container.hostConfig?.portBindings || {}).map(k => {
+          const v = container.hostConfig?.portBindings[k][0];
+          const prefix = v?.hostIp ? `${v.hostIp}:` : '';
+          return `${prefix}${v?.hostPort}:${k}`;
+        })} 
+      />
       <FieldValues
         label="Env vars"
         values={container.config?.env}
