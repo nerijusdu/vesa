@@ -5,13 +5,20 @@ import { RunContainerRequest, runContainerSchema } from './containers.types';
 import FormInput from '../../components/form/formInput';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import FormContainer from '../../components/form/formContainer';
 import FormSelect from '../../components/form/formSelect';
 import { useDefaultMutation } from '../../hooks';
 import { getNetworks } from '../networks/networks.api';
 import { runContainer } from './containers.api';
 import { useNavigate } from 'react-router-dom';
+
+const restartPolicies = [
+  { name: 'No', value: 'no' },
+  { name: 'On failure', value: 'on-failure' },
+  { name: 'Always', value: 'always' },
+  { name: 'Unless stopped', value: 'unless-stopped' },
+];
 
 const NewContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -23,11 +30,13 @@ const NewContainer: React.FC = () => {
   const form = useForm<RunContainerRequest>({ resolver: zodResolver(runContainerSchema) });
   const { register, handleSubmit, formState: { errors } } = form;
   const { data: networks } = useQuery(['networks'], getNetworks);
+  const [showRetryCount, setShowRetryCount] = useState(false);
 
   const networkOptions = useMemo(
     () => networks?.map(x => ({ value: x.id, name: x.name })) || [], 
     [networks]
   );
+
 
   return (
     <FormProvider {...form}>
@@ -66,6 +75,26 @@ const NewContainer: React.FC = () => {
           label="Network"
           placeholder="Select network (optional)"
         />
+
+        <FormSelect
+          {...register('restartPolicy.name', {
+            onChange: e => {
+              setShowRetryCount(e.target.value === 'on-failure');
+            },
+          })}
+          label="Restart policy"
+          data={restartPolicies}
+          errors={errors}
+        />
+
+        {showRetryCount && (
+          <FormInput
+            {...register('restartPolicy.maximumRetryCount')}
+            label="Retry count"
+            errors={errors}
+            placeholder="5"
+          />
+        )}
 
         <PortFields />
 

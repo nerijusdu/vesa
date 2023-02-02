@@ -75,6 +75,10 @@ export const runContainerSchema = z.object({
     key: z.string(),
     value: z.string(),
   })),
+  restartPolicy: z.object({
+    name: z.string(),
+    maximumRetryCount: z.number().optional(),
+  }),
   isLocal: z.boolean().optional(),
   networkId: z.string().optional(),
   networkName: z.string().optional(),

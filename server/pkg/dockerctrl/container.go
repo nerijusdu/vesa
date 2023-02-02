@@ -64,8 +64,9 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		Env:          req.EnvVars,
 		ExposedPorts: portSet,
 	}, &container.HostConfig{
-		PortBindings: ports,
-		Mounts:       mounts,
+		RestartPolicy: mapRestartPolicy(req.RestartPolicy),
+		PortBindings:  ports,
+		Mounts:        mounts,
 	}, &network.NetworkingConfig{
 		EndpointsConfig: endpoitns,
 	}, nil, req.Name)

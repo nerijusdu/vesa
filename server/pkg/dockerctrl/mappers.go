@@ -2,6 +2,7 @@ package dockerctrl
 
 import (
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/go-connections/nat"
@@ -140,5 +141,12 @@ func mapMountPoint(m types.MountPoint) Mount {
 		Source: m.Source,
 		Target: m.Destination,
 		Name:   m.Name,
+	}
+}
+
+func mapRestartPolicy(m RestartPolicy) container.RestartPolicy {
+	return container.RestartPolicy{
+		Name:              m.Name,
+		MaximumRetryCount: m.MaximumRetryCount,
 	}
 }
