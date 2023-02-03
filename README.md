@@ -6,7 +6,7 @@ Very Easy Sys Admin - deploy projects to a VPS without having 153948 years of sy
 Quick TODOs:
 - [X] Actions in container details screen
 - [X] Create a template from a running container
-- [ ] Edit templates
+- [X] Edit templates
 - [ ] Add labels to template containers
 
 Docker:

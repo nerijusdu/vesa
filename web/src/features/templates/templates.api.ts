@@ -29,3 +29,12 @@ export const createTemplate = async (containerId: string): Promise<string> => {
   const result = await response.json();
   return result.id;
 };
+
+export const saveTemplate = async (template: Partial<Template>): Promise<string> => {
+  const response = await authRequest('/api/templates', {
+    method: 'POST',
+    body: JSON.stringify(template),
+  });
+  const result = await response.json();
+  return result.id;
+};

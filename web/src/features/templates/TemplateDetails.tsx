@@ -1,14 +1,20 @@
 import { VStack, Heading, Flex, Button } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
-import { getTemplate, useTemplate } from './templates.api';
+import { deleteTemplate, getTemplate, useTemplate } from './templates.api';
 
 const TemplateDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { data: template } = useQuery(['templates', id], () => getTemplate(id));
   const { mutate: use } = useDefaultMutation(useTemplate, { action: 'using template' });
+  const { mutate: deleteTempl } = useDefaultMutation(deleteTemplate, {
+    action: 'deleting template',
+    invalidateQueries: ['templates'],
+    onSuccess: () => navigate('/templates'),
+  });
 
   if (!template) {
     return null;
@@ -16,7 +22,16 @@ const TemplateDetails: React.FC = () => {
 
   return (
     <VStack align="flex-start">
-      <Heading>{template.container.name}</Heading>
+      <Heading display="flex" gap={2}>
+        {template.container.name}
+        
+        <Button as={Link} to={`/templates/${template.id}/edit`} variant="link">
+          Edit
+        </Button>
+        <Button variant="link" colorScheme="red" onClick={() => deleteTempl(template.id)}>
+          Delete
+        </Button>
+      </Heading>
 
       <FieldValue label="ID" value={template.id} />
       <FieldValue label="Image" value={template.container.image} />

@@ -31,7 +31,7 @@ func (api *VesaApi) registerTemplateRoutes(router chi.Router) {
 	})
 
 	router.Post("/templates", func(w http.ResponseWriter, r *http.Request) {
-		req := &CreateTemplateRequest{}
+		req := &SaveTemplateRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
 		if err != nil {
 			handleError(w, err)

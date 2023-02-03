@@ -12,6 +12,7 @@ import NewProject from './features/projects/NewProject';
 import ProjectDetails from './features/projects/ProjectDetails';
 import Templates from './features/templates/Templates';
 import TemplateDetails from './features/templates/TemplateDetails';
+import NewTemplate from './features/templates/NewTemplate';
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       {
         path: '/templates/:id',
         element: <TemplateDetails />,
+      },
+      {
+        path: '/templates/:id/edit',
+        element: <NewTemplate />,
       },
     ],
   },

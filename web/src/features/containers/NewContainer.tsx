@@ -113,7 +113,7 @@ const NewContainer: React.FC = () => {
   );
 };
 
-const PortFields: React.FC = () => {
+export const PortFields: React.FC = () => {
   const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
   const { fields, append, remove } = useFieldArray({ control, name: 'ports' }); 
 
@@ -144,7 +144,7 @@ const PortFields: React.FC = () => {
   );
 };
 
-const MountFields: React.FC = () => {
+export const MountFields: React.FC = () => {
   const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
   const { fields, append, remove } = useFieldArray({ control, name: 'mounts' });
 
@@ -184,7 +184,7 @@ const MountFields: React.FC = () => {
   );
 };
 
-const EnvVarFields: React.FC = () => {
+export const EnvVarFields: React.FC = () => {
   const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
   const { fields, append, remove } = useFieldArray({ control, name: 'envVars' });
 
