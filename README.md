@@ -2,6 +2,13 @@
 Very Easy Sys Admin - deploy projects to a VPS without having 153948 years of sys admin experience
 
 ## TODO
+
+Quick TODOs:
+- [X] Actions in container details screen
+- [X] Create a template from a running container
+- [ ] Edit templates
+- [ ] Add labels to template containers
+
 Docker:
 - [X] View containers
   - [X] Inspect containers
@@ -18,12 +25,13 @@ Docker:
 - [ ] Registry auth
 - [ ] Button to hide/show env values
 - [X] Save container templates
-- [ ] Restart/delete flag
+- [X] Restart flag
 
 Nginx:
 - [ ] Edit config to add new site
 - [ ] Reload nginx
 - [ ] Create SSL certs
+- [ ] Use Traefik instead of nginx?
 
 Other:
 - [X] Web GUI
@@ -37,6 +45,7 @@ Other:
   - [X] Start, stop, restart containers
   - [X] Pull latest containers
   - [ ] Cascade projects when deleting resources
+  - [ ] Compose projects of templates
 
 ## Implementation details
 

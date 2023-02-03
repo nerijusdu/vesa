@@ -78,7 +78,7 @@ type RunContainerRequest struct {
 	Mounts         []Mount       `json:"mounts" validate:"dive"`
 	EnvVars        []string      `json:"envVars"`
 	IsLocal        bool          `json:"isLocal"`
-	NetworkId      string        `json:"networkId"`
+	NetworkId      string        `json:"networkId"` // TODO: support multiple networks maybe?
 	NetworkName    string        `json:"networkName"`
 	SaveAsTemplate bool          `json:"saveAsTemplate"`
 	RestartPolicy  RestartPolicy `json:"restartPolicy"`

@@ -1,6 +1,8 @@
 package dockerctrl
 
 import (
+	"strings"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
@@ -149,4 +151,39 @@ func mapRestartPolicy(m RestartPolicy) container.RestartPolicy {
 		Name:              m.Name,
 		MaximumRetryCount: m.MaximumRetryCount,
 	}
+}
+
+func MapContainerToRequest(m ContainerDetails) RunContainerRequest {
+	name := strings.Replace(m.Name, "/", "", 1)
+
+	networkId := ""
+	for _, v := range m.NetworkSettings.Networks {
+		networkId = v.NetworkID
+		break
+	}
+
+	return RunContainerRequest{
+		Image:         m.Config.Image,
+		Name:          name,
+		Ports:         getPortStrings(m.HostConfig.PortBindings),
+		Mounts:        m.Mounts,
+		EnvVars:       m.Config.Env,
+		RestartPolicy: m.HostConfig.RestartPolicy,
+		NetworkId:     networkId,
+	}
+}
+
+func getPortStrings(m map[nat.Port][]PortBinding) []string {
+	result := make([]string, len(m))
+
+	for k, v := range m {
+		cPort := strings.Split(string(k), "/")[0]
+		hPort := v[0].HostPort
+		if v[0].HostIP != "" {
+			hPort = v[0].HostIP + ":" + v[0].HostPort
+		}
+		result = append(result, hPort+":"+cPort)
+	}
+
+	return result
 }

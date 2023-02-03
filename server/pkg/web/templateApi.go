@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/nerijusdu/vesa/pkg/data"
+	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 )
 
 func (api *VesaApi) registerTemplateRoutes(router chi.Router) {
@@ -30,7 +31,7 @@ func (api *VesaApi) registerTemplateRoutes(router chi.Router) {
 	})
 
 	router.Post("/templates", func(w http.ResponseWriter, r *http.Request) {
-		req := &data.Template{}
+		req := &CreateTemplateRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
 		if err != nil {
 			handleError(w, err)
@@ -43,7 +44,19 @@ func (api *VesaApi) registerTemplateRoutes(router chi.Router) {
 			return
 		}
 
-		id, err := api.templates.SaveTemplate(*req)
+		if req.ContainerId != "" {
+			c, err := api.dockerctrl.GetContainer(req.ContainerId)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+
+			req.Container = dockerctrl.MapContainerToRequest(c)
+		}
+
+		id, err := api.templates.SaveTemplate(data.Template{
+			Container: req.Container,
+		})
 		if err != nil {
 			handleError(w, err)
 			return

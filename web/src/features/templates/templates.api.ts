@@ -20,3 +20,12 @@ export const useTemplate = async (id: string): Promise<string> => {
   const result = await response.json();
   return result.id;
 };
+
+export const createTemplate = async (containerId: string): Promise<string> => {
+  const response = await authRequest('/api/templates', {
+    method: 'POST',
+    body: JSON.stringify({ containerId }),
+  });
+  const result = await response.json();
+  return result.id;
+};

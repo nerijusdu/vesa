@@ -1,12 +1,32 @@
-import { Heading, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
-import { getContainer } from './containers.api';
+import { useNavigate, useParams } from 'react-router-dom';
+import { deleteContainer, getContainer, startContainer, stopContainer } from './containers.api';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
+import { useDefaultMutation } from '../../hooks';
+import { createTemplate } from '../templates/templates.api';
 
 const ContainerDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { data: container } = useQuery(['container', id], () => getContainer(id));
+  const { mutate: createTemp } = useDefaultMutation(createTemplate, {
+    action: 'creating template',
+    successMessage: (res) => 'Template created with ID: ' + res,
+  });
+  const { mutate: stop } = useDefaultMutation(stopContainer, {
+    action: 'stopping container',
+    invalidateQueries: ['containers'],
+  });
+  const { mutate: start } = useDefaultMutation(startContainer, {
+    action: 'starting container',
+    invalidateQueries: ['containers'],
+  });
+  const { mutate: remove } = useDefaultMutation(deleteContainer, {
+    action: 'deleting container',
+    invalidateQueries: ['containers'],
+    onSuccess: () => navigate('/containers'),
+  });
 
   if (!container) {
     return null;
@@ -50,6 +70,14 @@ const ContainerDetails: React.FC = () => {
         label="Mounts" 
         values={container.mounts?.map(m => `${m.type} - ${m.name || m.source}:${m.target}`)} 
       />
+
+
+      <Flex gap={2}>
+        <Button variant="outline" onClick={() => start(container.id)}>Start</Button>
+        <Button variant="outline" onClick={() => stop(container.id)}>Stop</Button>
+        <Button variant="outline" onClick={() => remove(container.id)}>Remove</Button>
+        <Button variant="outline" onClick={() => createTemp(container.id)}>Create template from container</Button>
+      </Flex>
     </VStack>
   );
 };
