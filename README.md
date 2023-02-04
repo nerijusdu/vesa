@@ -7,6 +7,7 @@ Quick TODOs:
 - [X] Actions in container details screen
 - [X] Create a template from a running container
 - [X] Edit templates
+- [ ] Button to hide/show env values
 - [ ] Add labels to template containers
 
 Docker:
@@ -23,7 +24,6 @@ Docker:
 - [X] Container environment variables
 - [ ] Container logs
 - [ ] Registry auth
-- [ ] Button to hide/show env values
 - [X] Save container templates
 - [X] Restart flag
 

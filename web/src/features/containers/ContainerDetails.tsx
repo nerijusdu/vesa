@@ -13,6 +13,7 @@ const ContainerDetails: React.FC = () => {
   const { mutate: createTemp } = useDefaultMutation(createTemplate, {
     action: 'creating template',
     successMessage: (res) => 'Template created with ID: ' + res,
+    onSuccess: (res) => navigate(`/templates/${res}`),
   });
   const { mutate: stop } = useDefaultMutation(stopContainer, {
     action: 'stopping container',

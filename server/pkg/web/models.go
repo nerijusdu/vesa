@@ -11,7 +11,7 @@ type ConnectNetworkRequest struct {
 }
 
 type SaveTemplateRequest struct {
-	TemplateId  string                         `json:"templateId"`
+	Id          string                         `json:"id"`
 	Container   dockerctrl.RunContainerRequest `json:"container,omitempty" validate:"-"`
 	ContainerId string                         `json:"containerId"`
 }

@@ -55,6 +55,7 @@ func (api *VesaApi) registerTemplateRoutes(router chi.Router) {
 		}
 
 		id, err := api.templates.SaveTemplate(data.Template{
+			ID:        req.Id,
 			Container: req.Container,
 		})
 		if err != nil {

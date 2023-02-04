@@ -174,7 +174,7 @@ func MapContainerToRequest(m ContainerDetails) RunContainerRequest {
 }
 
 func getPortStrings(m map[nat.Port][]PortBinding) []string {
-	result := make([]string, len(m))
+	var result []string
 
 	for k, v := range m {
 		cPort := strings.Split(string(k), "/")[0]
