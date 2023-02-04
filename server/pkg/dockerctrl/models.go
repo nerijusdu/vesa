@@ -85,7 +85,7 @@ type RunContainerRequest struct {
 }
 
 type Mount struct {
-	Type   string `json:"type" validate:"required,contains=bind"`
+	Type   string `json:"type" validate:"required"`
 	Source string `json:"source" validate:"required"`
 	Target string `json:"target" validate:"required"`
 	Name   string `json:"name"`

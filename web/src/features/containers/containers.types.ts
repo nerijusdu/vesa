@@ -70,6 +70,7 @@ export const runContainerSchema = z.object({
     type: z.string().default('bind'),
     source: z.string(),
     target: z.string(),
+    name: z.string().optional(),
   })),
   envVars: z.array(z.object({
     key: z.string(),

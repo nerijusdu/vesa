@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import FormContainer from '../../components/form/formContainer';
 import { useDefaultMutation } from '../../hooks';
 import ContainerFields from '../containers/ContainerForm';
+import { mapContainerToApiRequest } from '../containers/containers.helpers';
 import { RunContainerRequest, runContainerSchema } from '../containers/containers.types';
 import { getNetworks } from '../networks/networks.api';
 import { getTemplate, saveTemplate } from './templates.api';
@@ -57,16 +58,9 @@ const NewTemplate: React.FC = () => {
   return (
     <FormProvider {...form}>
       <FormContainer
-        onSubmit={form.handleSubmit(({ envVars, ports, ...data }) => mutate({
+        onSubmit={form.handleSubmit(x => mutate({
           id: params.id,
-          container: {
-            ...data,
-            ports: (ports || []).map(x => x.value).filter(Boolean) as string[],
-            envVars: (envVars || []).map(x => `${x.key}=${x.value}`).filter(Boolean) as string[],
-            networkName: data.networkId
-              ? networks?.find(x => x.id === data.networkId)?.name
-              : undefined,
-          },
+          container: mapContainerToApiRequest(x, networks),
         }))} 
         label={params.id ? 'Edit template' : 'New template'}
         buttonLabel="Save"

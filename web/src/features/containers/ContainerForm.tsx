@@ -1,7 +1,7 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, Checkbox, Divider, Flex, FormLabel, IconButton } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { FieldArrayWithId, useFieldArray, useFormContext } from 'react-hook-form';
 import FormInput from '../../components/form/formInput';
 import FormSelect, { NamedValue } from '../../components/form/formSelect';
 import { RunContainerRequest } from './containers.types';
@@ -11,6 +11,11 @@ const restartPolicies = [
   { name: 'On failure', value: 'on-failure' },
   { name: 'Always', value: 'always' },
   { name: 'Unless stopped', value: 'unless-stopped' },
+];
+
+const mountTypes = [
+  { name: 'Bind (directory)', value: 'bind' },
+  { name: 'Volume', value: 'volume' },
 ];
 
 export type ContainerFieldsProps = {
@@ -117,42 +122,77 @@ export const PortFields: React.FC = () => {
 };
 
 export const MountFields: React.FC = () => {
-  const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
-  const { fields, append, remove } = useFieldArray({ control, name: 'mounts' });
+  const { control } = useFormContext<RunContainerRequest>();
+  const { fields, append } = useFieldArray({ control, name: 'mounts' });
 
   return (
     <>
       <FormLabel>Mounts</FormLabel>
       {fields.map((field, i) => (
-        <Flex key={field.id} gap={2}>
-          <FormInput
-            {...register(`mounts.${i}.source` as const)}
-            errors={errors}
-            label="Source"
-            placeholder="/path/to/host"
-          />
-          <FormInput
-            {...register(`mounts.${i}.target` as const)}
-            errors={errors}
-            label="Target"
-            placeholder="/path/to/container"
-          />
-          <IconButton
-            icon={<DeleteIcon />}
-            aria-label='Remove Mount'
-            size="md"
-            colorScheme="red"
-            onClick={() => remove(i)}
-            alignSelf="flex-end"
-            mb={2}
-          />
-        </Flex>
+        <MountField key={field.id} field={field} i={i} />
       ))}
 
-      <Button variant="outline" onClick={() => append({ type: 'volume', source: '', target: '' })}>
+      <Button variant="outline" onClick={() => append({ type: 'bind', source: '', target: '' })}>
         Add mount
       </Button>
     </>
+  );
+};
+
+type MountFieldProps = { 
+  field: FieldArrayWithId<RunContainerRequest, 'mounts', 'id'>; 
+  i: number;
+} 
+
+const MountField = ({field, i }: MountFieldProps) => {
+  const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { remove } = useFieldArray({ control, name: 'mounts' });
+  const [type, setType] = useState(field.type);
+
+  return (
+    <Flex key={field.id} gap={2}>
+      <FormSelect
+        {...register(`mounts.${i}.type`, {
+          onChange: e => {
+            setType(e.target.value);
+          },
+        })}
+        data={mountTypes}
+        errors={errors}
+        label="Type"
+      />
+      {type === 'bind' && (
+        <FormInput
+          {...register(`mounts.${i}.source` as const)}
+          errors={errors}
+          label="Source"
+          placeholder="/path/to/host"
+        />
+      )}
+      {type === 'volume' && (
+        <FormInput
+          {...register(`mounts.${i}.name` as const)}
+          errors={errors}
+          label="Name"
+          placeholder="my-volume"
+        />
+      )}
+      <FormInput
+        {...register(`mounts.${i}.target` as const)}
+        errors={errors}
+        label="Target"
+        placeholder="/path/to/container"
+      />
+      <IconButton
+        icon={<DeleteIcon />}
+        aria-label='Remove Mount'
+        size="md"
+        colorScheme="red"
+        onClick={() => remove(i)}
+        alignSelf="flex-end"
+        mb={2}
+      />
+    </Flex>
   );
 };
 

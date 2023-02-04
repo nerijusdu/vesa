@@ -8,6 +8,7 @@ import { useDefaultMutation } from '../../hooks';
 import { getNetworks } from '../networks/networks.api';
 import ContainerFields from './ContainerForm';
 import { runContainer } from './containers.api';
+import { mapContainerToApiRequest } from './containers.helpers';
 import { RunContainerRequest, runContainerSchema } from './containers.types';
 
 const NewContainer: React.FC = () => {
@@ -24,18 +25,10 @@ const NewContainer: React.FC = () => {
     [networks]
   );
 
-
   return (
     <FormProvider {...form}>
       <FormContainer
-        onSubmit={form.handleSubmit(({ envVars, ports, ...data }) => mutate({
-          ...data,
-          ports: (ports || []).map(x => x.value).filter(Boolean) as string[],
-          envVars: (envVars || []).map(x => `${x.key}=${x.value}`).filter(Boolean) as string[],
-          networkName: data.networkId
-            ? networks?.find(x => x.id === data.networkId)?.name
-            : undefined,
-        }))} 
+        onSubmit={form.handleSubmit(x => mutate(mapContainerToApiRequest(x, networks)))} 
         label="New Container"
         buttonLabel="Run"
       >
