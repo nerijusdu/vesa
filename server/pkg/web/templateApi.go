@@ -86,6 +86,11 @@ func (api *VesaApi) registerTemplateRoutes(router chi.Router) {
 			return
 		}
 
+		if template.Container.Labels == nil {
+			template.Container.Labels = make(map[string]string)
+		}
+		template.Container.Labels["template"] = template.ID
+
 		id, err := api.dockerctrl.RunContainer(template.Container)
 		if err != nil {
 			handleError(w, err)

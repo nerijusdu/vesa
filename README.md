@@ -8,7 +8,7 @@ Quick TODOs:
 - [X] Create a template from a running container
 - [X] Edit templates
 - [ ] Button to hide/show env values
-- [ ] Add labels to template containers
+- [X] Add labels to template containers
 
 Docker:
 - [X] View containers

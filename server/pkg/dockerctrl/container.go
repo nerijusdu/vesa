@@ -63,6 +63,7 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		Image:        req.Image,
 		Env:          req.EnvVars,
 		ExposedPorts: portSet,
+		Labels:       req.Labels,
 	}, &container.HostConfig{
 		RestartPolicy: mapRestartPolicy(req.RestartPolicy),
 		PortBindings:  ports,
