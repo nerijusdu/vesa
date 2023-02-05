@@ -3,6 +3,7 @@ package web
 import (
 	"embed"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -26,6 +27,7 @@ type dockerCtrlClient interface {
 	StopContainer(id string) error
 	StartContainer(id string) error
 	PullImage(image string) error
+	GetContainerLogs(id string) (io.ReadCloser, error)
 
 	GetNetworks() ([]dockerctrl.Network, error)
 	GetNetwork(id string) (dockerctrl.Network, error)

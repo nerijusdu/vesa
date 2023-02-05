@@ -97,4 +97,41 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 
 		w.WriteHeader(http.StatusNoContent)
 	})
+
+	router.Get("/containers/{id}/logs", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		reader, err := api.dockerctrl.GetContainerLogs(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+		defer reader.Close()
+
+		reqCtx := r.Context()
+		flusher, ok := w.(http.Flusher)
+		if !ok {
+			handleError(w, err)
+			return
+		}
+
+		w.Header().Set("Transfer-Encoding", "chunked")
+		w.WriteHeader(http.StatusOK)
+		flusher.Flush()
+
+		b := make([]byte, 256)
+		for {
+			select {
+			case <-reqCtx.Done():
+				return
+			default:
+				_, err := reader.Read(b)
+				if err != nil {
+					handleError(w, err)
+					return
+				}
+				w.Write(b)
+				flusher.Flush()
+			}
+		}
+	})
 }

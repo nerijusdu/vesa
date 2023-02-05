@@ -117,3 +117,13 @@ func (d *DockerCtrlClient) PullImage(image string) error {
 	io.Copy(os.Stdout, out)
 	return nil
 }
+
+func (d *DockerCtrlClient) GetContainerLogs(id string) (io.ReadCloser, error) {
+	ctx := context.Background()
+	return d.Client.ContainerLogs(ctx, id, types.ContainerLogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		Follow:     true,
+		Tail:       "100",
+	})
+}

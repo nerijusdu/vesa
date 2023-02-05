@@ -1,13 +1,16 @@
-import { Button, Flex, Heading, VStack } from '@chakra-ui/react';
+import { Button, Flex, Heading, VStack, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deleteContainer, getContainer, startContainer, stopContainer } from './containers.api';
+import { deleteContainer, getContainer, getContainerLogs, startContainer, stopContainer } from './containers.api';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
 import { createTemplate } from '../templates/templates.api';
+import { useEffect, useRef, useState } from 'react';
 
 const ContainerDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [logs, setLogs] = useState<string[]>([]);
+  const logsRef = useRef<HTMLPreElement>(null);
   const navigate = useNavigate();
   const { data: container } = useQuery(['container', id], () => getContainer(id));
   const { mutate: createTemp } = useDefaultMutation(createTemplate, {
@@ -28,6 +31,22 @@ const ContainerDetails: React.FC = () => {
     invalidateQueries: ['containers'],
     onSuccess: () => navigate('/containers'),
   });
+
+  useEffect(() => {
+    if (!id) return;
+
+    let cancelFunc = () => {};
+    getContainerLogs(id, l => setLogs(x => [...x, l]))
+      .then(x => cancelFunc = x);
+
+    return () => cancelFunc();
+  }, [id]);
+
+  useEffect(() => {
+    if (!logsRef.current) return;
+
+    logsRef.current.scrollTop = logsRef.current.scrollHeight;
+  }, [logsRef.current, logs]);
 
   if (!container) {
     return null;
@@ -72,6 +91,19 @@ const ContainerDetails: React.FC = () => {
         values={container.mounts?.map(m => `${m.type} - ${m.name || m.source}:${m.target}`)} 
       />
 
+      <Flex 
+        ref={logsRef as unknown as any}
+        flexDir="column" 
+        as="pre" 
+        h="500px" 
+        overflowX="scroll" 
+        overflowY="scroll" 
+        maxW="100%" 
+        bg="black">
+        {logs.map((x, i) => (
+          <Text key={i}>{x}</Text>
+        ))}
+      </Flex>
 
       <Flex gap={2}>
         <Button variant="outline" onClick={() => start(container.id)}>Start</Button>
