@@ -1,7 +1,9 @@
 package web
 
 import (
+	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -118,18 +120,27 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 		w.WriteHeader(http.StatusOK)
 		flusher.Flush()
 
-		b := make([]byte, 256)
+		hBytes := make([]byte, 8)
+		buf := make([]byte, 1024)
 		for {
 			select {
 			case <-reqCtx.Done():
 				return
 			default:
-				_, err := reader.Read(b)
+				_, err := reader.Read(hBytes)
 				if err != nil {
 					handleError(w, err)
 					return
 				}
-				w.Write(b)
+
+				frameSize := int(binary.BigEndian.Uint32(hBytes[4:8]))
+				if frameSize > len(buf) {
+					buf = append(buf, make([]byte, frameSize+len(buf)+1)...)
+				}
+				n, err := reader.Read(buf[:frameSize])
+				fmt.Println(n, frameSize)
+
+				w.Write(buf[:frameSize])
 				flusher.Flush()
 			}
 		}

@@ -1,11 +1,11 @@
-import { Button, Flex, Heading, VStack, Text } from '@chakra-ui/react';
+import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deleteContainer, getContainer, getContainerLogs, startContainer, stopContainer } from './containers.api';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
 import { createTemplate } from '../templates/templates.api';
-import { useEffect, useRef, useState } from 'react';
+import { deleteContainer, getContainer, getContainerLogs, startContainer, stopContainer } from './containers.api';
 
 const ContainerDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,11 +35,12 @@ const ContainerDetails: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    let cancelFunc = () => {};
-    getContainerLogs(id, l => setLogs(x => [...x, l]))
-      .then(x => cancelFunc = x);
+    const abortC = getContainerLogs(id, l => setLogs(x => [...x, l]));
 
-    return () => cancelFunc();
+    return () => {
+      setLogs([]);
+      abortC?.abort();
+    };
   }, [id]);
 
   useEffect(() => {
@@ -98,7 +99,7 @@ const ContainerDetails: React.FC = () => {
         h="500px" 
         overflowX="scroll" 
         overflowY="scroll" 
-        maxW="100%" 
+        w="100%" 
         bg="black">
         {logs.map((x, i) => (
           <Text key={i}>{x}</Text>

@@ -33,32 +33,37 @@ export const startContainer = async (id: string): Promise<void> => {
   await authRequest(`/api/containers/${id}/start`, { method: 'POST' });
 };
 
-export const getContainerLogs = async (id: string | undefined, onData: (data: string) => void): Promise<() => void> => {
-  const res = await authRequest(`/api/containers/${id}/logs`);
-  const reader = res.body?.pipeThrough(new TextDecoderStream()).getReader();
-  let cancelFunc: () => void = () => null;
-  const abortPromise = new Promise<'abort'>((r) => {
-    cancelFunc = () => r('abort');
+export const getContainerLogs = (id: string | undefined, onData: (data: string) => void): AbortController => {
+  const abortSignal = new AbortController();
+
+  authRequest(`/api/containers/${id}/logs`, {
+    signal: abortSignal.signal,
+  }).then(res => {
+    const reader = res.body
+      ?.pipeThrough(new TextDecoderStream())
+      ?.getReader();
+
+    setTimeout(async () => {
+      while(true) {
+        try{
+          const v = await reader?.read();
+
+          if (!v) {
+            reader?.cancel();
+            break;
+          }
+
+          onData(v.value || '');
+          if (v.done) {
+            break;
+          }
+        } catch(err) {
+          break;
+        }
+      }
+    }, 0);
+
   });
-  setTimeout(async () => {
-    while(true) {
-      const v = await Promise.any([
-        reader?.read(),
-        abortPromise,
-      ]);
 
-      if (!v || v === 'abort') {
-        reader?.cancel();
-        console.log('aborting');
-        break;
-      }
-
-      onData(v.value || '');
-      if (v.done) {
-        break;
-      }
-    }
-  }, 0);
-
-  return cancelFunc;
+  return abortSignal;
 };

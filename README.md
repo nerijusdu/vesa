@@ -22,7 +22,7 @@ Docker:
   - [X] Mount volumes (not just directories)
   - [ ] Manage volumes
 - [X] Container environment variables
-- [ ] Container logs
+- [X] Container logs
 - [ ] Registry auth
 - [X] Save container templates
 - [X] Restart flag
