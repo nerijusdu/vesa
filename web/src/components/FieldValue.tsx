@@ -39,7 +39,7 @@ export const FieldValues: React.FC<FieldValuesProps> = ({ label, values }) => {
   return (
     <Flex minW="400px">
       <Text w="200px" fontWeight="medium">{label}</Text>
-      <VStack align="flex-start">
+      <VStack align="flex-start" maxW="70%">
         {values.map((value, i) => (
           <Value key={i} value={value} />
         ))}

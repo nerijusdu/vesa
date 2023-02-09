@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, redirect, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './components/Login';
 import NetworkDetails from './features/networks/NetworkDetails';
@@ -74,6 +74,11 @@ const router = createBrowserRouter([
       {
         path: '/templates/:id/edit',
         element: <NewTemplate />,
+      },
+      {
+        path: '/',
+        index: true,
+        loader: () => redirect('/containers'),
       },
     ],
   },

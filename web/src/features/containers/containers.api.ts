@@ -1,7 +1,7 @@
 import { Container, ContainerDetails, RunContainerApiRequest } from './containers.types';
 import { authRequest, buildQuery } from '../../api/api';
 
-export const getContainers = async (data: { label?: string }): Promise<Container[]> => {
+export const getContainers = async (data?: { label?: string }): Promise<Container[]> => {
   const response = await authRequest(`/api/containers${buildQuery(data)}`);
   return response.json();
 };

@@ -14,7 +14,11 @@ export class ApiError extends Error {
   description?: string;
 }
 
-export const buildQuery = (data: { [key in string]: string | undefined | null }) => {
+export const buildQuery = (data?: { [key in string]: string | undefined | null }) => {
+  if (!data) {
+    return '';
+  }
+
   const params = new URLSearchParams();
   for (const key in data) {
     if (data[key] !== undefined && data[key] !== null) {

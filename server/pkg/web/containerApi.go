@@ -39,18 +39,27 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 			return
 		}
 
-		id, err := api.dockerctrl.RunContainer(*req)
-		if err != nil {
-			handleError(w, err)
-			return
-		}
-
+		var tId string
 		if req.SaveAsTemplate {
-			_, err = api.templates.SaveTemplate(data.Template{Container: *req})
+			tId, err = api.templates.SaveTemplate(data.Template{Container: *req})
 			if err != nil {
 				handleError(w, err)
 				return
 			}
+
+			if req.Labels == nil {
+				req.Labels = make(map[string]string)
+			}
+			req.Labels["template"] = tId
+		}
+
+		id, err := api.dockerctrl.RunContainer(*req)
+		if err != nil {
+			if tId != "" {
+				api.templates.DeleteTemplate(tId)
+			}
+			handleError(w, err)
+			return
 		}
 
 		res := &CreatedResponse{Id: id}

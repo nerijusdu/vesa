@@ -7,10 +7,9 @@ const Navbar: React.FC = () => {
     <Flex py={4} mb={4} borderBottom="solid 1px" borderColor="purple.700" justifyContent="space-between">
       <Flex fontWeight="bold">VESA</Flex>
       <Flex gap={4}>
-        <NavLink href="/">Home</NavLink>
         <NavLink href="/containers">Containers</NavLink>
         <NavLink href="/networks">Networks</NavLink>
-        <NavLink href="/projects">Projects</NavLink>
+        {/* <NavLink href="/projects">Projects</NavLink> */}
         <NavLink href="/templates">Templates</NavLink>
       </Flex>
     </Flex>
