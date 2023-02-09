@@ -7,7 +7,7 @@ Quick TODOs:
 - [X] Actions in container details screen
 - [X] Create a template from a running container
 - [X] Edit templates
-- [ ] Button to hide/show env values
+- [X] Button to hide/show env values
 - [X] Add labels to template containers
   - [X] Show containers with this label in projects and templates
 

@@ -66,7 +66,7 @@ const ContainerDetails: React.FC = () => {
       <FieldValue label="Platform" value={container.platform} />
       <FieldValue label="Driver" value={container.driver} />
       <FieldValues 
-        label="ports" 
+        label="Ports" 
         values={Object.keys(container.hostConfig?.portBindings || {}).map(k => {
           const v = container.hostConfig?.portBindings[k][0];
           const prefix = v?.hostIp ? `${v.hostIp}:` : '';
@@ -76,6 +76,7 @@ const ContainerDetails: React.FC = () => {
       <FieldValues
         label="Env vars"
         values={container.config?.env}
+        hidden
       />
       <FieldValues 
         label="Networks" 

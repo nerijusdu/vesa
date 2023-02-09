@@ -40,9 +40,14 @@ const TemplateDetails: React.FC = () => {
       <FieldValue label="ID" value={template.id} />
       <FieldValue label="Image" value={template.container.image} />
       <FieldValue label="Network" value={template.container.networkName} />
+      <FieldValues 
+        label="Ports" 
+        values={template.container.ports} 
+      />
       <FieldValues
         label="Env vars"
         values={template.container.envVars}
+        hidden
       />
       <FieldValues 
         label="Mounts" 
