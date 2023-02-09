@@ -20,7 +20,7 @@ import (
 var validate *validator.Validate
 
 type dockerCtrlClient interface {
-	GetContainers() ([]dockerctrl.Container, error)
+	GetContainers(req dockerctrl.GetContainersRequest) ([]dockerctrl.Container, error)
 	GetContainer(id string) (dockerctrl.ContainerDetails, error)
 	RunContainer(dockerctrl.RunContainerRequest) (string, error)
 	DeleteContainer(id string) error

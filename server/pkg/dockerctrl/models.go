@@ -85,6 +85,10 @@ type RunContainerRequest struct {
 	Labels         map[string]string `json:"labels"`
 }
 
+type GetContainersRequest struct {
+	Label string `json:"label"`
+}
+
 type Mount struct {
 	Type   string `json:"type" validate:"required"`
 	Source string `json:"source" validate:"required"`

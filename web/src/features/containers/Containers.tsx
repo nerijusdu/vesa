@@ -6,18 +6,25 @@ import { deleteContainer, getContainers, stopContainer, startContainer } from '.
 import { useDefaultMutation } from '../../hooks';
 import { Container } from './containers.types';
 
-const Containers: React.FC = () => {
-  const { data: containers } = useQuery(['containers'], getContainers);
+export type ContainersProps = {
+  label?: string;
+  listOnly?: boolean;
+}
+
+const Containers: React.FC<ContainersProps> = ({ label, listOnly }) => {
+  const { data: containers } = useQuery(['containers', label], () => getContainers({ label }));
 
   return (
     <Flex flexDir="column">
-      <Flex my={4} w="100%" justifyContent="flex-end">
-        <RouterLink to="/containers/new">
-          <Button mr={4}>
+      {!listOnly && (
+        <Flex my={4} w="100%" justifyContent="flex-end">
+          <RouterLink to="/containers/new">
+            <Button mr={4}>
             New container
-          </Button>
-        </RouterLink>
-      </Flex>
+            </Button>
+          </RouterLink>
+        </Flex>
+      )}
       <Table>
         <Thead>
           <Tr>

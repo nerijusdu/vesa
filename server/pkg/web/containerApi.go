@@ -3,8 +3,8 @@ package web
 import (
 	"encoding/binary"
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/nerijusdu/vesa/pkg/data"
@@ -13,7 +13,10 @@ import (
 
 func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 	router.Get("/containers", func(w http.ResponseWriter, r *http.Request) {
-		res, err := api.dockerctrl.GetContainers()
+		label, _ := url.QueryUnescape(r.URL.Query().Get("label"))
+		res, err := api.dockerctrl.GetContainers(dockerctrl.GetContainersRequest{
+			Label: label,
+		})
 		if err != nil {
 			handleError(w, err)
 			return
@@ -137,8 +140,7 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 				if frameSize > len(buf) {
 					buf = append(buf, make([]byte, frameSize+len(buf)+1)...)
 				}
-				n, err := reader.Read(buf[:frameSize])
-				fmt.Println(n, frameSize)
+				_, err = reader.Read(buf[:frameSize])
 
 				w.Write(buf[:frameSize])
 				flusher.Flush()

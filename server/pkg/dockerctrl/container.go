@@ -7,14 +7,25 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/network"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
 
-func (d *DockerCtrlClient) GetContainers() ([]Container, error) {
+func (d *DockerCtrlClient) GetContainers(req GetContainersRequest) ([]Container, error) {
 	ctx := context.Background()
+
+	var f filters.Args
+	if req.Label != "" {
+		f = filters.NewArgs(filters.KeyValuePair{
+			Key:   "label",
+			Value: req.Label,
+		})
+	}
+
 	containers, err := d.Client.ContainerList(ctx, types.ContainerListOptions{
-		All: true,
+		All:     true,
+		Filters: f,
 	})
 	if err != nil {
 		return nil, err

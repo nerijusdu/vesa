@@ -3,13 +3,17 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
+import Containers from '../containers/Containers';
 import { deleteTemplate, getTemplate, useTemplate } from './templates.api';
 
 const TemplateDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: template } = useQuery(['templates', id], () => getTemplate(id));
-  const { mutate: use } = useDefaultMutation(useTemplate, { action: 'using template' });
+  const { mutate: use } = useDefaultMutation(useTemplate, { 
+    action: 'using template',
+    invalidateQueries: ['containers'],
+  });
   const { mutate: deleteTempl } = useDefaultMutation(deleteTemplate, {
     action: 'deleting template',
     invalidateQueries: ['templates'],
@@ -50,6 +54,8 @@ const TemplateDetails: React.FC = () => {
           Create container from template
         </Button>
       </Flex>
+
+      <Containers listOnly label={`template=${template.id}`} />
     </VStack>
   );
 };

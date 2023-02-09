@@ -9,6 +9,7 @@ Quick TODOs:
 - [X] Edit templates
 - [ ] Button to hide/show env values
 - [X] Add labels to template containers
+  - [X] Show containers with this label in projects and templates
 
 Docker:
 - [X] View containers

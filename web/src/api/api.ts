@@ -14,6 +14,18 @@ export class ApiError extends Error {
   description?: string;
 }
 
+export const buildQuery = (data: { [key in string]: string | undefined | null }) => {
+  const params = new URLSearchParams();
+  for (const key in data) {
+    if (data[key] !== undefined && data[key] !== null) {
+      params.append(key, encodeURIComponent(data[key] as string));
+    }
+  }
+  const paramsStr = params.toString();
+
+  return paramsStr ? `?${paramsStr}` : '';
+};
+
 export const authRequest = async (url: string, init?: RequestOptions) => {
   const headers = await authHeaders();
   const response = await fetch(`${apiUrl}${url}`, {
