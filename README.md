@@ -1,32 +1,26 @@
 # vesa
 Very Easy Sys Admin - deploy projects to a VPS without having 153948 years of sys admin experience
 
-## TODO
+## About
+This is an alternative to docker-compose with a GUI. Why? Because I don't want to ssh into my server every time I want to make a small update to my side project.
 
-Quick TODOs:
-- [X] Actions in container details screen
-- [X] Create a template from a running container
-- [X] Edit templates
-- [X] Button to hide/show env values
-- [X] Add labels to template containers
-  - [X] Show containers with this label in projects and templates
+## Setup
+- Clone repo
+- Run `make build`
+- Make it executable `chmod +x ./bin/vesa`
+- Run `./bin/vesa`
+
+## TODO
 
 Docker:
 - [X] View containers
-  - [X] Inspect containers
-- [X] Create a container for image
-- [X] Assign ports
+- [X] Create a container
 - [X] Container networking (connect to other containers)
-  - [X] Preview networks
-  - [X] Create a network
-- [X] Container volumes (mount host directories)
-  - [X] Mount volumes (not just directories)
+- [X] Container volumes
   - [ ] Manage volumes
 - [X] Container environment variables
-- [X] Container logs
 - [ ] Registry auth
 - [X] Save container templates
-- [X] Restart flag
 
 Nginx:
 - [ ] Edit config to add new site
@@ -37,19 +31,6 @@ Nginx:
 Other:
 - [X] Web GUI
 - [ ] Generate github actions for deployment
-  - [ ] Ping api to deploy newer version instead of ssh
-- [X] Authentication
+  - [ ] Api endpoint to deploy newer version instead of ssh
 - [ ] Secret manager
-- [X] Project management
-  - [X] Edit project
-  - [ ] Delete project with all resources
-  - [X] Start, stop, restart containers
-  - [X] Pull latest containers
-  - [ ] Cascade projects when deleting resources
-  - [ ] Compose projects of templates
 
-## Implementation details
-
-- `Project` will be the main entity
-- You can add docker containers to projects
-- You can add nginx sites to projects
