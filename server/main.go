@@ -14,16 +14,16 @@ var content embed.FS
 
 func main() {
 	c := config.NewConfig()
-	ctrl, err := dockerctrl.NewDockerCtrlClient()
+	proj := data.NewProjectsRepository()
+	templ := data.NewTemplateRepository()
+	auth := data.NewAuthRepository()
+	ctrl, err := dockerctrl.NewDockerCtrlClient(auth)
 	if err != nil {
 		panic(err)
 	}
 	defer ctrl.Close()
 
-	proj := data.NewProjectsRepository()
-	templ := data.NewTemplateRepository()
-
-	api := web.NewVesaApi(ctrl, proj, templ, c, content)
+	api := web.NewVesaApi(ctrl, proj, templ, auth, c, content)
 
 	api.ServeHTTP()
 }

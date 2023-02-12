@@ -20,6 +20,8 @@ import (
 var validate *validator.Validate
 
 type dockerCtrlClient interface {
+	Authenticate(req dockerctrl.AuthRequest) (string, error)
+
 	GetContainers(req dockerctrl.GetContainersRequest) ([]dockerctrl.Container, error)
 	GetContainer(id string) (dockerctrl.ContainerDetails, error)
 	RunContainer(dockerctrl.RunContainerRequest) (string, error)
@@ -51,12 +53,19 @@ type templateRepository interface {
 	DeleteTemplate(id string) error
 }
 
+type authRepository interface {
+	GetAuths() ([]data.RegistryAuth, error)
+	SaveAuth(auth data.RegistryAuth) error
+	GetFirstToken() (string, error)
+}
+
 type VesaApi struct {
 	router       chi.Router
 	publicRouter chi.Router
 	dockerctrl   dockerCtrlClient
 	projects     projectsRepository
 	templates    templateRepository
+	auth         authRepository
 	config       *config.Config
 }
 
@@ -64,6 +73,7 @@ func NewVesaApi(
 	dockerCtrl dockerCtrlClient,
 	projects projectsRepository,
 	templates templateRepository,
+	auth authRepository,
 	c *config.Config,
 	staticContent embed.FS,
 ) *VesaApi {
@@ -89,6 +99,7 @@ func NewVesaApi(
 		dockerctrl:   dockerCtrl,
 		projects:     projects,
 		templates:    templates,
+		auth:         auth,
 		config:       c,
 	}
 

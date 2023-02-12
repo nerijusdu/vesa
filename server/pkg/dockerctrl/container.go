@@ -45,13 +45,10 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 	ctx := context.Background()
 
 	if !req.IsLocal {
-		out, err := d.Client.ImagePull(ctx, req.Image, types.ImagePullOptions{})
+		err := d.PullImage(req.Image)
 		if err != nil {
 			return "", err
 		}
-		defer out.Close()
-
-		io.Copy(os.Stdout, out)
 	}
 
 	ports, err := getPortMap(req.Ports)
@@ -119,7 +116,14 @@ func (d *DockerCtrlClient) StartContainer(id string) error {
 
 func (d *DockerCtrlClient) PullImage(image string) error {
 	ctx := context.Background()
-	out, err := d.Client.ImagePull(ctx, image, types.ImagePullOptions{})
+	token, err := d.auth.GetFirstToken()
+	if err != nil {
+		return err
+	}
+
+	out, err := d.Client.ImagePull(ctx, image, types.ImagePullOptions{
+		RegistryAuth: token,
+	})
 	if err != nil {
 		return err
 	}

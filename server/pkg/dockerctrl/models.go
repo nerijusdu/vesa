@@ -121,3 +121,9 @@ type CreateNetworkRequest struct {
 	Internal   bool   `json:"internal"`
 	Attachable bool   `json:"attachable"`
 }
+
+type AuthRequest struct {
+	Username      string `json:"username"`
+	Password      string `json:"password"`
+	ServerAddress string `json:"serverAddress" validate:"required"`
+}

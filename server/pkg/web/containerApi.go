@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
 	"net/http"
@@ -155,5 +156,60 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 				flusher.Flush()
 			}
 		}
+	})
+
+	router.Post("/docker/auth", func(w http.ResponseWriter, r *http.Request) {
+		req := &dockerctrl.AuthRequest{}
+		err := json.NewDecoder(r.Body).Decode(req)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		err = validate.Struct(req)
+		if err != nil {
+			validationError(w, err)
+			return
+		}
+
+		token, err := api.dockerctrl.Authenticate(*req)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		if token == "" {
+			v, err := json.Marshal(req)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+			token = base64.StdEncoding.EncodeToString(v)
+		}
+
+		err = api.auth.SaveAuth(data.RegistryAuth{
+			IdentityToken: token,
+			ServerAddress: req.ServerAddress,
+		})
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+	})
+
+	router.Get("/docker/auth", func(w http.ResponseWriter, r *http.Request) {
+		auths, err := api.auth.GetAuths()
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		for _, v := range auths {
+			v.IdentityToken = ""
+		}
+
+		sendJson(w, auths)
 	})
 }

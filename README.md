@@ -20,6 +20,7 @@ Docker:
   - [ ] Manage volumes
 - [X] Container environment variables
 - [ ] Registry auth
+  - [ ] Test docker hub auth
 - [X] Save container templates
 
 Nginx:

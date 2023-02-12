@@ -22,3 +22,12 @@ type Template struct {
 type Templates struct {
 	Templates []Template `json:"templates"`
 }
+
+type Registries struct {
+	Registries []RegistryAuth `json:"registries"`
+}
+
+type RegistryAuth struct {
+	ServerAddress string `json:"serverAddress"`
+	IdentityToken string `json:"identityToken"`
+}

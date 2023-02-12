@@ -13,6 +13,7 @@ import ProjectDetails from './features/projects/ProjectDetails';
 import Templates from './features/templates/Templates';
 import TemplateDetails from './features/templates/TemplateDetails';
 import NewTemplate from './features/templates/NewTemplate';
+import Settings from './features/settings/Settings';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />,
+      },
+      {
+        path: '/settings',
+        element: <Settings />,
       },
       {
         path: '/containers',
