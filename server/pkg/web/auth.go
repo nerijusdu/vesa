@@ -14,7 +14,7 @@ import (
 func setupAuth(router chi.Router, c *config.Config) {
 	s := oauth.NewBearerServer(
 		c.JWTSecret,
-		time.Second*120,
+		time.Hour*24,
 		&UserVerifier{config: c},
 		nil,
 	)
@@ -62,7 +62,7 @@ func (*UserVerifier) AddProperties(tokenType oauth.TokenType, credential, tokenI
 }
 
 func (*UserVerifier) ValidateTokenID(tokenType oauth.TokenType, credential, tokenID, refreshTokenID string) error {
-	return nil
+	return errors.New("refresh token not allowed")
 }
 
 func (*UserVerifier) StoreTokenID(tokenType oauth.TokenType, credential, tokenID, refreshTokenID string) error {

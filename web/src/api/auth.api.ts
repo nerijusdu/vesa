@@ -40,20 +40,20 @@ export const refreshToken = async (refreshToken: string): Promise<LoginData> => 
 };
 
 export const authHeaders = async (): Promise<{ Authorization?: string }> => {
-  let data: LoginData = JSON.parse(localStorage.getItem('auth') || '{}');
+  const data: LoginData = JSON.parse(localStorage.getItem('auth') || '{}');
   if (!data.access_token) {
     return {};
   }
 
   if (dayjs(data.expires_at).isBefore(dayjs()) && data.refresh_token) {
-    const newData = await refreshToken(data.refresh_token);
+    // const newData = await refreshToken(data.refresh_token);
 
-    localStorage.setItem('auth', JSON.stringify({
-      ...newData,
-      expires_at: dayjs().add(newData.expires_in, 'second').toISOString(),
-    }));
+    // localStorage.setItem('auth', JSON.stringify({
+    //   ...newData,
+    //   expires_at: dayjs().add(newData.expires_in, 'second').toISOString(),
+    // }));
 
-    data = newData;
+    // data = newData;
   }
 
   return { Authorization: `Bearer ${data.access_token}` };
