@@ -47,15 +47,17 @@ func (r *AuthRepository) SaveAuth(auth RegistryAuth) error {
 	return err
 }
 
-func (r *AuthRepository) GetFirstToken() (string, error) { // TODO: select by server address fetched from image name
+func (r *AuthRepository) GetToken(serverUrl string) (string, error) {
 	auths, err := r.GetAuths()
 	if err != nil {
 		return "", err
 	}
 
-	if len(auths) > 0 {
-		return auths[0].IdentityToken, nil
-	}
+  for _, a := range auths {
+    if a.ServerAddress == serverUrl {
+      return a.IdentityToken, nil
+    }
+  }
 
 	return "", nil
 }

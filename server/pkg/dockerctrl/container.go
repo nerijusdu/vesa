@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -116,9 +117,15 @@ func (d *DockerCtrlClient) StartContainer(id string) error {
 
 func (d *DockerCtrlClient) PullImage(image string) error {
 	ctx := context.Background()
-	token, err := d.auth.GetFirstToken()
-	if err != nil {
-		return err
+
+	token := ""
+	splits := strings.Split(image, "/")
+	if len(splits) > 0 {
+		t, err := d.auth.GetToken(splits[0])
+		if err != nil {
+			return err
+		}
+		token = t
 	}
 
 	out, err := d.Client.ImagePull(ctx, image, types.ImagePullOptions{

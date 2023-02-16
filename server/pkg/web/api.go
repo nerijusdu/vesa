@@ -56,7 +56,7 @@ type templateRepository interface {
 type authRepository interface {
 	GetAuths() ([]data.RegistryAuth, error)
 	SaveAuth(auth data.RegistryAuth) error
-	GetFirstToken() (string, error)
+	GetToken(serverUrl string) (string, error)
 }
 
 type VesaApi struct {

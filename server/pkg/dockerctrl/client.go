@@ -8,7 +8,7 @@ import (
 )
 
 type authRepository interface {
-	GetFirstToken() (string, error)
+	GetToken(serverUrl string) (string, error)
 }
 
 type DockerCtrlClient struct {
