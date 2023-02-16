@@ -1,6 +1,8 @@
 package data
 
-import "github.com/nerijusdu/vesa/pkg/util"
+import (
+	"github.com/nerijusdu/vesa/pkg/util"
+)
 
 type AuthRepository struct{}
 
@@ -53,11 +55,11 @@ func (r *AuthRepository) GetToken(serverUrl string) (string, error) {
 		return "", err
 	}
 
-  for _, a := range auths {
-    if a.ServerAddress == serverUrl {
-      return a.IdentityToken, nil
-    }
-  }
+	for _, a := range auths {
+		if a.ServerAddress == serverUrl {
+			return a.IdentityToken, nil
+		}
+	}
 
 	return "", nil
 }

@@ -1,10 +1,13 @@
 import { VStack, Heading, Flex, Button } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { authRequest } from '../../api/api';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
+import FormInput from '../../components/form/formInput';
 import { useDefaultMutation } from '../../hooks';
 import Containers from '../containers/Containers';
-import { deleteTemplate, getTemplate, useTemplate } from './templates.api';
+import { deleteTemplate, getTemplate, updateTemplateContainers, useTemplate } from './templates.api';
 
 const TemplateDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -61,7 +64,45 @@ const TemplateDetails: React.FC = () => {
       </Flex>
 
       <Containers listOnly label={`template=${template.id}`} />
+      <UpdateButton id={template.id} />
     </VStack>
+  );
+};
+
+const UpdateButton = ({id}: {id:string}) => {
+  const [isOpen, setOpen] = useState(false);
+  const [tag, setTag] = useState('latest');
+
+  const { mutate } = useDefaultMutation(updateTemplateContainers, {
+    action: 'updating containers',
+    invalidateQueries: ['containers'],
+    onSuccess: () => setOpen(false),
+  });
+
+  if (!isOpen) {
+    return (
+      <Button onClick={() => setOpen(true)} variant="outline">
+        Update
+      </Button>
+    );
+  }
+
+  return (
+    <Flex gap={2} m={4} align="flex-end">
+      <FormInput
+        containerProps={{ w: '150px' }}
+        onChange={e => setTag(e.target.value)}
+        value={tag} 
+        name="tag"
+        label="Tag"
+      />
+      <Button
+        onClick={() => mutate(id)}
+        mb={2}
+      >
+      Update
+      </Button>
+    </Flex>
   );
 };
 

@@ -114,11 +114,16 @@ func (api *VesaApi) registerTemplateRoutes(router chi.Router) {
 
 		splits := strings.Split(template.Container.Image, ":")
 		if len(splits) > 1 {
-			splits[len(splits)-1] = tag
+			// fist split is a url with port
+			if strings.Contains(splits[len(splits)-1], "/") {
+				splits = append(splits, tag)
+			} else {
+				splits[len(splits)-1] = tag
+			}
 		}
 
 		template.Container.Image = strings.Join(splits, ":")
-		if !template.Container.IsLocal {
+		if template.Container.IsLocal {
 			fmt.Println("Skiping pull for local image")
 			err = api.dockerctrl.PullImage(template.Container.Image)
 			if err != nil {
