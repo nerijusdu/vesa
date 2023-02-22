@@ -1,0 +1,52 @@
+name: Vesa release
+
+on:
+  workflow_dispatch:
+
+env:
+  TEMPLATE_ID: TODO - id of your vesa template
+  API_URL: TODO - your vesa url
+  REGISTRY_URL: TODO - url of your docker registry
+  REGISTRY_USER: TODO - username of your docker registry
+  VESA_CLIENT_ID: TODO - vesa client id 
+  IMAGE_NAME: TODO - how you wan't to call this image
+  TAG: latest
+
+# Required secrets:
+# REGISTRY_PASS - docker registry password
+# VESA_CLIENT_SECRET - vesa client secret
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+
+      - uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY_URL }}
+          username: ${{ env.REGISTRY_USER }} 
+          password: ${{ secrets.REGISTRY_PASS }}
+
+      - name: Push image to container registry
+        run: |
+          IMAGE_ID=$REGISTRY_URL/$IMAGE_NAME
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo TAG=$TAG
+
+          docker tag $IMAGE_NAME $IMAGE_ID:$TAG
+          docker push $IMAGE_ID:$TAG
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Use latest docker image
+        env:
+          VESA_CLIENT_ID: ${{ env.VESA_CLIENT_ID }} 
+          VESA_CLIENT_SECRET: ${{ secrets.VESA_CLIENT_SECRET }}
+          TAG: ${{ env.TAG }}
+        run: python .github/workflows/release.py

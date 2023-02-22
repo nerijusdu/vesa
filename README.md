@@ -10,6 +10,12 @@ This is an alternative to docker-compose with a GUI. Why? Because I don't want t
 - Make it executable `chmod +x ./bin/vesa`
 - Run `./bin/vesa`
 
+### Setup github actions releases
+
+To create easy realeases using github actions copy files from `github-actions` folder to your projects `.github/workflows` folder.
+
+Open `release.yml` file and update environment variables and required secrets to your github repository.
+
 ## TODO
 
 Docker:
@@ -19,7 +25,7 @@ Docker:
 - [X] Container volumes
   - [ ] Manage volumes
 - [X] Container environment variables
-- [ ] Registry auth
+- [X] Registry auth
   - [ ] Test docker hub auth
 - [X] Save container templates
 
@@ -31,7 +37,8 @@ Nginx:
 
 Other:
 - [X] Web GUI
-- [ ] Generate github actions for deployment
-  - [ ] Api endpoint to deploy newer version instead of ssh
+- [X] Generate github actions for deployment
+  - [X] Api endpoint to deploy newer version instead of ssh
 - [ ] Secret manager
+- [ ] Create a tempate without creating a container
 
