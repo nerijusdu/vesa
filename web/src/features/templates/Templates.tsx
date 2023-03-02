@@ -1,5 +1,5 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { Table, Thead, Tr, Th, Tbody, Td, Link, HStack, IconButton } from '@chakra-ui/react';
+import { Table, Thead, Tr, Th, Tbody, Td, Link, HStack, IconButton, Flex, Button } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDefaultMutation } from '../../hooks';
@@ -11,6 +11,14 @@ const Templates: React.FC = () => {
 
   return (
     <>
+      <Flex my={4} w="100%" justifyContent="flex-end">
+        <RouterLink to="/templates/new">
+          <Button mr={4}>
+            New template
+          </Button>
+        </RouterLink>
+      </Flex>
+
       <Table>
         <Thead>
           <Tr>

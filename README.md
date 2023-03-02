@@ -41,4 +41,7 @@ Other:
   - [X] Api endpoint to deploy newer version instead of ssh
 - [ ] Secret manager
 - [ ] Create a tempate without creating a container
+- [ ] Config update
+- [ ] Edit template json
+- [ ] Installation or setting up as a service
 

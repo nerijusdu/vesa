@@ -2,7 +2,6 @@ import { VStack, Heading, Flex, Button } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { authRequest } from '../../api/api';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import FormInput from '../../components/form/formInput';
 import { useDefaultMutation } from '../../hooks';

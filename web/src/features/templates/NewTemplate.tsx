@@ -46,7 +46,6 @@ const NewTemplate: React.FC = () => {
         },
       };
     },
-
   });
   const { data: networks } = useQuery(['networks'], getNetworks);
 

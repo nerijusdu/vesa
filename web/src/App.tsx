@@ -73,6 +73,10 @@ const router = createBrowserRouter([
         element: <Templates />,
       },
       {
+        path: '/templates/new',
+        element: <NewTemplate />,
+      },
+      {
         path: '/templates/:id',
         element: <TemplateDetails />,
       },
