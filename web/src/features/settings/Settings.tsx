@@ -13,17 +13,16 @@ const Settings = () => {
 
   return (
     <Flex flexDir="column" gap={4}>
-      <Heading>Registry authentication</Heading>
+      <Heading size="sm">Registry authentication</Heading>
       {auths?.map(a => (
         <Flex key={a.serverAddress} gap={2} align="center">
           {a.serverAddress}
           <CheckCircleIcon color="green.500"/>
         </Flex>
       ))}
+      <AddAuth />
 
       <Divider />
-
-      <AddAuth />
     </Flex>
   );
 };
@@ -53,7 +52,7 @@ const AddAuth = () => {
       onSubmit={handleSubmit(x => mutate(x))}
       flexDir="column" 
       gap={2} 
-      maxW="500px"
+      maxW="300px"
     >
       {isFormVisible && (
         <>
