@@ -33,37 +33,8 @@ export const startContainer = async (id: string): Promise<void> => {
   await authRequest(`/api/containers/${id}/start`, { method: 'POST' });
 };
 
-export const getContainerLogs = (id: string | undefined, onData: (data: string) => void): AbortController => {
-  const abortSignal = new AbortController();
-
-  authRequest(`/api/containers/${id}/logs`, {
-    signal: abortSignal.signal,
-  }).then(res => {
-    const reader = res.body
-      ?.pipeThrough(new TextDecoderStream())
-      ?.getReader();
-
-    setTimeout(async () => {
-      while(true) {
-        try{
-          const v = await reader?.read();
-
-          if (!v) {
-            reader?.cancel();
-            break;
-          }
-
-          onData(v.value || '');
-          if (v.done) {
-            break;
-          }
-        } catch(err) {
-          break;
-        }
-      }
-    }, 0);
-
-  });
-
-  return abortSignal;
+export const getContainerLogs = async (id: string | undefined): Promise<string> => {
+  const data = await authRequest(`/api/containers/${id}/logs`);
+  const res = await data.text();
+  return res;
 };

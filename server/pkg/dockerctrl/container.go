@@ -145,7 +145,7 @@ func (d *DockerCtrlClient) GetContainerLogs(id string) (io.ReadCloser, error) {
 	return d.Client.ContainerLogs(ctx, id, types.ContainerLogsOptions{
 		ShowStdout: true,
 		ShowStderr: true,
-		Follow:     true,
+		Follow:     false,
 		Timestamps: false,
 		Tail:       "100",
 	})

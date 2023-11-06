@@ -9,10 +9,10 @@ import { deleteContainer, getContainer, getContainerLogs, startContainer, stopCo
 
 const ContainerDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [logs, setLogs] = useState<string[]>([]);
   const logsRef = useRef<HTMLPreElement>(null);
   const navigate = useNavigate();
   const { data: container } = useQuery(['container', id], () => getContainer(id));
+  const { data: logs } = useQuery(['container', id, 'logs'], () => getContainerLogs(id));
   const { mutate: createTemp } = useDefaultMutation(createTemplate, {
     action: 'creating template',
     successMessage: (res) => 'Template created with ID: ' + res,
@@ -31,17 +31,6 @@ const ContainerDetails: React.FC = () => {
     invalidateQueries: ['containers'],
     onSuccess: () => navigate('/containers'),
   });
-
-  useEffect(() => {
-    if (!id) return;
-
-    const abortC = getContainerLogs(id, l => setLogs(x => [...x, l]));
-
-    return () => {
-      setLogs([]);
-      abortC?.abort();
-    };
-  }, [id]);
 
   useEffect(() => {
     if (!logsRef.current) return;
@@ -102,9 +91,7 @@ const ContainerDetails: React.FC = () => {
         overflowY="scroll" 
         w="100%" 
         bg="black">
-        {logs.map((x, i) => (
-          <Text key={i}>{x}</Text>
-        ))}
+        <Text>{logs}</Text>
       </Flex>
 
       <Flex gap={2}>

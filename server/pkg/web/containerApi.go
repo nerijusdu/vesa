@@ -2,8 +2,8 @@ package web
 
 import (
 	"encoding/base64"
-	"encoding/binary"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -122,40 +122,8 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 		}
 		defer reader.Close()
 
-		reqCtx := r.Context()
-		flusher, ok := w.(http.Flusher)
-		if !ok {
-			handleError(w, err)
-			return
-		}
-
-		w.Header().Set("Transfer-Encoding", "chunked")
 		w.WriteHeader(http.StatusOK)
-		flusher.Flush()
-
-		hBytes := make([]byte, 8)
-		buf := make([]byte, 1024)
-		for {
-			select {
-			case <-reqCtx.Done():
-				return
-			default:
-				_, err := reader.Read(hBytes)
-				if err != nil {
-					handleError(w, err)
-					return
-				}
-
-				frameSize := int(binary.BigEndian.Uint32(hBytes[4:8]))
-				if frameSize > len(buf) {
-					buf = append(buf, make([]byte, frameSize+len(buf)+1)...)
-				}
-				_, err = reader.Read(buf[:frameSize])
-
-				w.Write(buf[:frameSize])
-				flusher.Flush()
-			}
-		}
+		io.Copy(w, reader)
 	})
 
 	router.Post("/docker/auth", func(w http.ResponseWriter, r *http.Request) {
