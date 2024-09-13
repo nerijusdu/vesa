@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,21 +12,21 @@ const ContainerDetails: React.FC = () => {
   const logsRef = useRef<HTMLPreElement>(null);
   const navigate = useNavigate();
   const { data: container } = useQuery(['container', id], () => getContainer(id));
-  const { data: logs } = useQuery(['container', id, 'logs'], () => getContainerLogs(id));
-  const { mutate: createTemp } = useDefaultMutation(createTemplate, {
+  const { data: logs, refetch } = useQuery(['container', id, 'logs'], () => getContainerLogs(id));
+  const { mutate: createTemp, isLoading: isCreating } = useDefaultMutation(createTemplate, {
     action: 'creating template',
     successMessage: (res) => 'Template created with ID: ' + res,
     onSuccess: (res) => navigate(`/templates/${res}`),
   });
-  const { mutate: stop } = useDefaultMutation(stopContainer, {
+  const { mutate: stop, isLoading: isStopping } = useDefaultMutation(stopContainer, {
     action: 'stopping container',
     invalidateQueries: ['containers'],
   });
-  const { mutate: start } = useDefaultMutation(startContainer, {
+  const { mutate: start, isLoading: isStarting } = useDefaultMutation(startContainer, {
     action: 'starting container',
     invalidateQueries: ['containers'],
   });
-  const { mutate: remove } = useDefaultMutation(deleteContainer, {
+  const { mutate: remove, isLoading: isRemoving } = useDefaultMutation(deleteContainer, {
     action: 'deleting container',
     invalidateQueries: ['containers'],
     onSuccess: () => navigate('/containers'),
@@ -45,7 +45,7 @@ const ContainerDetails: React.FC = () => {
   const name = container.name.replace('/', '');
 
   return (
-    <VStack align="flex-start">
+    <VStack gap={2} align="flex-start">
       <Heading>{name}</Heading>
 
       <FieldValue label="ID" value={container.id} />
@@ -82,6 +82,8 @@ const ContainerDetails: React.FC = () => {
         values={container.mounts?.map(m => `${m.type} - ${m.name || m.source}:${m.target}`)} 
       />
 
+      <Divider w="100%" />
+
       <Flex 
         ref={logsRef as unknown as any}
         flexDir="column" 
@@ -90,15 +92,24 @@ const ContainerDetails: React.FC = () => {
         overflowX="scroll" 
         overflowY="scroll" 
         w="100%" 
-        bg="black">
+        bg="black"
+        rounded="lg"
+      >
         <Text>{logs}</Text>
       </Flex>
+      <Box w="100%">
+        <Button variant="outline" width="100%" onClick={() => refetch()}>
+            Refresh Logs
+        </Button>
+      </Box>
+
+      <Divider w="100%" />
 
       <Flex gap={2}>
-        <Button variant="outline" onClick={() => start(container.id)}>Start</Button>
-        <Button variant="outline" onClick={() => stop(container.id)}>Stop</Button>
-        <Button variant="outline" onClick={() => remove(container.id)}>Remove</Button>
-        <Button variant="outline" onClick={() => createTemp(container.id)}>Create template from container</Button>
+        <Button variant="outline" isLoading={isStarting} onClick={() => start(container.id)}>Start</Button>
+        <Button variant="outline" isLoading={isStopping} onClick={() => stop(container.id)}>Stop</Button>
+        <Button variant="outline" isLoading={isRemoving} onClick={() => remove(container.id)}>Remove</Button>
+        <Button variant="outline" isLoading={isCreating} onClick={() => createTemp(container.id)}>Create template from container</Button>
       </Flex>
     </VStack>
   );

@@ -58,6 +58,8 @@ export const FieldValues: React.FC<FieldValuesProps> = ({ hidden, label, values 
     return null;
   }
 
+  const displayValues = isHidden ? ['******'] : values;
+
   return (
     <Flex minW="400px">
       <Flex w="200px" gap={2}>
@@ -74,7 +76,7 @@ export const FieldValues: React.FC<FieldValuesProps> = ({ hidden, label, values 
         )}
       </Flex>
       <VStack align="flex-start" maxW="70%">
-        {values.map((value, i) => (
+        {displayValues.map((value, i) => (
           <Value key={i} value={value} hidden={isHidden} />
         ))}
       </VStack>

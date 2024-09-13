@@ -14,6 +14,7 @@ import Templates from './features/templates/Templates';
 import TemplateDetails from './features/templates/TemplateDetails';
 import NewTemplate from './features/templates/NewTemplate';
 import Settings from './features/settings/Settings';
+import { Box } from '@chakra-ui/react';
 
 const router = createBrowserRouter([
   {
@@ -95,7 +96,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <Box pb={10}>
+      <RouterProvider router={router} />
+    </Box>
   );
 }
 
