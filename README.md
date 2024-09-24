@@ -19,6 +19,7 @@ This is an alternative to docker-compose with a GUI. Why? Because I don't want t
 
 ### Configure
 When you first start the server it will generate a default config file in `~/.config/vesa/config.json`.
+Config file contains the following fields:
 - `Port` - port on which the server will run
 - `JWTSecret` - secret used to sign JWT tokens (just generate a random key)
 - `UserName` - username for the web interface
@@ -26,7 +27,7 @@ When you first start the server it will generate a default config file in `~/.co
 - `Clients` - list of allowed clients to connect to the API
 
 ### Auto start on boot
-Create a systemd service file in `/etc/systemd/system/vesa.service` with the following content:
+To auto start vesa when your server boots up create a systemd service file in `/etc/systemd/system/vesa.service` with the following content:
 ```ini
 [Unit]
 Description=Vesa App Service
@@ -49,8 +50,7 @@ sudo systemctl start vesa
 ```
 
 ### Setup github actions releases
-
-To create easy realeases using github actions copy files from `github-actions` folder to your projects `.github/workflows` folder.
+To create easy releases using github actions copy files from `github-actions` folder to your projects `.github/workflows` folder.
 
 Open `release.yml` file and update environment variables and required secrets to your github repository.
 
