@@ -1,12 +1,12 @@
 build-web:
 	echo "Building web..."
 	cd web && npm i && npm run build
-	mkdir -p server/public
-	cp -r web/dist/* server/public
+	mkdir -p public
+	cp -r web/dist/* public
 
 build-server:
 	echo "Building server..."
-	cd server && go build -o ../bin/vesa
+	go build -o ./bin/vesa
 
 build: build-web build-server
 
@@ -20,7 +20,7 @@ run-web:
 
 run-server:
 	echo "Starting server..."
-	cd server && go run .
+	go run .
 
 host-bin:
 	python3 -m servefile ./bin/vesa & ngrok http 8080
