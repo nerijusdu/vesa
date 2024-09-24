@@ -2,19 +2,22 @@ name: Vesa release
 
 on:
   workflow_dispatch:
+  # push: # uncomment this to trigger deployment on push
+  #   branches:
+  #     - main
 
 env:
   TEMPLATE_ID: TODO - id of your vesa template
   API_URL: TODO - your vesa url
   REGISTRY_URL: TODO - url of your docker registry
   REGISTRY_USER: TODO - username of your docker registry
-  VESA_CLIENT_ID: TODO - vesa client id 
-  IMAGE_NAME: TODO - how you wan't to call this image
+  VESA_CLIENT_ID: TODO - vesa client id (from ~/.vesa/config.json)
+  IMAGE_NAME: TODO - how you want to call this image
   TAG: latest
 
 # Required secrets:
 # REGISTRY_PASS - docker registry password
-# VESA_CLIENT_SECRET - vesa client secret
+# VESA_CLIENT_SECRET - vesa client secret (from ~/.vesa/config.json)
 
 jobs:
   push:
@@ -28,7 +31,7 @@ jobs:
       - uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY_URL }}
-          username: ${{ env.REGISTRY_USER }} 
+          username: ${{ env.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASS }}
 
       - name: Push image to container registry
@@ -46,7 +49,7 @@ jobs:
           python-version: '3.x'
       - name: Use latest docker image
         env:
-          VESA_CLIENT_ID: ${{ env.VESA_CLIENT_ID }} 
+          VESA_CLIENT_ID: ${{ env.VESA_CLIENT_ID }}
           VESA_CLIENT_SECRET: ${{ secrets.VESA_CLIENT_SECRET }}
           TAG: ${{ env.TAG }}
         run: python .github/workflows/release.py
