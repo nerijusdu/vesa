@@ -13,8 +13,8 @@ This is an alternative to docker-compose with a GUI. Why? Because I don't want t
 
 ## Setup
 
-- (Install go)[https://go.dev/doc/install]
-- Run `go install github.com/nerijusdu/vesa@0.2.0`
+- [Install go](https://go.dev/doc/install)
+- Run `go install github.com/nerijusdu/vesa@v0.2.0`
 - Run `vesa` to start the server
 
 ### Configure
