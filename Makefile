@@ -1,6 +1,7 @@
 build-web:
 	echo "Building web..."
 	cd web && npm i && npm run build
+	rm -rf public
 	mkdir -p public
 	cp -r web/dist/* public
 
