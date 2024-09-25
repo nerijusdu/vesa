@@ -15,7 +15,7 @@ const Networks: React.FC = () => {
       <Flex my={4} w="100%" justifyContent="flex-end">
         <RouterLink to="/networks/new">
           <Button mr={4}>
-            Create network 
+            Create network
           </Button>
         </RouterLink>
       </Flex>
@@ -64,7 +64,7 @@ const NetworkRow: React.FC<NetworkRowProps> = ({ network }) => {
           aria-label="Delete network"
           icon={<DeleteIcon />}
           variant="ghost"
-          onClick={() => remove(network.id)}
+          onClick={() => confirm('Are you sure?') && remove(network.id)}
         />
       </Td>
     </Tr>

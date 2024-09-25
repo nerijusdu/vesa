@@ -20,7 +20,7 @@ const Containers: React.FC<ContainersProps> = ({ label, listOnly }) => {
         <Flex my={4} w="100%" justifyContent="flex-end">
           <RouterLink to="/containers/new">
             <Button mr={4}>
-            New container
+              New container
             </Button>
           </RouterLink>
         </Flex>
@@ -93,7 +93,7 @@ const ContainerRow: React.FC<ContainerRowProps> = ({ container }) => {
           <IconButton
             aria-label="Delete container"
             icon={<DeleteIcon />}
-            onClick={() => remove(container.id)}
+            onClick={() => window.confirm('Are you sure?') && remove(container.id)}
             variant="ghost"
           />
         </HStack>

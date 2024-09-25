@@ -60,7 +60,7 @@ const TemplateRow: React.FC<TemplateRowProps> = ({ template }) => {
           <IconButton
             aria-label="Delete template"
             icon={<DeleteIcon />}
-            onClick={() => remove(template.id)}
+            onClick={() => confirm('Are you sure?') && remove(template.id)}
             variant="ghost"
           />
         </HStack>

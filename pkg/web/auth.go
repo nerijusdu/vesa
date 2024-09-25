@@ -28,7 +28,7 @@ type UserVerifier struct {
 }
 
 func (uv *UserVerifier) ValidateUser(username, password, scope string, r *http.Request) error {
-	if username == uv.config.UserName && password == uv.config.Password {
+	if username == uv.config.UserName && util.ComparePassword(uv.config.Password, password) {
 		return nil
 	}
 
@@ -37,7 +37,7 @@ func (uv *UserVerifier) ValidateUser(username, password, scope string, r *http.R
 
 func (uv *UserVerifier) ValidateClient(clientID, clientSecret, scope string, r *http.Request) error {
 	_, ok := util.Find(uv.config.Clients, func(c config.Client) bool {
-		return c.ID == clientID && c.Secret == clientSecret
+		return c.ID == clientID && util.ComparePassword(c.Secret, clientSecret)
 	})
 
 	if ok {

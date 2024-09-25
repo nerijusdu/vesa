@@ -127,3 +127,8 @@ type AuthRequest struct {
 	Password      string `json:"password"`
 	ServerAddress string `json:"serverAddress" validate:"required"`
 }
+
+type CreateClientRequest struct {
+	ClientID     string `json:"clientId" validate:"required"`
+	ClientSecret string `json:"clientSecret" validate:"required"`
+}

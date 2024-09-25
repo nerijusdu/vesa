@@ -12,7 +12,7 @@ const TemplateDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: template } = useQuery(['templates', id], () => getTemplate(id));
-  const { mutate: use } = useDefaultMutation(useTemplate, { 
+  const { mutate: use } = useDefaultMutation(useTemplate, {
     action: 'using template',
     invalidateQueries: ['containers'],
   });
@@ -30,11 +30,11 @@ const TemplateDetails: React.FC = () => {
     <VStack align="flex-start">
       <Heading display="flex" gap={2}>
         {template.container.name}
-        
+
         <Button as={Link} to={`/templates/${template.id}/edit`} variant="link">
           Edit
         </Button>
-        <Button variant="link" colorScheme="red" onClick={() => deleteTempl(template.id)}>
+        <Button variant="link" colorScheme="red" onClick={() => confirm('Are you sure?') && deleteTempl(template.id)}>
           Delete
         </Button>
       </Heading>
@@ -42,18 +42,18 @@ const TemplateDetails: React.FC = () => {
       <FieldValue label="ID" value={template.id} />
       <FieldValue label="Image" value={template.container.image} />
       <FieldValue label="Network" value={template.container.networkName} />
-      <FieldValues 
-        label="Ports" 
-        values={template.container.ports} 
+      <FieldValues
+        label="Ports"
+        values={template.container.ports}
       />
       <FieldValues
         label="Env vars"
         values={template.container.envVars}
         hidden
       />
-      <FieldValues 
-        label="Mounts" 
-        values={template.container.mounts.map(m => `${m.type} - ${m.source}:${m.target}`)} 
+      <FieldValues
+        label="Mounts"
+        values={template.container.mounts.map(m => `${m.type} - ${m.source}:${m.target}`)}
       />
 
       <Flex gap={2}>
@@ -68,7 +68,7 @@ const TemplateDetails: React.FC = () => {
   );
 };
 
-const UpdateButton = ({id}: {id:string}) => {
+const UpdateButton = ({ id }: { id: string }) => {
   const [isOpen, setOpen] = useState(false);
   const [tag, setTag] = useState('latest');
 
@@ -91,7 +91,7 @@ const UpdateButton = ({id}: {id:string}) => {
       <FormInput
         containerProps={{ w: '150px' }}
         onChange={e => setTag(e.target.value)}
-        value={tag} 
+        value={tag}
         name="tag"
         label="Tag"
       />
@@ -99,7 +99,7 @@ const UpdateButton = ({id}: {id:string}) => {
         onClick={() => mutate(id)}
         mb={2}
       >
-      Update
+        Update
       </Button>
     </Flex>
   );

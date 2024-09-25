@@ -14,7 +14,8 @@ This is an alternative to docker-compose with a GUI. Why? Because I don't want t
 ## Setup
 
 - [Install go](https://go.dev/doc/install)
-- Run `go install github.com/nerijusdu/vesa@v0.2.0`
+- Run `go install github.com/nerijusdu/vesa@latest`
+- Run `vesa --init` to initialize the app for the first time
 - Run `vesa` to start the server
 
 ### Configure
@@ -79,6 +80,7 @@ Other:
   - [X] Api endpoint to deploy newer version instead of ssh
 - [ ] Secret manager
 - [X] Create a tempate without creating a container
+- [X] Hash passwords and api keys
 - [ ] Config update
 - [ ] Edit template json
 - [X] Document installation or setting up as a service

@@ -8,8 +8,10 @@ import (
 	"net/url"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/nerijusdu/vesa/pkg/config"
 	"github.com/nerijusdu/vesa/pkg/data"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
+	"github.com/nerijusdu/vesa/pkg/util"
 )
 
 func (api *VesaApi) registerContainerRoutes(router chi.Router) {
@@ -179,5 +181,58 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 		}
 
 		sendJson(w, auths)
+	})
+
+	router.Get("/settings/clients", func(w http.ResponseWriter, r *http.Request) {
+		clients := []string{}
+		for _, v := range api.config.Clients {
+			clients = append(clients, v.ID)
+		}
+
+		sendJson(w, clients)
+	})
+
+	router.Post("/settings/clients", func(w http.ResponseWriter, r *http.Request) {
+		req := &dockerctrl.CreateClientRequest{}
+		err := json.NewDecoder(r.Body).Decode(req)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		err = validate.Struct(req)
+		if err != nil {
+			validationError(w, err)
+			return
+		}
+
+		key, err := util.HashPassword(req.ClientSecret)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		newConfig, err := config.AddClient(api.config, req.ClientID, key)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		api.config = newConfig
+
+		w.WriteHeader(http.StatusOK)
+	})
+
+	router.Delete("/settings/clients/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		newConfig, err := config.RemoveClient(api.config, id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		api.config = newConfig
+
+		w.WriteHeader(http.StatusOK)
 	})
 }

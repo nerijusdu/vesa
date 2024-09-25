@@ -1,6 +1,10 @@
 package config
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/charmbracelet/huh"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
 
@@ -17,34 +21,108 @@ type Client struct {
 	Secret string
 }
 
-func NewConfig() *Config {
-	configFile := "config.json"
-	if util.FileExists(configFile) {
-		c, err := util.ReadFile[Config](configFile)
-		if err != nil {
-			panic(err)
-		}
+var configFile = "config.json"
 
-		return c
+func initConfig() *Config {
+	values := &Config{
+		JWTSecret: util.GenerateRandomString(32),
+		Clients:   []Client{},
 	}
 
-	defaultConfig := &Config{
-		Port:      "8989",
-		JWTSecret: "change-me-please",
-		UserName:  "user",
-		Password:  "password",
-		Clients: []Client{
-			{
-				ID:     "client",
-				Secret: "secret",
-			},
-		},
-	}
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewInput().
+				Title("Port").
+				Description("What port to run web interface on?").
+				Placeholder("8989").
+				Value(&values.Port),
+			huh.NewInput().
+				Title("Username").
+				Description("Username to login through web interface").
+				Placeholder("admin").
+				Validate(huh.ValidateNotEmpty()).
+				Value(&values.UserName),
+			huh.NewInput().
+				Title("Password").
+				Description("Password to login through web interface").
+				Placeholder("mysupersecretpassword").
+				EchoMode(huh.EchoModePassword).
+				Validate(huh.ValidateNotEmpty()).
+				Value(&values.Password),
+		),
+	)
 
-	err := util.WriteFile(defaultConfig, configFile)
+	err := form.Run()
 	if err != nil {
 		panic(err)
 	}
 
-	return defaultConfig
+	if values.Port == "" {
+		values.Port = "8989"
+	}
+
+	values.Password, err = util.HashPassword(values.Password)
+	if err != nil {
+		panic(err)
+	}
+
+	return values
+}
+
+func NewConfig() *Config {
+	isInit := len(os.Args) > 1 && os.Args[1] == "--init"
+	changed := false
+	var c *Config
+	var err error
+
+	if util.FileExists(configFile) {
+		c, err = util.ReadFile[Config](configFile)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	if isInit {
+		newConfig := initConfig()
+		if c != nil {
+			newConfig.Clients = c.Clients
+		}
+		c = newConfig
+		changed = true
+	}
+
+	if c == nil {
+		panic("Config is not found, please run with --init flag")
+	}
+
+	if changed {
+		err = util.WriteFile(c, configFile)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return c
+}
+
+func AddClient(c *Config, id, secret string) (*Config, error) {
+	for _, client := range c.Clients {
+		if client.ID == id {
+			return c, fmt.Errorf("Client with this ID already exists")
+		}
+	}
+	c.Clients = append(c.Clients, Client{ID: id, Secret: secret})
+	err := util.WriteFile(c, configFile)
+	return c, err
+}
+
+func RemoveClient(c *Config, id string) (*Config, error) {
+	for i, client := range c.Clients {
+		if client.ID == id {
+			c.Clients = append(c.Clients[:i], c.Clients[i+1:]...)
+			err := util.WriteFile(c, configFile)
+			return c, err
+		}
+	}
+	return c, nil
 }

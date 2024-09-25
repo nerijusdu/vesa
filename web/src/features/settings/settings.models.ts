@@ -11,4 +11,10 @@ export const authSchema = z.object({
   serverAddress: z.string(),
 });
 
+export const clientSchema = z.object({
+  clientId: z.string(),
+  clientSecret: z.string(),
+});
+
 export type AuthRequest = z.infer<typeof authSchema>;
+export type ClientRequest = z.infer<typeof clientSchema>;

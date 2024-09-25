@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
@@ -54,21 +54,21 @@ const ContainerDetails: React.FC = () => {
       <FieldValue label="Created" value={container.created} />
       <FieldValue label="Platform" value={container.platform} />
       <FieldValue label="Driver" value={container.driver} />
-      <FieldValues 
-        label="Ports" 
+      <FieldValues
+        label="Ports"
         values={Object.keys(container.hostConfig?.portBindings || {}).map(k => {
           const v = container.hostConfig?.portBindings[k][0];
           const prefix = v?.hostIp ? `${v.hostIp}:` : '';
           return `${prefix}${v?.hostPort}:${k}`;
-        })} 
+        })}
       />
       <FieldValues
         label="Env vars"
         values={container.config?.env}
         hidden
       />
-      <FieldValues 
-        label="Networks" 
+      <FieldValues
+        label="Networks"
         values={
           Object.keys(container.networkSettings?.networks || {})
             .map(n => ({
@@ -77,21 +77,21 @@ const ContainerDetails: React.FC = () => {
             }))
         }
       />
-      <FieldValues 
-        label="Mounts" 
-        values={container.mounts?.map(m => `${m.type} - ${m.name || m.source}:${m.target}`)} 
+      <FieldValues
+        label="Mounts"
+        values={container.mounts?.map(m => `${m.type} - ${m.name || m.source}:${m.target}`)}
       />
 
       <Divider w="100%" />
 
-      <Flex 
+      <Flex
         ref={logsRef as unknown as any}
-        flexDir="column" 
-        as="pre" 
-        h="500px" 
-        overflowX="scroll" 
-        overflowY="scroll" 
-        w="100%" 
+        flexDir="column"
+        as="pre"
+        h="500px"
+        overflowX="scroll"
+        overflowY="scroll"
+        w="100%"
         bg="black"
         rounded="lg"
       >
@@ -99,7 +99,7 @@ const ContainerDetails: React.FC = () => {
       </Flex>
       <Box w="100%">
         <Button variant="outline" width="100%" onClick={() => refetch()}>
-            Refresh Logs
+          Refresh Logs
         </Button>
       </Box>
 
@@ -108,7 +108,7 @@ const ContainerDetails: React.FC = () => {
       <Flex gap={2}>
         <Button variant="outline" isLoading={isStarting} onClick={() => start(container.id)}>Start</Button>
         <Button variant="outline" isLoading={isStopping} onClick={() => stop(container.id)}>Stop</Button>
-        <Button variant="outline" isLoading={isRemoving} onClick={() => remove(container.id)}>Remove</Button>
+        <Button variant="outline" isLoading={isRemoving} onClick={() => confirm('Are you sure?') && remove(container.id)}>Remove</Button>
         <Button variant="outline" isLoading={isCreating} onClick={() => createTemp(container.id)}>Create template from container</Button>
       </Flex>
     </VStack>

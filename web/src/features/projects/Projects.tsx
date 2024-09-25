@@ -14,7 +14,7 @@ const Projects: React.FC = () => {
       <Flex my={4} w="100%" justifyContent="flex-end">
         <RouterLink to="/projects/new">
           <Button mr={4}>
-            Create project 
+            Create project
           </Button>
         </RouterLink>
       </Flex>
@@ -57,7 +57,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({ project }) => {
           aria-label="Delete project"
           icon={<DeleteIcon />}
           variant="ghost"
-          onClick={() => remove(project.id)}
+          onClick={() => confirm('Are you sure?') && remove(project.id)}
           ml={2}
         />
         <RouterLink to={`/projects/${project.id}/edit`}>
