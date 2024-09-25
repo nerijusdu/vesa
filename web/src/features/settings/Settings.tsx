@@ -14,7 +14,7 @@ const Settings = () => {
   const { mutate: removeClient } = useDefaultMutation(deleteClient, {
     invalidateQueries: ['clients'],
     action: 'deleting client',
-  })
+  });
 
   return (
     <Flex flexDir="column" gap={4}>
@@ -98,7 +98,6 @@ const AddClient = () => {
               errors={errors}
               label="API secret"
               helperText="Copy it now as it won't be shown again"
-              disabled
             />
             <IconButton
               aria-label="Copy"
@@ -138,8 +137,8 @@ const AddClient = () => {
         </Button>
       )}
     </Flex>
-  )
-}
+  );
+};
 
 const AddAuth = () => {
   const [isFormVisible, setFormVisible] = useState(false);

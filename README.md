@@ -51,9 +51,10 @@ sudo systemctl start vesa
 ```
 
 ### Setup github actions releases
-To create easy releases using github actions copy files from `github-actions` folder to your projects `.github/workflows` folder.
-
-Open `release.yml` file and update environment variables and required secrets to your github repository.
+To create easy releases using github actions
+- Create an API client through web interface (Settings -> Client authentication)
+- Copy files from `github-actions` folder to your projects `.github/workflows` folder
+- Open `release.yml` file and update environment variables and required secrets to your github repository.
 
 ## TODO
 
