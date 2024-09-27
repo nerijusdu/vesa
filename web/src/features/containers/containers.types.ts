@@ -81,6 +81,10 @@ export const runContainerSchema = z.object({
     name: z.string(),
     maximumRetryCount: z.number().optional(),
   }),
+  domain: z.object({
+    host: z.string().optional(),
+    entrypoints: z.array(z.string()).optional().nullish(),
+  }).optional(),
   isLocal: z.boolean().optional(),
   networkId: z.string().optional(),
   networkName: z.string().optional(),

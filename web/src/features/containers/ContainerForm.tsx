@@ -85,6 +85,8 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
 
       <EnvVarFields />
 
+      <TraefikFields />
+
       {!hideTemplateCheckbox && (
         <Checkbox {...register('saveAsTemplate')}>
           Save as a template
@@ -130,7 +132,6 @@ export const PortFields: React.FC = () => {
 export const MountFields: React.FC = () => {
   const { control } = useFormContext<RunContainerRequest>();
   const { fields, append, remove } = useFieldArray({ control, name: 'mounts' });
-  console.log(fields);
 
   return (
     <>
@@ -247,5 +248,30 @@ export const EnvVarFields: React.FC = () => {
     </>
   );
 };
+
+export const TraefikFields: React.FC = () => {
+  const { register, formState: { errors } } = useFormContext<RunContainerRequest>();
+
+  return (
+    <>
+      <FormLabel>Traefik</FormLabel>
+      <FormInput
+        {...register('domain.host')}
+        errors={errors}
+        label="Domain"
+        placeholder="example.com"
+      />
+      <FormSelect
+        {...register('domain.entrypoints.0')}
+        errors={errors}
+        label="Entrypoint"
+        data={[
+          { name: 'http', value: 'web' },
+          { name: 'https', value: 'websecure' },
+        ]}
+      />
+    </>
+  );
+}
 
 export default ContainerFields;

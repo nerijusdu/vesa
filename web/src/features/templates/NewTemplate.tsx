@@ -14,21 +14,21 @@ import { getTemplate, saveTemplate } from './templates.api';
 const NewTemplate: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
-  const { mutate } = useDefaultMutation(saveTemplate, {
+  const { mutate, isLoading } = useDefaultMutation(saveTemplate, {
     action: 'creating template',
     successMessage: (res) => 'Template saved with ID: ' + res,
     onSuccess: (res) => navigate(`/templates/${res}`),
   });
-  const form = useForm<RunContainerRequest>({ 
+  const form = useForm<RunContainerRequest>({
     resolver: zodResolver(runContainerSchema),
     defaultValues: async () => {
       if (!params.id) {
-        return { 
-          image: '', 
-          ports: [], 
-          mounts: [], 
-          envVars: [], 
-          restartPolicy: { name: 'no' }, 
+        return {
+          image: '',
+          ports: [],
+          mounts: [],
+          envVars: [],
+          restartPolicy: { name: 'no' },
         };
       }
 
@@ -50,7 +50,7 @@ const NewTemplate: React.FC = () => {
   const { data: networks } = useQuery(['networks'], getNetworks);
 
   const networkOptions = useMemo(
-    () => networks?.map(x => ({ value: x.id, name: x.name })) || [], 
+    () => networks?.map(x => ({ value: x.id, name: x.name })) || [],
     [networks]
   );
 
@@ -60,9 +60,10 @@ const NewTemplate: React.FC = () => {
         onSubmit={form.handleSubmit(x => mutate({
           id: params.id,
           container: mapContainerToApiRequest(x, networks),
-        }))} 
+        }), (err) => console.error(err))}
         label={params.id ? 'Edit template' : 'New template'}
         buttonLabel="Save"
+        isLoading={isLoading}
       >
         <ContainerFields
           networkOptions={networkOptions}

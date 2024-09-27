@@ -84,6 +84,7 @@ type RunContainerRequest struct {
 	SaveAsTemplate bool              `json:"saveAsTemplate"`
 	RestartPolicy  RestartPolicy     `json:"restartPolicy"`
 	Labels         map[string]string `json:"labels"`
+	Domain         DomainConfig      `json:"domain"`
 }
 
 type GetContainersRequest struct {
@@ -106,6 +107,11 @@ type Network struct {
 	Internal   bool                        `json:"internal"`
 	Attachable bool                        `json:"attachable"`
 	Containers map[string]NetworkContainer `json:"containers"`
+}
+
+type DomainConfig struct {
+	Host        string   `json:"host"`
+	Entrypoints []string `json:"entrypoints"`
 }
 
 type NetworkContainer struct {
