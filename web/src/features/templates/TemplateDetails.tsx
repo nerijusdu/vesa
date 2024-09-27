@@ -12,7 +12,7 @@ const TemplateDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: template } = useQuery(['templates', id], () => getTemplate(id));
-  const { mutate: use } = useDefaultMutation(useTemplate, {
+  const { mutate: use, isLoading: isUsing } = useDefaultMutation(useTemplate, {
     action: 'using template',
     invalidateQueries: ['containers'],
   });
@@ -57,7 +57,7 @@ const TemplateDetails: React.FC = () => {
       />
 
       <Flex gap={2}>
-        <Button variant="outline" onClick={() => use(template.id)}>
+        <Button variant="outline" isLoading={isUsing} onClick={() => use(template.id)}>
           Create container from template
         </Button>
       </Flex>
@@ -72,7 +72,7 @@ const UpdateButton = ({ id }: { id: string }) => {
   const [isOpen, setOpen] = useState(false);
   const [tag, setTag] = useState('latest');
 
-  const { mutate } = useDefaultMutation(updateTemplateContainers, {
+  const { mutate, isLoading } = useDefaultMutation(updateTemplateContainers, {
     action: 'updating containers',
     invalidateQueries: ['containers'],
     onSuccess: () => setOpen(false),
@@ -97,6 +97,7 @@ const UpdateButton = ({ id }: { id: string }) => {
       />
       <Button
         onClick={() => mutate(id)}
+        isLoading={isLoading}
         mb={2}
       >
         Update

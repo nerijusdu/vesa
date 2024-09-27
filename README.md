@@ -15,17 +15,8 @@ This is an alternative to docker-compose with a GUI. Why? Because I don't want t
 
 - [Install go](https://go.dev/doc/install)
 - Run `go install github.com/nerijusdu/vesa@latest`
-- Run `vesa --init` to initialize the app for the first time
+- Run `vesa --init` to initialize the app for the first time (running this command multiple times will rewrite the current config)
 - Run `vesa` to start the server
-
-### Configure
-When you first start the server it will generate a default config file in `~/.config/vesa/config.json`.
-Config file contains the following fields:
-- `Port` - port on which the server will run
-- `JWTSecret` - secret used to sign JWT tokens (just generate a random key)
-- `UserName` - username for the web interface
-- `Password` - password for the web interface
-- `Clients` - list of allowed clients to connect to the API
 
 ### Auto start on boot
 To auto start vesa when your server boots up create a systemd service file in `/etc/systemd/system/vesa.service` with the following content:
@@ -82,6 +73,6 @@ Other:
 - [ ] Secret manager
 - [X] Create a tempate without creating a container
 - [X] Hash passwords and api keys
-- [ ] Config update
+- [X] Config update
 - [ ] Edit template json
 - [X] Document installation or setting up as a service

@@ -63,6 +63,7 @@ export type ContainerDetails = {
 export const runContainerSchema = z.object({
   image: z.string(),
   name: z.string().optional(),
+  command: z.string().optional(),
   ports: z.array(z.object({
     value: z.string().optional(),
   })),
@@ -88,7 +89,7 @@ export const runContainerSchema = z.object({
 
 export type RunContainerRequest = z.infer<typeof runContainerSchema>;
 
-export type RunContainerApiRequest = Omit<RunContainerRequest, 'ports' | 'envVars'> & { 
+export type RunContainerApiRequest = Omit<RunContainerRequest, 'ports' | 'envVars'> & {
   ports: string[];
   envVars: string[];
 };

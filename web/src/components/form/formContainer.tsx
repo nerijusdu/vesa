@@ -6,6 +6,7 @@ export type FormContainerProps = {
   label: string;
   buttonLabel: string;
   onSubmit?: FormEventHandler<HTMLDivElement> | undefined;
+  isLoading?: boolean;
 };
 
 const FormContainer: React.FC<FormContainerProps> = ({
@@ -13,6 +14,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
   label,
   buttonLabel,
   onSubmit,
+  isLoading
 }) => {
   return (
     <Flex
@@ -26,7 +28,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
 
       {children}
 
-      <Button type="submit">
+      <Button isLoading={isLoading} type="submit">
         {buttonLabel}
       </Button>
     </Flex>

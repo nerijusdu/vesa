@@ -7,13 +7,14 @@ export type FormFieldWrapperProps = {
   errorField?: string;
   containerProps?: FormControlProps;
   errors?: {
-    [key: string]: { 
+    [key: string]: {
       message?: string;
       type?: string;
     }
   };
   helperText?: string;
   alignLabel?: 'right' | 'left' | 'inherit' | '-moz-initial' | 'initial' | 'revert' | 'unset' | 'center' | 'end' | 'justify' | 'match-parent' | 'start';
+  required?: boolean;
 }
 
 const errorMessages: Record<string, string> = {
@@ -29,13 +30,14 @@ const FormFieldWrapper: React.FC<PropsWithChildren<FormFieldWrapperProps>> = ({
   helperText,
   alignLabel,
   children,
+  required
 }) => {
   const isInvalid = Boolean(name && errors && errors[errorField || name]);
   const error = errors?.[errorField || name];
   const errorMsg = error?.message || errorMessages[error?.type ?? ''];
 
   return (
-    <FormControl {...containerProps} isInvalid={isInvalid} pb={2}>
+    <FormControl isRequired={required} {...containerProps} isInvalid={isInvalid} pb={2}>
       {label && <FormLabel textAlign={alignLabel}>{label}</FormLabel>}
       {children}
       {isInvalid && <FormErrorMessage>{errorMsg}</FormErrorMessage>}

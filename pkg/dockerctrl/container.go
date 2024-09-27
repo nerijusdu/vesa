@@ -61,6 +61,9 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 
 	mounts := util.Map(req.Mounts, mapMount)
 	endpoitns := map[string]*network.EndpointSettings{}
+	cmd := strings.Fields(req.Command)
+
+	ensureMountPaths(mounts)
 
 	if req.NetworkId != "" && req.NetworkName != "" {
 		endpoitns[req.NetworkName] = &network.EndpointSettings{
@@ -73,6 +76,7 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		Env:          req.EnvVars,
 		ExposedPorts: portSet,
 		Labels:       req.Labels,
+		Cmd:          cmd,
 	}, &container.HostConfig{
 		RestartPolicy: mapRestartPolicy(req.RestartPolicy),
 		PortBindings:  ports,

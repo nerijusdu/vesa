@@ -21,14 +21,14 @@ const NewContainer: React.FC = () => {
   const form = useForm<RunContainerRequest>({ resolver: zodResolver(runContainerSchema) });
   const { data: networks } = useQuery(['networks'], getNetworks);
   const networkOptions = useMemo(
-    () => networks?.map(x => ({ value: x.id, name: x.name })) || [], 
+    () => networks?.map(x => ({ value: x.id, name: x.name })) || [],
     [networks]
   );
 
   return (
     <FormProvider {...form}>
       <FormContainer
-        onSubmit={form.handleSubmit(x => mutate(mapContainerToApiRequest(x, networks)))} 
+        onSubmit={form.handleSubmit(x => mutate(mapContainerToApiRequest(x, networks)))}
         label="New Container"
         buttonLabel="Run"
       >

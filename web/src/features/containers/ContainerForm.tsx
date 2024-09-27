@@ -37,13 +37,19 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
         required
       />
       <Checkbox {...register('isLocal')}>
-          Local image
+        Local image
       </Checkbox>
       <FormInput
         {...register('name')}
         errors={errors}
         label="Name"
         placeholder="postgres instance"
+      />
+      <FormInput
+        {...register('command')}
+        errors={errors}
+        label="Command"
+        placeholder="postgres -p 5432"
       />
       <FormSelect
         {...register('networkId')}
@@ -92,7 +98,7 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
 
 export const PortFields: React.FC = () => {
   const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
-  const { fields, append, remove } = useFieldArray({ control, name: 'ports' }); 
+  const { fields, append, remove } = useFieldArray({ control, name: 'ports' });
 
   return (
     <>
@@ -113,9 +119,9 @@ export const PortFields: React.FC = () => {
           />
         </Flex>
       ))}
-        
+
       <Button variant="outline" onClick={() => append({ value: '' })}>
-          Assign port
+        Assign port
       </Button>
     </>
   );
@@ -123,13 +129,19 @@ export const PortFields: React.FC = () => {
 
 export const MountFields: React.FC = () => {
   const { control } = useFormContext<RunContainerRequest>();
-  const { fields, append } = useFieldArray({ control, name: 'mounts' });
+  const { fields, append, remove } = useFieldArray({ control, name: 'mounts' });
+  console.log(fields);
 
   return (
     <>
       <FormLabel>Mounts</FormLabel>
       {fields.map((field, i) => (
-        <MountField key={field.id} field={field} i={i} />
+        <MountField
+          key={field.id}
+          field={field}
+          i={i}
+          onRemove={() => remove(i)}
+        />
       ))}
 
       <Button variant="outline" onClick={() => append({ type: 'bind', source: '', target: '' })}>
@@ -139,18 +151,18 @@ export const MountFields: React.FC = () => {
   );
 };
 
-type MountFieldProps = { 
-  field: FieldArrayWithId<RunContainerRequest, 'mounts', 'id'>; 
+type MountFieldProps = {
+  field: FieldArrayWithId<RunContainerRequest, 'mounts', 'id'>;
   i: number;
-} 
+  onRemove: () => void;
+}
 
-const MountField = ({field, i }: MountFieldProps) => {
-  const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
-  const { remove } = useFieldArray({ control, name: 'mounts' });
+const MountField = ({ field, i, onRemove }: MountFieldProps) => {
+  const { register, formState: { errors } } = useFormContext<RunContainerRequest>();
   const [type, setType] = useState(field.type);
 
   return (
-    <Flex key={field.id} gap={2}>
+    <Flex gap={2}>
       <FormSelect
         {...register(`mounts.${i}.type`, {
           onChange: e => {
@@ -188,7 +200,7 @@ const MountField = ({field, i }: MountFieldProps) => {
         aria-label='Remove Mount'
         size="md"
         colorScheme="red"
-        onClick={() => remove(i)}
+        onClick={onRemove}
         alignSelf="flex-end"
         mb={2}
       />

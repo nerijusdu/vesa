@@ -23,6 +23,7 @@ const FormInput = forwardRef<FormInputProps, 'input'>(({
       helperText={helperText}
       alignLabel={alignLabel}
       errorField={errorField}
+      required={inputProps.required}
     >
       <Input data-cy={`form-input-${name}`} {...inputProps} name={name} ref={ref} />
     </FormFieldWrapper>

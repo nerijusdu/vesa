@@ -2,12 +2,14 @@ package web
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
 )
 
 func handleError(w http.ResponseWriter, err error) {
+	log.Println(err)
 	w.WriteHeader(http.StatusInternalServerError)
 	w.Write([]byte(err.Error()))
 }

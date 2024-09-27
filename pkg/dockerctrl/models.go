@@ -74,6 +74,7 @@ type ContainerConfig struct {
 type RunContainerRequest struct {
 	Image          string            `json:"image" validate:"required"`
 	Name           string            `json:"name"`
+	Command        string            `json:"command"`
 	Ports          []string          `json:"ports"`
 	Mounts         []Mount           `json:"mounts" validate:"dive"`
 	EnvVars        []string          `json:"envVars"`
