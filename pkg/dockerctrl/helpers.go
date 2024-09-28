@@ -21,10 +21,9 @@ func addDomainLabels(req RunContainerRequest) map[string]string {
 	if req.Domain.Host != "" {
 		req.Labels["traefik.enable"] = "true"
 		req.Labels["traefik.http.routers."+req.Name+".rule"] = "Host(`" + req.Domain.Host + "`)"
-		// TODO: add entrypoints
-		// for _, e := range req.Domain.Entrypoints {
-		// req.Labels["traefik.http.routers."+req.Name+".entrypoints"] = e
-		// }
+		for _, e := range req.Domain.Entrypoints {
+			req.Labels["traefik.http.routers."+req.Name+".entrypoints"] = e
+		}
 	}
 
 	return req.Labels
