@@ -16,6 +16,7 @@ type Projects struct {
 
 type Template struct {
 	ID        string                         `json:"id"`
+	IsSystem  bool                           `json:"isSystem"`
 	Container dockerctrl.RunContainerRequest `json:"container"`
 }
 

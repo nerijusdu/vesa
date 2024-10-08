@@ -12,10 +12,13 @@ import (
 //go:embed public/*
 var content embed.FS
 
+//go:embed templates/*
+var defaultTempaltes embed.FS
+
 func main() {
 	c := config.NewConfig()
 	proj := data.NewProjectsRepository()
-	templ := data.NewTemplateRepository()
+	templ := data.NewTemplateRepository(defaultTempaltes)
 	auth := data.NewAuthRepository()
 	ctrl, err := dockerctrl.NewDockerCtrlClient(auth)
 	if err != nil {
@@ -23,7 +26,14 @@ func main() {
 	}
 	defer ctrl.Close()
 
-	api := web.NewVesaApi(ctrl, proj, templ, auth, c, content)
+	api := web.NewVesaApi(web.VesaApiConfig{
+		Config:        c,
+		DockerCtrl:    ctrl,
+		Projects:      proj,
+		Templates:     templ,
+		Auth:          auth,
+		StaticContent: content,
+	})
 
 	api.ServeHTTP()
 }

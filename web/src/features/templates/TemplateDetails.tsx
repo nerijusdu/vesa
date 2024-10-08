@@ -31,12 +31,16 @@ const TemplateDetails: React.FC = () => {
       <Heading display="flex" gap={2}>
         {template.container.name}
 
-        <Button as={Link} to={`/templates/${template.id}/edit`} variant="link">
-          Edit
-        </Button>
-        <Button variant="link" colorScheme="red" onClick={() => confirm('Are you sure?') && deleteTempl(template.id)}>
-          Delete
-        </Button>
+        {!template.isSystem && (
+          <>
+            <Button as={Link} to={`/templates/${template.id}/edit`} variant="link">
+              Edit
+            </Button>
+            <Button variant="link" colorScheme="red" onClick={() => confirm('Are you sure?') && deleteTempl(template.id)}>
+              Delete
+            </Button>
+          </>
+        )}
       </Heading>
 
       <FieldValue label="ID" value={template.id} />
@@ -63,7 +67,8 @@ const TemplateDetails: React.FC = () => {
       </Flex>
 
       <Containers listOnly label={`template=${template.id}`} />
-      <UpdateButton id={template.id} />
+
+      {!template.isSystem && <UpdateButton id={template.id} />}
     </VStack>
   );
 };
@@ -81,7 +86,7 @@ const UpdateButton = ({ id }: { id: string }) => {
   if (!isOpen) {
     return (
       <Button onClick={() => setOpen(true)} variant="outline">
-        Update
+        Update containers with latest image
       </Button>
     );
   }

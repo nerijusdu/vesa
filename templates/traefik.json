@@ -1,0 +1,32 @@
+{
+  "image": "traefik:v3.1",
+  "name": "traefik",
+  "command": "--api.insecure=true --providers.docker --entryPoints.web.address=:80 --entryPoints.websecure.address=:443  --certificatesresolvers.myresolver.acme.email=dnerijus72@gmail.com --certificatesresolvers.myresolver.acme.storage=acme.json",
+  "isLocal": false,
+  "networkId": "",
+  "saveAsTemplate": true,
+  "restartPolicy": {
+    "name": "no",
+    "maximumRetryCount": 0
+  },
+  "labels": null,
+  "domain": {
+    "host": "",
+    "entrypoints": [
+      ""
+    ]
+  },
+  "mounts": [
+    {
+      "type": "bind",
+      "source": "/var/run/docker.sock",
+      "target": "/var/run/docker.sock",
+      "name": ""
+    }
+  ],
+  "ports": [
+    "8080:8080",
+    "80:80"
+  ],
+  "envVars": []
+}

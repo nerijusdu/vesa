@@ -62,7 +62,7 @@ Docker:
 
 Traefik:
 - [X] Add traefik labels
-- [ ] Run traefik container
+- [X] Run traefik container
 - [ ] Manage SSL certificates
 
 Other:

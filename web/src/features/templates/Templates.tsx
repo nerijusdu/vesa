@@ -9,6 +9,9 @@ import { Template } from './templates.types';
 const Templates: React.FC = () => {
   const { data: templates } = useQuery(['templates'], getTemplates);
 
+  const userTemplates = templates?.filter(template => !template.isSystem);
+  const systemTemplates = templates?.filter(template => template.isSystem);
+
   return (
     <>
       <Flex my={4} w="100%" justifyContent="flex-end">
@@ -28,7 +31,15 @@ const Templates: React.FC = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {templates?.map((template) => (
+          {userTemplates?.map((template) => (
+            <TemplateRow key={template.id} template={template} />
+          ))}
+
+          <Tr>
+            <Td colSpan={3} fontWeight="bold">System templates</Td>
+          </Tr>
+
+          {systemTemplates?.map((template) => (
             <TemplateRow key={template.id} template={template} />
           ))}
         </Tbody>

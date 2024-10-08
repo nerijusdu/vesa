@@ -38,6 +38,11 @@ const Containers: React.FC<ContainersProps> = ({ label, listOnly }) => {
           {containers?.map((container) => (
             <ContainerRow key={container.id} container={container} />
           ))}
+          {containers?.length === 0 ? (
+            <Tr>
+              <Td colSpan={4}>No containers found</Td>
+            </Tr>
+          ) : null}
         </Tbody>
       </Table>
     </Flex>

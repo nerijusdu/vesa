@@ -69,14 +69,16 @@ type VesaApi struct {
 	config       *config.Config
 }
 
-func NewVesaApi(
-	dockerCtrl dockerCtrlClient,
-	projects projectsRepository,
-	templates templateRepository,
-	auth authRepository,
-	c *config.Config,
-	staticContent embed.FS,
-) *VesaApi {
+type VesaApiConfig struct {
+	DockerCtrl    dockerCtrlClient
+	Projects      projectsRepository
+	Templates     templateRepository
+	Auth          authRepository
+	Config        *config.Config
+	StaticContent embed.FS
+}
+
+func NewVesaApi(c VesaApiConfig) *VesaApi {
 	validate = validator.New()
 	router := chi.NewRouter()
 
@@ -91,27 +93,27 @@ func NewVesaApi(
 		MaxAge:           300,
 	}))
 
-	setupAuth(router, c)
+	setupAuth(router, c.Config)
 
 	api := &VesaApi{
 		router:       router,
 		publicRouter: router,
-		dockerctrl:   dockerCtrl,
-		projects:     projects,
-		templates:    templates,
-		auth:         auth,
-		config:       c,
+		dockerctrl:   c.DockerCtrl,
+		projects:     c.Projects,
+		templates:    c.Templates,
+		auth:         c.Auth,
+		config:       c.Config,
 	}
 
 	router.Route("/api", func(r chi.Router) {
-		r.Use(oauth.Authorize(c.JWTSecret, nil))
+		r.Use(oauth.Authorize(c.Config.JWTSecret, nil))
 		api.registerContainerRoutes(r)
 		api.registerNetworkRoutes(r)
 		api.registerProjectRoutes(r)
 		api.registerTemplateRoutes(r)
 	})
 
-	fileServer(api.publicRouter, "/", staticContent)
+	fileServer(api.publicRouter, "/", c.StaticContent)
 
 	return api
 }

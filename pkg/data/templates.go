@@ -1,14 +1,20 @@
 package data
 
 import (
+	"embed"
+	"encoding/json"
+	"strings"
+
 	"github.com/google/uuid"
+	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
 
 type TemplateRepository struct {
+	defaultTemplates []Template
 }
 
-func NewTemplateRepository() *TemplateRepository {
+func NewTemplateRepository(defaultTemplatesDir embed.FS) *TemplateRepository {
 	if !util.FileExists("templates.json") {
 		err := util.WriteFile(&Templates{Templates: []Template{}}, "templates.json")
 		if err != nil {
@@ -16,7 +22,37 @@ func NewTemplateRepository() *TemplateRepository {
 		}
 	}
 
-	return &TemplateRepository{}
+	dir, err := defaultTemplatesDir.ReadDir("templates")
+	if err != nil {
+		panic(err)
+	}
+
+	var defaultTemplates []Template
+	for _, file := range dir {
+		if file.IsDir() {
+			continue
+		}
+
+		bytes, err := defaultTemplatesDir.ReadFile("templates/" + file.Name())
+		if err != nil {
+			panic(err)
+		}
+
+		template := &dockerctrl.RunContainerRequest{}
+		if err := json.Unmarshal(bytes, template); err != nil {
+			panic(err)
+		}
+
+		defaultTemplates = append(defaultTemplates, Template{
+			ID:        "system-template:" + strings.Split(file.Name(), ".")[0],
+			IsSystem:  true,
+			Container: *template,
+		})
+	}
+
+	return &TemplateRepository{
+		defaultTemplates: defaultTemplates,
+	}
 }
 
 func (t *TemplateRepository) GetTemplates() ([]Template, error) {
@@ -25,7 +61,9 @@ func (t *TemplateRepository) GetTemplates() ([]Template, error) {
 		return nil, err
 	}
 
-	return templates.Templates, nil
+	allTemplates := append(templates.Templates, t.defaultTemplates...)
+
+	return allTemplates, nil
 }
 
 var emptyTemplate = Template{}

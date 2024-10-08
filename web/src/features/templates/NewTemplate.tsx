@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import FormContainer from '../../components/form/formContainer';
 import { useDefaultMutation, useDefaultToast } from '../../hooks';
 import ContainerFields from '../containers/ContainerForm';
-import { mapContainerToApiRequest } from '../containers/containers.helpers';
+import { mapApiRequestToContainer, mapContainerToApiRequest } from '../containers/containers.helpers';
 import { RunContainerRequest, runContainerSchema } from '../containers/containers.types';
 import { getNetworks } from '../networks/networks.api';
 import { getTemplate, saveTemplate } from './templates.api';
@@ -34,18 +34,7 @@ const NewTemplate: React.FC = () => {
       }
 
       const t = await getTemplate(params.id);
-      return {
-        ...t.container,
-        ports: t.container.ports?.map(value => ({ value })) || [],
-        envVars: t.container.envVars?.map(x => {
-          const splits = x.split('=');
-          return { key: splits[0], value: splits[1] };
-        }) || [],
-        restartPolicy: {
-          name: t.container.restartPolicy.name || 'no',
-          maximumRetryCount: t.container.restartPolicy.maximumRetryCount,
-        },
-      };
+      return mapApiRequestToContainer(t.container);
     },
   });
   const { data: networks } = useQuery(['networks'], getNetworks);
@@ -59,7 +48,7 @@ const NewTemplate: React.FC = () => {
   );
   const setFormFromJson = () => {
     try {
-      const values = JSON.parse(jsonTemplate);
+      const values = mapApiRequestToContainer(JSON.parse(jsonTemplate));
       form.reset(values);
       return true;
     } catch (e: any) {
@@ -94,7 +83,11 @@ const NewTemplate: React.FC = () => {
                 if (isJson) {
                   setFormFromJson();
                 } else {
-                  setJsonTemplate(JSON.stringify(form.getValues(), null, 2));
+                  setJsonTemplate(JSON.stringify(
+                    mapContainerToApiRequest(form.getValues(), networks),
+                    null,
+                    2
+                  ));
                 }
                 setIsJson(!isJson);
               }}
