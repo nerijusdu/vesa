@@ -17,7 +17,7 @@ const Settings = () => {
   });
 
   return (
-    <Flex flexDir="column" gap={4}>
+    <Flex flexDir="column" gap={4} w="100%">
       <Heading size="sm">Registry authentication</Heading>
       <p>Manage authentication for Docker registries</p>
       {auths?.map(a => (

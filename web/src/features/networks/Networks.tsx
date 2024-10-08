@@ -11,7 +11,7 @@ const Networks: React.FC = () => {
   const { data: networks } = useQuery(['networks'], getNetworks);
 
   return (
-    <Flex flexDir="column">
+    <Flex flexDir="column" w="100%">
       <Flex my={4} w="100%" justifyContent="flex-end">
         <RouterLink to="/networks/new">
           <Button mr={4}>

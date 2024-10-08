@@ -15,7 +15,7 @@ const Containers: React.FC<ContainersProps> = ({ label, listOnly }) => {
   const { data: containers } = useQuery(['containers', label], () => getContainers({ label }));
 
   return (
-    <Flex flexDir="column">
+    <Flex flexDir="column" w="100%">
       {!listOnly && (
         <Flex my={4} w="100%" justifyContent="flex-end">
           <RouterLink to="/containers/new">

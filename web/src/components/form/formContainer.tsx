@@ -3,7 +3,7 @@ import { FormEventHandler } from 'react';
 
 export type FormContainerProps = {
   children: React.ReactNode;
-  label: string;
+  label: React.ReactNode;
   buttonLabel: string;
   onSubmit?: FormEventHandler<HTMLDivElement> | undefined;
   isLoading?: boolean;
@@ -14,14 +14,14 @@ const FormContainer: React.FC<FormContainerProps> = ({
   label,
   buttonLabel,
   onSubmit,
-  isLoading
+  isLoading,
 }) => {
   return (
     <Flex
       as="form"
       onSubmit={onSubmit}
       flexDir="column"
-      w="500px"
+      w="700px"
       gap={2}
     >
       <Heading size="md">{label}</Heading>

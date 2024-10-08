@@ -60,11 +60,10 @@ Docker:
   - [ ] Test docker hub auth
 - [X] Save container templates
 
-Nginx:
-- [ ] Edit config to add new site
-- [ ] Reload nginx
-- [ ] Create SSL certs
-- [ ] Use Traefik instead of nginx?
+Traefik:
+- [X] Add traefik labels
+- [ ] Run traefik container
+- [ ] Manage SSL certificates
 
 Other:
 - [X] Web GUI
@@ -74,5 +73,5 @@ Other:
 - [X] Create a tempate without creating a container
 - [X] Hash passwords and api keys
 - [X] Config update
-- [ ] Edit template json
+- [X] Edit template json
 - [X] Document installation or setting up as a service
