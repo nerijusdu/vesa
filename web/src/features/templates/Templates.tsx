@@ -67,14 +67,16 @@ const TemplateRow: React.FC<TemplateRowProps> = ({ template }) => {
       </Td>
       <Td>{template.container.image}</Td>
       <Td>
-        <HStack>
-          <IconButton
-            aria-label="Delete template"
-            icon={<DeleteIcon />}
-            onClick={() => confirm('Are you sure?') && remove(template.id)}
-            variant="ghost"
-          />
-        </HStack>
+        {template.isSystem ? null : (
+          <HStack>
+            <IconButton
+              aria-label="Delete template"
+              icon={<DeleteIcon />}
+              onClick={() => confirm('Are you sure?') && remove(template.id)}
+              variant="ghost"
+            />
+          </HStack>
+        )}
       </Td>
     </Tr>
   );

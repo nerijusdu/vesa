@@ -94,7 +94,7 @@ func (t *TemplateRepository) SaveTemplate(template Template) (string, error) {
 		templates = append(templates, template)
 	} else {
 		for i, temp := range templates {
-			if temp.ID == template.ID {
+			if temp.ID == template.ID && !strings.Contains(temp.ID, "system-template") {
 				templates[i] = template
 			}
 		}
