@@ -45,7 +45,7 @@ const ContainerDetails: React.FC = () => {
   const name = container.name.replace('/', '');
 
   return (
-    <VStack gap={2} align="flex-start">
+    <VStack gap={2} align="flex-start" maxW="100%">
       <Heading>{name}</Heading>
 
       <FieldValue label="ID" value={container.id} />

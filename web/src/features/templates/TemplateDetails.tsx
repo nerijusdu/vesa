@@ -27,7 +27,7 @@ const TemplateDetails: React.FC = () => {
   }
 
   return (
-    <VStack align="flex-start">
+    <VStack align="flex-start" maxW="100%">
       <Heading display="flex" gap={2}>
         {template.container.name}
 
