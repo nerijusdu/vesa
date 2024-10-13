@@ -94,13 +94,20 @@ func (t *TemplateRepository) SaveTemplate(template Template) (string, error) {
 		templates = append(templates, template)
 	} else {
 		for i, temp := range templates {
-			if temp.ID == template.ID && !strings.Contains(temp.ID, "system-template") {
+			if temp.ID == template.ID {
 				templates[i] = template
 			}
 		}
 	}
 
-	err = util.WriteFile(&Templates{Templates: templates}, "templates.json")
+	templatesToSave := []Template{}
+	for _, temp := range templates {
+		if !strings.Contains(temp.ID, "system-template") {
+			templatesToSave = append(templatesToSave, temp)
+		}
+	}
+
+	err = util.WriteFile(&Templates{Templates: templatesToSave}, "templates.json")
 	if err != nil {
 		return "", err
 	}
@@ -120,7 +127,14 @@ func (t *TemplateRepository) DeleteTemplate(id string) error {
 		}
 	}
 
-	err = util.WriteFile(&Templates{Templates: templates}, "templates.json")
+	templatesToSave := []Template{}
+	for _, temp := range templates {
+		if !strings.Contains(temp.ID, "system-template") {
+			templatesToSave = append(templatesToSave, temp)
+		}
+	}
+
+	err = util.WriteFile(&Templates{Templates: templatesToSave}, "templates.json")
 	if err != nil {
 		return err
 	}

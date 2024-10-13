@@ -58,6 +58,7 @@ func mapContainerDetails(c types.ContainerJSON) ContainerDetails {
 		Config: &ContainerConfig{
 			Env:   c.Config.Env,
 			Image: c.Config.Image,
+			Cmd:   c.Config.Cmd,
 		},
 		NetworkSettings: &NetworkSettings{
 			Networks: util.MapDict(c.NetworkSettings.Networks, mapNetworkSettingsNetwork),
@@ -162,6 +163,20 @@ func MapContainerToRequest(m ContainerDetails) RunContainerRequest {
 		break
 	}
 
+	cmd := ""
+	if len(m.Config.Cmd) > 0 {
+		for _, c := range m.Config.Cmd {
+			if len(cmd) > 0 {
+				cmd += " "
+			}
+			if strings.Contains(c, " ") {
+				cmd += "\"" + c + "\""
+			} else {
+				cmd += c
+			}
+		}
+	}
+
 	return RunContainerRequest{
 		Image:         m.Config.Image,
 		Name:          name,
@@ -170,6 +185,7 @@ func MapContainerToRequest(m ContainerDetails) RunContainerRequest {
 		EnvVars:       m.Config.Env,
 		RestartPolicy: m.HostConfig.RestartPolicy,
 		NetworkId:     networkId,
+		Command:       cmd,
 	}
 }
 

@@ -2,6 +2,7 @@ package dockerctrl
 
 import (
 	"context"
+	"encoding/csv"
 	"io"
 	"os"
 	"strings"
@@ -61,7 +62,16 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 
 	mounts := util.Map(req.Mounts, mapMount)
 	endpoitns := map[string]*network.EndpointSettings{}
-	cmd := strings.Fields(req.Command)
+	cmd := []string{}
+
+	if req.Command != "" {
+		r := csv.NewReader(strings.NewReader(req.Command))
+		r.Comma = ' '
+		cmd, err = r.Read()
+		if err != nil {
+			return "", err
+		}
+	}
 
 	addDomainLabels(req)
 	ensureMountPaths(mounts)
