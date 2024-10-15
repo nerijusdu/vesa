@@ -254,7 +254,7 @@ export const TraefikFields: React.FC = () => {
 
   return (
     <>
-      <FormLabel>Traefik</FormLabel>
+      <FormLabel>Domain routing setup</FormLabel>
       <FormInput
         {...register('domain.host')}
         errors={errors}
@@ -267,12 +267,12 @@ export const TraefikFields: React.FC = () => {
         label="Entrypoint"
         data={[
           { name: 'http', value: 'web' },
-          { name: 'https', value: 'websecure' },
-          { name: 'http & https', value: 'web,websecure' }
+          { name: 'https (with redirect http -> https)', value: 'websecure' },
+          { name: 'http & https', value: 'web,websecure'},
         ]}
       />
     </>
   );
-}
+};
 
 export default ContainerFields;

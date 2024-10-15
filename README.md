@@ -63,7 +63,9 @@ Docker:
 Traefik:
 - [X] Add traefik labels
 - [X] Run traefik container
-- [ ] Manage SSL certificates
+- [X] Manage SSL certificates
+- [ ] Manage configuration file
+  - [ ] Request user email for certs
 
 Other:
 - [X] Web GUI
