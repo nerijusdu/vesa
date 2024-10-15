@@ -1,7 +1,7 @@
 {
   "image": "traefik:v3.1",
   "name": "traefik",
-  "command": "--api.insecure=true --providers.docker --entryPoints.web.address=:80 --entryPoints.websecure.address=:443  --certificatesresolvers.myresolver.acme.email=dnerijus72@gmail.com --certificatesresolvers.myresolver.acme.storage=acme.json",
+  "command": "--api.insecure=true --providers.docker --entryPoints.web.address=:80 --entryPoints.websecure.address=:443  --certificatesresolvers.vesaresolver.acme.email=email+TODO+change+me@example.com --certificatesresolvers.vesaresolver.acme.storage=acme.json",
   "isLocal": false,
   "networkId": "",
   "saveAsTemplate": true,
