@@ -26,6 +26,7 @@ func addDomainLabels(req RunContainerRequest) map[string]string {
 			req.Labels["traefik.http.routers."+req.Name+".entrypoints"] = e
 			if strings.Contains(e, "websecure") {
 				req.Labels["traefik.http.routers."+req.Name+".tls.certResolver"] = "vesaresolver"
+				req.Labels["traefik.http.routers."+req.Name+".tls.domains[0].main"] = req.Domain.Host
 			}
 		}
 	}
