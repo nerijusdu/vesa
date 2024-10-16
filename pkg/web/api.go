@@ -59,12 +59,20 @@ type authRepository interface {
 	GetToken(serverUrl string) (string, error)
 }
 
+type appsRepository interface {
+	GetApps() ([]data.App, error)
+	GetApp(id string) (data.App, error)
+	SaveApp(data.App) (string, error)
+	DeleteApp(id string) error
+}
+
 type VesaApi struct {
 	router       chi.Router
 	publicRouter chi.Router
 	dockerctrl   dockerCtrlClient
 	projects     projectsRepository
 	templates    templateRepository
+	apps         appsRepository
 	auth         authRepository
 	config       *config.Config
 }
@@ -73,6 +81,7 @@ type VesaApiConfig struct {
 	DockerCtrl    dockerCtrlClient
 	Projects      projectsRepository
 	Templates     templateRepository
+	Apps          appsRepository
 	Auth          authRepository
 	Config        *config.Config
 	StaticContent embed.FS
@@ -101,6 +110,7 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 		dockerctrl:   c.DockerCtrl,
 		projects:     c.Projects,
 		templates:    c.Templates,
+		apps:         c.Apps,
 		auth:         c.Auth,
 		config:       c.Config,
 	}
@@ -111,6 +121,7 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 		api.registerNetworkRoutes(r)
 		api.registerProjectRoutes(r)
 		api.registerTemplateRoutes(r)
+		api.registerAppRoutes(r)
 	})
 
 	fileServer(api.publicRouter, "/", c.StaticContent)

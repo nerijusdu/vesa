@@ -32,3 +32,16 @@ type RegistryAuth struct {
 	ServerAddress string `json:"serverAddress"`
 	IdentityToken string `json:"identityToken"`
 }
+
+type App struct {
+	ID     string `json:"id"`
+	Name   string `json:"name" validate:"required"`
+	Domain struct {
+		Host        string   `json:"host" validate:"required"`
+		Entrypoings []string `json:"entrypoints" validate:"required"`
+	} `json:"domain" validate:"required"`
+}
+
+type Apps struct {
+	Apps []App `json:"apps"`
+}

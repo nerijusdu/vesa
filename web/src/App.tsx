@@ -15,6 +15,9 @@ import TemplateDetails from './features/templates/TemplateDetails';
 import NewTemplate from './features/templates/NewTemplate';
 import Settings from './features/settings/Settings';
 import { Box } from '@chakra-ui/react';
+import Apps from './features/apps/Apps';
+import AppDetails from './features/apps/AppDetails';
+import NewApp from './features/apps/NewApp';
 
 const router = createBrowserRouter([
   {
@@ -84,6 +87,22 @@ const router = createBrowserRouter([
       {
         path: '/templates/:id/edit',
         element: <NewTemplate />,
+      },
+      {
+        path: '/apps',
+        element: <Apps />,
+      },
+      {
+        path: '/apps/:id',
+        element: <AppDetails />,
+      },
+      {
+        path: '/apps/new',
+        element: <NewApp />,
+      },
+      {
+        path: '/apps/:id/edit',
+        element: <NewApp />,
       },
       {
         path: '/',

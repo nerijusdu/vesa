@@ -20,6 +20,7 @@ func main() {
 	proj := data.NewProjectsRepository()
 	templ := data.NewTemplateRepository(defaultTempaltes)
 	auth := data.NewAuthRepository()
+	apps := data.NewAppsRepository()
 	ctrl, err := dockerctrl.NewDockerCtrlClient(auth)
 	if err != nil {
 		panic(err)
@@ -31,6 +32,7 @@ func main() {
 		DockerCtrl:    ctrl,
 		Projects:      proj,
 		Templates:     templ,
+		Apps:          apps,
 		Auth:          auth,
 		StaticContent: content,
 	})

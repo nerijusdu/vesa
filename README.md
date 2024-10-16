@@ -68,6 +68,9 @@ Traefik:
 - [ ] Manage configuration file
   - [ ] Request user email for certs
 - [ ] Custom rules for non-container apps
+  - [X] Add apps
+  - [ ] Build traefik config from apps
+  Test:
   - vesa.domain.com
   - domain.com/tts
   - domain.com
