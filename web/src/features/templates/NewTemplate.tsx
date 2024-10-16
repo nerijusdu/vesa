@@ -29,6 +29,7 @@ const NewTemplate: React.FC = () => {
           ports: [],
           mounts: [],
           envVars: [],
+          networks: [],
           restartPolicy: { name: 'no' },
         };
       }

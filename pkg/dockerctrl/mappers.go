@@ -157,10 +157,12 @@ func mapRestartPolicy(m RestartPolicy) container.RestartPolicy {
 func MapContainerToRequest(m ContainerDetails) RunContainerRequest {
 	name := strings.Replace(m.Name, "/", "", 1)
 
-	networkId := ""
-	for _, v := range m.NetworkSettings.Networks {
-		networkId = v.NetworkID
-		break
+	networks := make([]NetworkConfig, 0, len(m.NetworkSettings.Networks))
+	for name, v := range m.NetworkSettings.Networks {
+		networks = append(networks, NetworkConfig{
+			NetworkId:   v.NetworkID,
+			NetworkName: name,
+		})
 	}
 
 	cmd := ""
@@ -184,7 +186,7 @@ func MapContainerToRequest(m ContainerDetails) RunContainerRequest {
 		Mounts:        m.Mounts,
 		EnvVars:       m.Config.Env,
 		RestartPolicy: m.HostConfig.RestartPolicy,
-		NetworkId:     networkId,
+		Networks:      networks,
 		Command:       cmd,
 	}
 }

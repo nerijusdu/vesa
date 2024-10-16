@@ -86,8 +86,10 @@ export const runContainerSchema = z.object({
     entrypoints: z.array(z.string()).optional().nullish(),
   }).optional(),
   isLocal: z.boolean().optional(),
-  networkId: z.string().optional(),
-  networkName: z.string().optional(),
+  networks: z.array(z.object({
+    networkId: z.string(),
+    networkName: z.string().optional(),
+  })),
   saveAsTemplate: z.boolean().optional(),
 });
 

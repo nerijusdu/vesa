@@ -14,9 +14,12 @@ export const mapContainerToApiRequest = ({
   })),
   ports: (ports || []).map(x => x.value).filter(Boolean) as string[],
   envVars: (envVars || []).map(x => `${x.key}=${x.value}`).filter(Boolean) as string[],
-  networkName: data.networkId
-    ? networks?.find(x => x.id === data.networkId)?.name
-    : undefined,
+  networks: data.networks
+    .filter(x => x.networkId)
+    .map(x => ({
+      networkId: x.networkId,
+      networkName: networks?.find(n => n.id === x.networkId)?.name,
+    })),
 });
 
 export const mapApiRequestToContainer = (container: RunContainerApiRequest): RunContainerRequest => ({

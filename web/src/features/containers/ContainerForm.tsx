@@ -51,13 +51,8 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
         label="Command"
         placeholder="postgres -p 5432"
       />
-      <FormSelect
-        {...register('networkId')}
-        data={networkOptions}
-        errors={errors}
-        label="Network"
-        placeholder="Select network (optional)"
-      />
+
+      <NetworkFields networkOptions={networkOptions} />
 
       <FormSelect
         {...register('restartPolicy.name', {
@@ -94,6 +89,38 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
       )}
 
       <Divider my={2} />
+    </>
+  );
+};
+
+export const NetworkFields: React.FC<Pick<ContainerFieldsProps, 'networkOptions'>> = ({ networkOptions }) => {
+  const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { fields, append, remove } = useFieldArray({ control, name: 'networks' });
+
+  return (
+    <>
+      <FormLabel>Networks</FormLabel>
+      {fields.map((field, i) => (
+        <Flex key={field.id} gap={2}>
+          <FormSelect
+            {...register(`networks.${i}.networkId` as const)}
+            data={networkOptions}
+            errors={errors}
+            placeholder="Select network"
+          />
+          <IconButton
+            icon={<DeleteIcon />}
+            aria-label='Remove Network'
+            size="md"
+            colorScheme="red"
+            onClick={() => remove(i)}
+          />
+        </Flex>
+      ))}
+
+      <Button variant="outline" onClick={() => append({ networkId: '', networkName: '' })}>
+        Add network
+      </Button>
     </>
   );
 };

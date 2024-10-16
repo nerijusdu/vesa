@@ -53,6 +53,7 @@ Docker:
 - [X] View containers
 - [X] Create a container
 - [X] Container networking (connect to other containers)
+  - [X] Multiple networks select
 - [X] Container volumes
   - [ ] Manage volumes
 - [X] Container environment variables
@@ -66,6 +67,10 @@ Traefik:
 - [X] Manage SSL certificates
 - [ ] Manage configuration file
   - [ ] Request user email for certs
+- [ ] Custom rules for non-container apps
+  - vesa.domain.com
+  - domain.com/tts
+  - domain.com
 
 Other:
 - [X] Web GUI
@@ -77,3 +82,4 @@ Other:
 - [X] Config update
 - [X] Edit template json
 - [X] Document installation or setting up as a service
+- [ ] Is it possible to use vesa in container?

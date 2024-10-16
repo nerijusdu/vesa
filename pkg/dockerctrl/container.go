@@ -61,7 +61,7 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 	portSet := getPortSet(ports)
 
 	mounts := util.Map(req.Mounts, mapMount)
-	endpoitns := map[string]*network.EndpointSettings{}
+	networkEndpoints := map[string]*network.EndpointSettings{}
 	cmd := []string{}
 
 	if req.Command != "" {
@@ -76,9 +76,11 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 	addDomainLabels(req)
 	ensureMountPaths(mounts)
 
-	if req.NetworkId != "" && req.NetworkName != "" {
-		endpoitns[req.NetworkName] = &network.EndpointSettings{
-			NetworkID: req.NetworkId,
+	if len(req.Networks) > 0 {
+		// can only create container with one network
+		// attach them later
+		networkEndpoints[req.Networks[0].NetworkName] = &network.EndpointSettings{
+			NetworkID: req.Networks[0].NetworkId,
 		}
 	}
 
@@ -93,10 +95,16 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		PortBindings:  ports,
 		Mounts:        mounts,
 	}, &network.NetworkingConfig{
-		EndpointsConfig: endpoitns,
+		EndpointsConfig: networkEndpoints,
 	}, nil, req.Name)
 	if err != nil {
 		return "", err
+	}
+
+	for _, n := range req.Networks[1:] {
+		if err := d.Client.NetworkConnect(ctx, n.NetworkId, resp.ID, nil); err != nil {
+			return "", err
+		}
 	}
 
 	if err := d.Client.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {

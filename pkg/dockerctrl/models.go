@@ -80,12 +80,16 @@ type RunContainerRequest struct {
 	Mounts         []Mount           `json:"mounts" validate:"dive"`
 	EnvVars        []string          `json:"envVars"`
 	IsLocal        bool              `json:"isLocal"`
-	NetworkId      string            `json:"networkId"` // TODO: support multiple networks maybe?
-	NetworkName    string            `json:"networkName"`
+	Networks       []NetworkConfig   `json:"networks"`
 	SaveAsTemplate bool              `json:"saveAsTemplate"`
 	RestartPolicy  RestartPolicy     `json:"restartPolicy"`
 	Labels         map[string]string `json:"labels"`
 	Domain         DomainConfig      `json:"domain"`
+}
+
+type NetworkConfig struct {
+	NetworkId   string `json:"networkId" validate:"required"`
+	NetworkName string `json:"networkName" validate:"required"`
 }
 
 type GetContainersRequest struct {
