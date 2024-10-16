@@ -268,7 +268,6 @@ export const TraefikFields: React.FC = () => {
         data={[
           { name: 'http', value: 'web' },
           { name: 'https (with redirect http -> https)', value: 'websecure' },
-          { name: 'http & https', value: 'web,websecure'},
         ]}
       />
     </>
