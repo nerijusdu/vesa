@@ -23,14 +23,17 @@ const NewNetwork: React.FC = () => {
     resolver: zodResolver(createAppSchema),
     defaultValues: async () => {
       if (!params.id) {
-        return { name: '', domain: { host: '', entrypoints: ['http']}};
+        return {
+          name: '',
+          route: '',
+          domain: { host: '', entrypoints: ['http']},
+        };
       }
 
       const app = await getApp(params.id);
       return app;
     },
   });
-  console.log(errors);
 
   return (
     <FormContainer
@@ -43,6 +46,12 @@ const NewNetwork: React.FC = () => {
         errors={errors}
         {...register('name')}
         placeholder="My App"
+      />
+      <FormInput
+        label="Route to app"
+        errors={errors}
+        {...register('route')}
+        placeholder="http://host.docker.internal:3000"
       />
 
       <FormLabel>Domain routing setup</FormLabel>

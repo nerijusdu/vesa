@@ -101,9 +101,11 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		return "", err
 	}
 
-	for _, n := range req.Networks[1:] {
-		if err := d.Client.NetworkConnect(ctx, n.NetworkId, resp.ID, nil); err != nil {
-			return "", err
+	if len(req.Networks) > 1 {
+		for _, n := range req.Networks[1:] {
+			if err := d.Client.NetworkConnect(ctx, n.NetworkId, resp.ID, nil); err != nil {
+				return "", err
+			}
 		}
 	}
 

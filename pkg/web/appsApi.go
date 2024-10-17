@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/nerijusdu/vesa/pkg/data"
+	"github.com/nerijusdu/vesa/pkg/util"
 )
 
 func (api *VesaApi) registerAppRoutes(router chi.Router) {
@@ -44,6 +45,37 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 		}
 
 		id, err := api.apps.SaveApp(*req)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		traefikConfig, err := api.traefik.GetRoutes()
+		name := util.NormalizeName(req.Name)
+		traefikConfig.Http.Services[name] = data.TraefikService{
+			LoadBalancer: data.TraefikLoadBalancer{
+				Servers:        []data.TraefikServer{{URL: req.Route}},
+				PassHostHeader: true,
+			},
+		}
+		traefikConfig.Http.Routers[name] = data.TraefikRouter{
+			EntryPoints: req.Domain.Entrypoings,
+			Service:     name,
+			Rule:        "Host(`" + req.Domain.Host + "`)",
+		}
+
+		if req.Domain.Entrypoings[0] == "websecure" {
+			traefikConfig.Http.Routers[name+"-http"] = data.TraefikRouter{
+				EntryPoints: []string{"web"},
+				Service:     name,
+				Rule:        "Host(`" + req.Domain.Host + "`)",
+				Middlewares: []string{"redirect-to-https"},
+			}
+		} else {
+			delete(traefikConfig.Http.Routers, name+"-http")
+		}
+
+		err = api.traefik.SaveRoutes(traefikConfig)
 		if err != nil {
 			handleError(w, err)
 			return

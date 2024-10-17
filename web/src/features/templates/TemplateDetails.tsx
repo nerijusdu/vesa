@@ -45,7 +45,7 @@ const TemplateDetails: React.FC = () => {
 
       <FieldValue label="ID" value={template.id} />
       <FieldValue label="Image" value={template.container.image} />
-      <FieldValues label="Networks" values={template.container.networks.map(x => x.networkName!)} />
+      <FieldValues label="Networks" values={template.container.networks?.map(x => x.networkName!)} />
       <FieldValues
         label="Ports"
         values={template.container.ports}

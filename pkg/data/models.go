@@ -36,6 +36,7 @@ type RegistryAuth struct {
 type App struct {
 	ID     string `json:"id"`
 	Name   string `json:"name" validate:"required"`
+	Route  string `json:"route" validate:"required"`
 	Domain struct {
 		Host        string   `json:"host" validate:"required"`
 		Entrypoings []string `json:"entrypoints" validate:"required"`
@@ -44,4 +45,43 @@ type App struct {
 
 type Apps struct {
 	Apps []App `json:"apps"`
+}
+
+type TraefikRoutesConfig struct {
+	Http TraefikHttpConfig `yaml:"http"`
+}
+
+type TraefikHttpConfig struct {
+	Routers     map[string]TraefikRouter     `yaml:"routers"`
+	Middlewares map[string]TraefikMiddleware `yaml:"middlewares"`
+	Services    map[string]TraefikService    `yaml:"services"`
+}
+
+type TraefikRouter struct {
+	EntryPoints []string `yaml:"entryPoints"`
+	Middlewares []string `yaml:"middlewares"`
+	Service     string   `yaml:"service"`
+	Rule        string   `yaml:"rule"`
+}
+
+type TraefikMiddleware struct {
+	RedirectScheme RedirectSchemeMiddleware `yaml:"redirectScheme"`
+}
+
+type RedirectSchemeMiddleware struct {
+	Scheme    string `yaml:"scheme"`
+	Permanent bool   `yaml:"permanent"`
+}
+
+type TraefikService struct {
+	LoadBalancer TraefikLoadBalancer `yaml:"loadBalancer"`
+}
+
+type TraefikLoadBalancer struct {
+	Servers        []TraefikServer `yaml:"servers"`
+	PassHostHeader bool            `yaml:"passHostHeader"`
+}
+
+type TraefikServer struct {
+	URL string `yaml:"url"`
 }

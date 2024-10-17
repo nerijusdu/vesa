@@ -66,6 +66,11 @@ type appsRepository interface {
 	DeleteApp(id string) error
 }
 
+type traefikRepository interface {
+	GetRoutes() (data.TraefikRoutesConfig, error)
+	SaveRoutes(data.TraefikRoutesConfig) error
+}
+
 type VesaApi struct {
 	router       chi.Router
 	publicRouter chi.Router
@@ -73,6 +78,7 @@ type VesaApi struct {
 	projects     projectsRepository
 	templates    templateRepository
 	apps         appsRepository
+	traefik      traefikRepository
 	auth         authRepository
 	config       *config.Config
 }
@@ -82,6 +88,7 @@ type VesaApiConfig struct {
 	Projects      projectsRepository
 	Templates     templateRepository
 	Apps          appsRepository
+	Traefik       traefikRepository
 	Auth          authRepository
 	Config        *config.Config
 	StaticContent embed.FS
@@ -110,6 +117,7 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 		dockerctrl:   c.DockerCtrl,
 		projects:     c.Projects,
 		templates:    c.Templates,
+		traefik:      c.Traefik,
 		apps:         c.Apps,
 		auth:         c.Auth,
 		config:       c.Config,

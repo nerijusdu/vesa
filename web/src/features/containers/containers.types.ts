@@ -89,7 +89,7 @@ export const runContainerSchema = z.object({
   networks: z.array(z.object({
     networkId: z.string(),
     networkName: z.string().optional(),
-  })),
+  })).nullish().default([]),
   saveAsTemplate: z.boolean().optional(),
 });
 

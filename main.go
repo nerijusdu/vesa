@@ -21,6 +21,7 @@ func main() {
 	templ := data.NewTemplateRepository(defaultTempaltes)
 	auth := data.NewAuthRepository()
 	apps := data.NewAppsRepository()
+	traefik := data.NewTraefikRepository()
 	ctrl, err := dockerctrl.NewDockerCtrlClient(auth)
 	if err != nil {
 		panic(err)
@@ -33,6 +34,7 @@ func main() {
 		Projects:      proj,
 		Templates:     templ,
 		Apps:          apps,
+		Traefik:       traefik,
 		Auth:          auth,
 		StaticContent: content,
 	})

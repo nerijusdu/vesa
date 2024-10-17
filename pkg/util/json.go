@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 func GetDataDir() (string, error) {
@@ -13,6 +16,14 @@ func GetDataDir() (string, error) {
 	}
 
 	return dirname + "/.config/vesa", nil
+}
+
+type FileEncoder interface {
+	Encode(v any) error
+}
+
+type FileDecoder interface {
+	Decode(v any) error
 }
 
 func ReadFile[T any](file string) (*T, error) {
@@ -27,8 +38,15 @@ func ReadFile[T any](file string) (*T, error) {
 	}
 	defer f.Close()
 
+	var decoder FileDecoder
+	if strings.HasSuffix(file, ".yaml") {
+		decoder = yaml.NewDecoder(f)
+	} else {
+		decoder = json.NewDecoder(f)
+	}
+
 	var data T
-	if err := json.NewDecoder(f).Decode(&data); err != nil {
+	if err := decoder.Decode(&data); err != nil {
 		return nil, err
 	}
 
@@ -48,7 +66,14 @@ func WriteFile[T any](data *T, file string) error {
 	}
 	defer f.Close()
 
-	if err := json.NewEncoder(f).Encode(data); err != nil {
+	var encoder FileEncoder
+	if strings.HasSuffix(file, ".yaml") {
+		encoder = yaml.NewEncoder(f)
+	} else {
+		encoder = json.NewEncoder(f)
+	}
+
+	if err := encoder.Encode(data); err != nil {
 		return err
 	}
 	return nil

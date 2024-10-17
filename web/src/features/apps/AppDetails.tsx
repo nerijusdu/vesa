@@ -37,6 +37,7 @@ const AppDetails: React.FC = () => {
 
       </Heading>
 
+      <FieldValue label="Route to app" value={app.route} />
       <FieldValue label="Domain host" value={app.domain.host} />
       <FieldValue label="Domain entrypoint" value={entrypointMap[app.domain.entrypoints[0] || ''] || '-'} />
     </VStack>
