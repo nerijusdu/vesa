@@ -67,13 +67,13 @@ Traefik:
 - [X] Manage SSL certificates
 - [ ] Manage configuration file
   - [ ] Request user email for certs
-- [ ] Custom rules for non-container apps
+- [X] Custom rules for non-container apps
   - [X] Add apps
-  - [ ] Build traefik config from apps
+  - [X] Build traefik config from apps
   Test:
-  - vesa.domain.com
-  - domain.com/tts
-  - domain.com
+  - [X] vesa.domain.com
+  - [X] domain.com/tts
+  - [X] domain.com
 
 Other:
 - [X] Web GUI

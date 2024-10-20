@@ -52,6 +52,12 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 
 		traefikConfig, err := api.traefik.GetRoutes()
 		name := util.NormalizeName(req.Name)
+		rule := util.BuildTraefikRule(req.Domain.Host, req.Domain.PathPrefix)
+		middlewares := []string{}
+		if req.Domain.StripPath && req.Domain.Host != "" {
+			middlewares = append(middlewares, "strip-path")
+		}
+
 		traefikConfig.Http.Services[name] = data.TraefikService{
 			LoadBalancer: data.TraefikLoadBalancer{
 				Servers:        []data.TraefikServer{{URL: req.Route}},
@@ -61,14 +67,15 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 		traefikConfig.Http.Routers[name] = data.TraefikRouter{
 			EntryPoints: req.Domain.Entrypoings,
 			Service:     name,
-			Rule:        "Host(`" + req.Domain.Host + "`)",
+			Rule:        rule,
+			Middlewares: middlewares,
 		}
 
 		if req.Domain.Entrypoings[0] == "websecure" {
 			traefikConfig.Http.Routers[name+"-http"] = data.TraefikRouter{
 				EntryPoints: []string{"web"},
 				Service:     name,
-				Rule:        "Host(`" + req.Domain.Host + "`)",
+				Rule:        rule,
 				Middlewares: []string{"redirect-to-https"},
 			}
 		} else {

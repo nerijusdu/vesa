@@ -277,7 +277,8 @@ export const EnvVarFields: React.FC = () => {
 };
 
 export const TraefikFields: React.FC = () => {
-  const { register, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { register, watch, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const pathPrefix = watch('domain.pathPrefix');
 
   return (
     <>
@@ -288,6 +289,18 @@ export const TraefikFields: React.FC = () => {
         label="Domain"
         placeholder="example.com"
       />
+      <FormInput
+        {...register('domain.pathPrefix')}
+        errors={errors}
+        label="Path prefix (optional)"
+        placeholder="/foo"
+      />
+      <Checkbox
+        {...register('domain.stripPath')}
+        isDisabled={!pathPrefix}
+      >
+        Rewrite path
+      </Checkbox>
       <FormSelect
         {...register('domain.entrypoints.0')}
         errors={errors}

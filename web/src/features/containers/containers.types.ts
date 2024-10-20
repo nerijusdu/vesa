@@ -7,7 +7,7 @@ export type Container = {
   command: string;
   created: string;
   ports: Ports[];
-  labels: Record<string,string>;
+  labels: Record<string, string>;
   state: string;
   status: string;
 };
@@ -83,6 +83,8 @@ export const runContainerSchema = z.object({
   }),
   domain: z.object({
     host: z.string().optional(),
+    pathPrefix: z.string().optional(),
+    stripPath: z.boolean().optional(),
     entrypoints: z.array(z.string()).optional().nullish(),
   }).optional(),
   isLocal: z.boolean().optional(),

@@ -1,8 +1,6 @@
 package util
 
 import (
-	"regexp"
-	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -30,13 +28,4 @@ func HashPassword(password string) (string, error) {
 func ComparePassword(hashedPassword, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
-}
-
-var regex = regexp.MustCompile("[^a-z0-9_-]")
-
-func NormalizeName(name string) string {
-	newName := strings.ToLower(name)
-	newName = regex.ReplaceAllString(newName, "_")
-
-	return newName
 }

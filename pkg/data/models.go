@@ -39,6 +39,8 @@ type App struct {
 	Route  string `json:"route" validate:"required"`
 	Domain struct {
 		Host        string   `json:"host" validate:"required"`
+		PathPrefix  string   `json:"pathPrefix"`
+		StripPath   bool     `json:"stripPath"`
 		Entrypoings []string `json:"entrypoints" validate:"required"`
 	} `json:"domain" validate:"required"`
 }
@@ -65,12 +67,17 @@ type TraefikRouter struct {
 }
 
 type TraefikMiddleware struct {
-	RedirectScheme RedirectSchemeMiddleware `yaml:"redirectScheme"`
+	RedirectScheme *RedirectSchemeMiddleware `yaml:"redirectScheme,omitempty"`
+	ReplacePath    *ReplacePathMiddleware    `yaml:"replacePath,omitempty"`
 }
 
 type RedirectSchemeMiddleware struct {
 	Scheme    string `yaml:"scheme"`
 	Permanent bool   `yaml:"permanent"`
+}
+
+type ReplacePathMiddleware struct {
+	Path string `yaml:"path"`
 }
 
 type TraefikService struct {

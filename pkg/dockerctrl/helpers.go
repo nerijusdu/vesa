@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/docker/docker/api/types/mount"
+	"github.com/nerijusdu/vesa/pkg/util"
 )
 
 func ensureMountPaths(mounts []mount.Mount) {
@@ -20,17 +21,20 @@ func ensureMountPaths(mounts []mount.Mount) {
 func addDomainLabels(req RunContainerRequest) map[string]string {
 	if req.Domain.Host != "" {
 		req.Labels["traefik.enable"] = "true"
-		req.Labels["traefik.http.routers."+req.Name+".rule"] = "Host(`" + req.Domain.Host + "`)"
+		rule := util.BuildTraefikRule(req.Domain.Host, req.Domain.PathPrefix)
+		req.Labels["traefik.http.routers."+req.Name+".rule"] = rule
+
+		if req.Domain.PathPrefix != "" && req.Domain.StripPath {
+			req.Labels["traefik.http.routers."+req.Name+".middlewares"] = "strip-path@file"
+		}
+
 		for _, e := range req.Domain.Entrypoints {
 			req.Labels["traefik.http.routers."+req.Name+".entrypoints"] = e
 
 			if e == "websecure" {
 				req.Labels["traefik.http.routers."+req.Name+".tls.certResolver"] = "vesaresolver"
-
-				req.Labels["traefik.http.middlewares.redirect-to-https.redirectscheme.scheme"] = "https"
-				req.Labels["traefik.http.middlewares.redirect-to-https.redirectscheme.permanent"] = "true"
-				req.Labels["traefik.http.routers."+req.Name+"-http.rule"] = "Host(`" + req.Domain.Host + "`)"
-				req.Labels["traefik.http.routers."+req.Name+"-http.middlewares"] = "redirect-to-https"
+				req.Labels["traefik.http.routers."+req.Name+"-http.rule"] = rule
+				req.Labels["traefik.http.routers."+req.Name+"-http.middlewares"] = "redirect-to-https@file"
 				req.Labels["traefik.http.routers."+req.Name+"-http.entrypoints"] = "web"
 			}
 		}

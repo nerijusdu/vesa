@@ -1,13 +1,13 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDefaultMutation } from '../../hooks';
-import { createApp, getApp } from './apps.api';
-import { useForm } from 'react-hook-form';
-import { CreateAppRequest, createAppSchema } from './apps.types';
+import { Checkbox, FormLabel } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 import FormContainer from '../../components/form/formContainer';
 import FormInput from '../../components/form/formInput';
-import { FormLabel } from '@chakra-ui/react';
 import FormSelect from '../../components/form/formSelect';
+import { useDefaultMutation } from '../../hooks';
+import { createApp, getApp } from './apps.api';
+import { CreateAppRequest, createAppSchema } from './apps.types';
 
 
 const NewNetwork: React.FC = () => {
@@ -19,14 +19,14 @@ const NewNetwork: React.FC = () => {
     onSuccess: () => navigate('/apps'),
   });
 
-  const { register, handleSubmit, formState: {errors} } = useForm<CreateAppRequest>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<CreateAppRequest>({
     resolver: zodResolver(createAppSchema),
     defaultValues: async () => {
       if (!params.id) {
         return {
           name: '',
           route: '',
-          domain: { host: '', entrypoints: ['http']},
+          domain: { host: '', entrypoints: ['http'] },
         };
       }
 
@@ -34,6 +34,7 @@ const NewNetwork: React.FC = () => {
       return app;
     },
   });
+  const pathPrefix = watch('domain.pathPrefix');
 
   return (
     <FormContainer
@@ -61,6 +62,19 @@ const NewNetwork: React.FC = () => {
         label="Domain"
         placeholder="example.com"
       />
+      <FormInput
+        {...register('domain.pathPrefix')}
+        errors={errors}
+        label="Path prefix (optional)"
+        placeholder="/foo"
+      />
+      <Checkbox
+        {...register('domain.stripPath')}
+        isDisabled={!pathPrefix}
+      >
+        Rewrite path
+      </Checkbox>
+
       <FormSelect
         {...register('domain.entrypoints.0')}
         errorField="entrypoint"
