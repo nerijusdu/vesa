@@ -64,7 +64,7 @@ type TraefikRouter struct {
 	Middlewares []string          `yaml:"middlewares"`
 	Service     string            `yaml:"service"`
 	Rule        string            `yaml:"rule"`
-	Tls         *TraefikTlsConfig `yaml:"tlsConfig,omitempty"`
+	Tls         *TraefikTlsConfig `yaml:"tls,omitempty"`
 }
 
 type TraefikTlsConfig struct {
