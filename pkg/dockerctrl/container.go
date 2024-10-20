@@ -94,6 +94,7 @@ func (d *DockerCtrlClient) RunContainer(req RunContainerRequest) (string, error)
 		RestartPolicy: mapRestartPolicy(req.RestartPolicy),
 		PortBindings:  ports,
 		Mounts:        mounts,
+		ExtraHosts:    []string{"host.docker.internal:host-gateway"},
 	}, &network.NetworkingConfig{
 		EndpointsConfig: networkEndpoints,
 	}, nil, req.Name)
