@@ -77,6 +77,9 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 				Service:     name,
 				Rule:        rule,
 				Middlewares: []string{"redirect-to-https"},
+				Tls: &data.TraefikTlsConfig{
+					CertResolver: "vesaresolver",
+				},
 			}
 		} else {
 			delete(traefikConfig.Http.Routers, name+"-http")

@@ -60,10 +60,15 @@ type TraefikHttpConfig struct {
 }
 
 type TraefikRouter struct {
-	EntryPoints []string `yaml:"entryPoints"`
-	Middlewares []string `yaml:"middlewares"`
-	Service     string   `yaml:"service"`
-	Rule        string   `yaml:"rule"`
+	EntryPoints []string          `yaml:"entryPoints"`
+	Middlewares []string          `yaml:"middlewares"`
+	Service     string            `yaml:"service"`
+	Rule        string            `yaml:"rule"`
+	Tls         *TraefikTlsConfig `yaml:"tlsConfig,omitempty"`
+}
+
+type TraefikTlsConfig struct {
+	CertResolver string `yaml:"certResolver"`
 }
 
 type TraefikMiddleware struct {
