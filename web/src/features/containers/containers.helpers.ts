@@ -26,8 +26,8 @@ export const mapApiRequestToContainer = (container: RunContainerApiRequest): Run
   ...container,
   ports: container.ports?.map(value => ({ value })) || [],
   envVars: container.envVars?.map(x => {
-    const splits = x.split('=');
-    return { key: splits[0], value: splits[1] };
+    const [key, ...rest] = x.split('=');
+    return { key, value: rest.join('=') };
   }) || [],
   restartPolicy: {
     name: container.restartPolicy.name || 'no',
