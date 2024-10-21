@@ -69,6 +69,9 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			Service:     name,
 			Rule:        rule,
 			Middlewares: middlewares,
+			Tls: &data.TraefikTlsConfig{
+				CertResolver: "vesaresolver",
+			},
 		}
 
 		if req.Domain.Entrypoings[0] == "websecure" {
@@ -77,9 +80,6 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 				Service:     name,
 				Rule:        rule,
 				Middlewares: []string{"redirect-to-https"},
-				Tls: &data.TraefikTlsConfig{
-					CertResolver: "vesaresolver",
-				},
 			}
 		} else {
 			delete(traefikConfig.Http.Routers, name+"-http")

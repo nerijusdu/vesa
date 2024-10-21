@@ -47,6 +47,11 @@ To create easy releases using github actions
 - Copy files from `github-actions` folder to your projects `.github/workflows` folder
 - Open `release.yml` file and update environment variables and required secrets to your github repository.
 
+## Troubleshooting
+
+If traefik can't times out while connecting to host services:
+- Allow docker to access local service with `sudo ufw allow from 172.22.0.0/16 to 172.17.0.1`
+
 ## TODO
 
 Docker:
