@@ -1,6 +1,8 @@
 package data
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
@@ -42,7 +44,7 @@ func (p *AppsRepository) GetApp(id string) (App, error) {
 		}
 	}
 
-	return emptyApp, nil
+	return emptyApp, fmt.Errorf("Cannot find app")
 }
 
 func (p *AppsRepository) SaveApp(app App) (string, error) {

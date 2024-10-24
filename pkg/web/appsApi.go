@@ -98,7 +98,26 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 	})
 
 	router.Delete("/apps/{id}", func(w http.ResponseWriter, r *http.Request) {
-		err := api.apps.DeleteApp(chi.URLParam(r, "id"))
+		id := chi.URLParam(r, "id")
+		app, err := api.apps.GetApp(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		err = api.apps.DeleteApp(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		traefikConfig, err := api.traefik.GetRoutes()
+		name := util.NormalizeName(app.Name)
+		delete(traefikConfig.Http.Routers, name)
+		delete(traefikConfig.Http.Routers, name+"-http")
+		delete(traefikConfig.Http.Services, name)
+
+		err = api.traefik.SaveRoutes(traefikConfig)
 		if err != nil {
 			handleError(w, err)
 			return
@@ -106,5 +125,4 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 
 		w.WriteHeader(http.StatusNoContent)
 	})
-
 }

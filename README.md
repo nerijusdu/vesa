@@ -76,7 +76,8 @@ Traefik:
 - [X] Custom rules for non-container apps
   - [X] Add apps
   - [X] Build traefik config from apps
-  - [ ] Remove from file when deleted
+  - [X] Remove from file when deleted
+  - [ ] App name must be unique
   - [ ] Multiple paths on single app
 
 Other:
