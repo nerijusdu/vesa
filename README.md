@@ -78,7 +78,7 @@ Traefik:
   - [X] Build traefik config from apps
   - [X] Remove from file when deleted
   - [X] App name must be unique
-  - [ ] Multiple paths on single app
+  - [X] Multiple paths on single app
 
 Other:
 - [X] Web GUI

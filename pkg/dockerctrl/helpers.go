@@ -21,10 +21,10 @@ func ensureMountPaths(mounts []mount.Mount) {
 func addDomainLabels(req RunContainerRequest) map[string]string {
 	if req.Domain.Host != "" {
 		req.Labels["traefik.enable"] = "true"
-		rule := util.BuildTraefikRule(req.Domain.Host, req.Domain.PathPrefix)
+		rule := util.BuildTraefikRule(req.Domain.Host, req.Domain.PathPrefixes)
 		req.Labels["traefik.http.routers."+req.Name+".rule"] = rule
 
-		if req.Domain.PathPrefix != "" && req.Domain.StripPath {
+		if len(req.Domain.PathPrefixes) > 0 && req.Domain.StripPath {
 			req.Labels["traefik.http.routers."+req.Name+".middlewares"] = "strip-path@file"
 		}
 

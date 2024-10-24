@@ -1,7 +1,7 @@
 import { authRequest } from '../../api/api';
-import { App, CreateAppRequest } from './apps.types';
+import { App } from './apps.types';
 
-export const getApps = async ():Promise<App[]> => {
+export const getApps = async (): Promise<App[]> => {
   const response = await authRequest('/api/apps');
   return response.json();
 };
@@ -11,7 +11,7 @@ export const getApp = async (id: string): Promise<App> => {
   return response.json();
 };
 
-export const createApp = async (app: CreateAppRequest): Promise<string> => {
+export const createApp = async (app: Omit<App, 'id'> & { id?: string }): Promise<string> => {
   const response = await authRequest('/api/apps', {
     method: 'POST',
     body: JSON.stringify(app),

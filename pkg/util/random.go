@@ -14,13 +14,20 @@ func NormalizeName(name string) string {
 	return newName
 }
 
-func BuildTraefikRule(host, pathPrefix string) string {
+func BuildTraefikRule(host string, pathPrefixes []string) string {
 	rules := []string{}
 	if host != "" {
 		rules = append(rules, "Host(`"+host+"`)")
 	}
-	if pathPrefix != "" {
-		rules = append(rules, "PathPrefix(`"+pathPrefix+"`)")
+	prefixRules := []string{}
+	for _, prefix := range pathPrefixes {
+		if prefix != "" {
+			prefixRules = append(prefixRules, "PathPrefix(`"+prefix+"`)")
+		}
+	}
+
+	if len(prefixRules) > 0 {
+		rules = append(rules, "("+strings.Join(prefixRules, " || ")+")")
 	}
 
 	return strings.Join(rules, " && ")

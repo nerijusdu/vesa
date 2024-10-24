@@ -53,12 +53,19 @@ func (p *AppsRepository) SaveApp(app App) (string, error) {
 		return "", err
 	}
 
+	newName := util.NormalizeName(app.Name)
+	for _, a := range apps {
+		if util.NormalizeName(a.Name) == newName && a.ID != app.ID {
+			return "", fmt.Errorf("App name must be unique")
+		}
+	}
+
 	if app.ID == "" {
 		app.ID = uuid.NewString()
 		apps = append(apps, app)
 	} else {
-		for i, proj := range apps {
-			if proj.ID == app.ID {
+		for i, a := range apps {
+			if a.ID == app.ID {
 				apps[i] = app
 				break
 			}

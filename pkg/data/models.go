@@ -38,10 +38,10 @@ type App struct {
 	Name   string `json:"name" validate:"required"`
 	Route  string `json:"route" validate:"required"`
 	Domain struct {
-		Host        string   `json:"host" validate:"required"`
-		PathPrefix  string   `json:"pathPrefix"`
-		StripPath   bool     `json:"stripPath"`
-		Entrypoings []string `json:"entrypoints" validate:"required"`
+		Host         string   `json:"host" validate:"required"`
+		PathPrefixes []string `json:"pathPrefixes"`
+		StripPath    bool     `json:"stripPath"`
+		Entrypoings  []string `json:"entrypoints" validate:"required"`
 	} `json:"domain" validate:"required"`
 }
 
