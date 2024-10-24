@@ -65,6 +65,7 @@ Docker:
 - [X] Registry auth
   - [ ] Test docker hub auth
 - [X] Save container templates
+- [X] Restart container button
 
 Traefik:
 - [X] Add traefik labels
@@ -75,10 +76,8 @@ Traefik:
 - [X] Custom rules for non-container apps
   - [X] Add apps
   - [X] Build traefik config from apps
-  Test:
-  - [X] vesa.domain.com
-  - [X] domain.com/tts
-  - [X] domain.com
+  - [ ] Remove from file when deleted
+  - [ ] Multiple paths on single app
 
 Other:
 - [X] Web GUI

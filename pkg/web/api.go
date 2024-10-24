@@ -28,6 +28,7 @@ type dockerCtrlClient interface {
 	DeleteContainer(id string) error
 	StopContainer(id string) error
 	StartContainer(id string) error
+	RestartContainer(id string) error
 	PullImage(image string) error
 	GetContainerLogs(id string) (io.ReadCloser, error)
 

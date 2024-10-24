@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -139,6 +140,16 @@ func (d *DockerCtrlClient) StopContainer(id string) error {
 func (d *DockerCtrlClient) StartContainer(id string) error {
 	ctx := context.Background()
 	return d.Client.ContainerStart(ctx, id, types.ContainerStartOptions{})
+}
+
+func (d *DockerCtrlClient) RestartContainer(id string) error {
+	ctx := context.Background()
+	timeout, err := time.ParseDuration("60s")
+	if err != nil {
+		return err
+	}
+
+	return d.Client.ContainerRestart(ctx, id, &timeout)
 }
 
 func (d *DockerCtrlClient) PullImage(image string) error {

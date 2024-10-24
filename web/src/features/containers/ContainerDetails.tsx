@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
 import { createTemplate } from '../templates/templates.api';
-import { deleteContainer, getContainer, getContainerLogs, startContainer, stopContainer } from './containers.api';
+import { deleteContainer, getContainer, getContainerLogs, restartContainer, startContainer, stopContainer } from './containers.api';
 
 const ContainerDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +24,10 @@ const ContainerDetails: React.FC = () => {
   });
   const { mutate: start, isLoading: isStarting } = useDefaultMutation(startContainer, {
     action: 'starting container',
+    invalidateQueries: ['containers'],
+  });
+  const { mutate: restart, isLoading: isRestarting } = useDefaultMutation(restartContainer, {
+    action: 'restarting container',
     invalidateQueries: ['containers'],
   });
   const { mutate: remove, isLoading: isRemoving } = useDefaultMutation(deleteContainer, {
@@ -108,6 +112,7 @@ const ContainerDetails: React.FC = () => {
       <Flex gap={2}>
         <Button variant="outline" isLoading={isStarting} onClick={() => start(container.id)}>Start</Button>
         <Button variant="outline" isLoading={isStopping} onClick={() => stop(container.id)}>Stop</Button>
+        <Button variant="outline" isLoading={isRestarting} onClick={() => restart(container.id)}>Restart</Button>
         <Button variant="outline" isLoading={isRemoving} onClick={() => confirm('Are you sure?') && remove(container.id)}>Remove</Button>
         <Button variant="outline" isLoading={isCreating} onClick={() => createTemp(container.id)}>Create template from container</Button>
       </Flex>

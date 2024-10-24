@@ -115,6 +115,17 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
+	router.Post("/containers/{id}/restart", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		err := api.dockerctrl.RestartContainer(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
 	router.Get("/containers/{id}/logs", func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 		reader, err := api.dockerctrl.GetContainerLogs(id)

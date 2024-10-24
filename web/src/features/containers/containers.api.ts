@@ -33,6 +33,10 @@ export const startContainer = async (id: string): Promise<void> => {
   await authRequest(`/api/containers/${id}/start`, { method: 'POST' });
 };
 
+export const restartContainer = async (id: string): Promise<void> => {
+  await authRequest(`/api/containers/${id}/restart`, { method: 'POST' });
+};
+
 export const getContainerLogs = async (id: string | undefined): Promise<string> => {
   const data = await authRequest(`/api/containers/${id}/logs`);
   const res = await data.text();
