@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -44,14 +45,24 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			return
 		}
 
+		name := util.NormalizeName(req.Name)
+		traefikConfig, err := api.traefik.GetRoutes()
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		if _, ok := traefikConfig.Http.Services[name]; ok {
+			handleError(w, fmt.Errorf("App name must be unique"))
+			return
+		}
+
 		id, err := api.apps.SaveApp(*req)
 		if err != nil {
 			handleError(w, err)
 			return
 		}
 
-		traefikConfig, err := api.traefik.GetRoutes()
-		name := util.NormalizeName(req.Name)
 		rule := util.BuildTraefikRule(req.Domain.Host, req.Domain.PathPrefix)
 		middlewares := []string{}
 		if req.Domain.StripPath && req.Domain.Host != "" {

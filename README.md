@@ -77,7 +77,7 @@ Traefik:
   - [X] Add apps
   - [X] Build traefik config from apps
   - [X] Remove from file when deleted
-  - [ ] App name must be unique
+  - [X] App name must be unique
   - [ ] Multiple paths on single app
 
 Other:
