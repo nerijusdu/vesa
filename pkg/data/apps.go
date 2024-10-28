@@ -47,25 +47,27 @@ func (p *AppsRepository) GetApp(id string) (App, error) {
 	return emptyApp, fmt.Errorf("Cannot find app")
 }
 
-func (p *AppsRepository) SaveApp(app App) (string, error) {
+func (p *AppsRepository) SaveApp(app App) (string, string, error) {
 	apps, err := p.GetApps()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	newName := util.NormalizeName(app.Name)
 	for _, a := range apps {
 		if util.NormalizeName(a.Name) == newName && a.ID != app.ID {
-			return "", fmt.Errorf("App name must be unique")
+			return "", "", fmt.Errorf("App name must be unique")
 		}
 	}
 
+	oldName := app.Name
 	if app.ID == "" {
 		app.ID = uuid.NewString()
 		apps = append(apps, app)
 	} else {
 		for i, a := range apps {
 			if a.ID == app.ID {
+				oldName = a.Name
 				apps[i] = app
 				break
 			}
@@ -73,7 +75,7 @@ func (p *AppsRepository) SaveApp(app App) (string, error) {
 	}
 
 	err = util.WriteFile(&Apps{Apps: apps}, "apps.json")
-	return app.ID, err
+	return app.ID, oldName, err
 }
 
 func (p *AppsRepository) DeleteApp(id string) error {

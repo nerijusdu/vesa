@@ -63,7 +63,7 @@ type authRepository interface {
 type appsRepository interface {
 	GetApps() ([]data.App, error)
 	GetApp(id string) (data.App, error)
-	SaveApp(data.App) (string, error)
+	SaveApp(data.App) (string, string, error)
 	DeleteApp(id string) error
 }
 

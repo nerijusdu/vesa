@@ -44,7 +44,7 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			return
 		}
 
-		id, err := api.apps.SaveApp(*req)
+		id, oldName, err := api.apps.SaveApp(*req)
 		if err != nil {
 			handleError(w, err)
 			return
@@ -88,6 +88,13 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			}
 		} else {
 			delete(traefikConfig.Http.Routers, name+"-http")
+		}
+
+		if oldName != req.Name {
+			oldName = util.NormalizeName(oldName)
+			delete(traefikConfig.Http.Routers, oldName)
+			delete(traefikConfig.Http.Routers, oldName+"-http")
+			delete(traefikConfig.Http.Services, oldName)
 		}
 
 		err = api.traefik.SaveRoutes(traefikConfig)
