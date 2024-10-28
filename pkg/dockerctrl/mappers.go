@@ -56,9 +56,10 @@ func mapContainerDetails(c types.ContainerJSON) ContainerDetails {
 			AutoRemove: c.HostConfig.AutoRemove,
 		},
 		Config: &ContainerConfig{
-			Env:   c.Config.Env,
-			Image: c.Config.Image,
-			Cmd:   c.Config.Cmd,
+			Env:    c.Config.Env,
+			Image:  c.Config.Image,
+			Cmd:    c.Config.Cmd,
+			Labels: c.Config.Labels,
 		},
 		NetworkSettings: &NetworkSettings{
 			Networks: util.MapDict(c.NetworkSettings.Networks, mapNetworkSettingsNetwork),

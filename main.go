@@ -18,7 +18,7 @@ var defaultTempaltes embed.FS
 func main() {
 	c := config.NewConfig()
 	proj := data.NewProjectsRepository()
-	templ := data.NewTemplateRepository(defaultTempaltes)
+	templ := data.NewTemplateRepository(defaultTempaltes, c)
 	auth := data.NewAuthRepository()
 	apps := data.NewAppsRepository()
 	traefik := data.NewTraefikRepository()

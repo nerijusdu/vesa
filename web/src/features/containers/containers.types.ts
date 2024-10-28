@@ -54,6 +54,7 @@ export type ContainerDetails = {
   config?: {
     env: string[];
     image: string;
+    labels: Record<string, string>;
   };
   networkSettings?: {
     networks: Record<string, { networkId: string }>;

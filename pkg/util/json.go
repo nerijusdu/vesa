@@ -95,3 +95,17 @@ func FileExists(path string) bool {
 
 	return true
 }
+
+func CreateEmptyFile(path string) {
+	dir, err := GetDataDir()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Create(dir + "/" + path)
+	if err != nil {
+		panic(err)
+	}
+
+	f.Close()
+}

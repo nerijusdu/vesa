@@ -1,7 +1,7 @@
 {
   "image": "traefik:v3.1",
   "name": "traefik",
-  "command": "--api.insecure=true --providers.docker --entryPoints.web.address=:80 --entryPoints.websecure.address=:443  --certificatesresolvers.vesaresolver.acme.email=email+TODO+change+me@example.com --certificatesresolvers.vesaresolver.acme.storage=acme.json",
+  "command": "",
   "isLocal": false,
   "networkId": "",
   "saveAsTemplate": true,
@@ -22,11 +22,33 @@
       "source": "/var/run/docker.sock",
       "target": "/var/run/docker.sock",
       "name": ""
+    },
+    {
+      "type": "bind",
+      "source": "{{.ConfigDir}}/acme_json",
+      "target": "/acme.json",
+      "name": ""
+    },
+    {
+      "type": "bind",
+      "source": "{{.ConfigDir}}/routes.yaml",
+      "target": "/routes.yaml",
+      "name": ""
     }
   ],
   "ports": [
     "8080:8080",
     "80:80"
   ],
-  "envVars": []
+  "envVars": [
+    "TRAEFIK_API_INSECURE=true",
+    "TRAEFIK_PROVIDERS_FILE_FILENAME=/routes.yaml",
+    "TRAEFIK_PROVIDERS_DOCKER=true",
+    "TRAEFIK_ENTRYPOINTS_web_ADDRESS=:80",
+    "TRAEFIK_ENTRYPOINTS_websecure_ADDRESS=:443",
+    "TRAEFIK_CERTIFICATESRESOLVERS_vesaresolver_ACME_STORAGE=acme.json",
+    "TRAEFIK_CERTIFICATESRESOLVERS_vesaresolver_ACME_HTTPCHALLENGE=true",
+    "TRAEFIK_CERTIFICATESRESOLVERS_vesaresolver_ACME_HTTPCHALLENGE_ENTRYPOINT=web",
+    "TRAEFIK_CERTIFICATESRESOLVERS_vesaresolver_ACME_EMAIL={{.UserEmail}}"
+  ]
 }

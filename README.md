@@ -71,14 +71,8 @@ Traefik:
 - [X] Add traefik labels
 - [X] Run traefik container
 - [X] Manage SSL certificates
-- [ ] Manage configuration file
-  - [ ] Request user email for certs
+- [X] Request user email for certs
 - [X] Custom rules for non-container apps
-  - [X] Add apps
-  - [X] Build traefik config from apps
-  - [X] Remove from file when deleted
-  - [X] App name must be unique
-  - [X] Multiple paths on single app
 
 Other:
 - [X] Web GUI
@@ -90,4 +84,6 @@ Other:
 - [X] Config update
 - [X] Edit template json
 - [X] Document installation or setting up as a service
+- [ ] Better UI
+- [ ] Show docker logs without weird symbols
 - [ ] Is it possible to use vesa in container?

@@ -67,9 +67,10 @@ type NetworkSettingsNetwork struct {
 }
 
 type ContainerConfig struct {
-	Env   []string `json:"env"`
-	Image string   `json:"image"`
-	Cmd   []string `json:"cmd"`
+	Env    []string          `json:"env"`
+	Image  string            `json:"image"`
+	Cmd    []string          `json:"cmd"`
+	Labels map[string]string `json:"labels"`
 }
 
 type RunContainerRequest struct {

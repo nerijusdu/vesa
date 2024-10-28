@@ -25,7 +25,6 @@ func NewTraefikRepository() *TraefikRepository {
 	if !util.FileExists("routes.yaml") {
 		err := util.WriteFile(&TraefikRoutesConfig{
 			Http: TraefikHttpConfig{
-				Routers:     make(map[string]TraefikRouter),
 				Middlewares: middlewares,
 			},
 		}, "routes.yaml")
@@ -46,6 +45,10 @@ func NewTraefikRepository() *TraefikRepository {
 		}
 
 		repo.SaveRoutes(routes)
+	}
+
+	if !util.FileExists("acme_json") {
+		util.CreateEmptyFile("acme_json")
 	}
 
 	return repo

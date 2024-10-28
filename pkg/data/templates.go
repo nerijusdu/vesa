@@ -3,9 +3,12 @@ package data
 import (
 	"embed"
 	"encoding/json"
+	"io"
 	"strings"
+	"text/template"
 
 	"github.com/google/uuid"
+	"github.com/nerijusdu/vesa/pkg/config"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
 	"github.com/nerijusdu/vesa/pkg/util"
 )
@@ -14,7 +17,12 @@ type TemplateRepository struct {
 	defaultTemplates []Template
 }
 
-func NewTemplateRepository(defaultTemplatesDir embed.FS) *TemplateRepository {
+type SystemTemplateVars struct {
+	UserEmail string
+	ConfigDir string
+}
+
+func NewTemplateRepository(defaultTemplatesDir embed.FS, c *config.Config) *TemplateRepository {
 	if !util.FileExists("templates.json") {
 		err := util.WriteFile(&Templates{Templates: []Template{}}, "templates.json")
 		if err != nil {
@@ -22,29 +30,35 @@ func NewTemplateRepository(defaultTemplatesDir embed.FS) *TemplateRepository {
 		}
 	}
 
-	dir, err := defaultTemplatesDir.ReadDir("templates")
+	dataDir, err := util.GetDataDir()
+	if err != nil {
+		panic(err)
+	}
+
+	templateVars := SystemTemplateVars{
+		UserEmail: c.UserEmail,
+		ConfigDir: dataDir,
+	}
+	tmpl, err := template.ParseFS(defaultTemplatesDir, "templates/*")
 	if err != nil {
 		panic(err)
 	}
 
 	var defaultTemplates []Template
-	for _, file := range dir {
-		if file.IsDir() {
-			continue
-		}
-
-		bytes, err := defaultTemplatesDir.ReadFile("templates/" + file.Name())
-		if err != nil {
-			panic(err)
-		}
+	for _, t := range tmpl.Templates() {
+		reader, writer := io.Pipe()
+		go func() {
+			err := t.Execute(writer, templateVars)
+			writer.CloseWithError(err)
+		}()
 
 		template := &dockerctrl.RunContainerRequest{}
-		if err := json.Unmarshal(bytes, template); err != nil {
+		if err := json.NewDecoder(reader).Decode(template); err != nil {
 			panic(err)
 		}
 
 		defaultTemplates = append(defaultTemplates, Template{
-			ID:        "system-template:" + strings.Split(file.Name(), ".")[0],
+			ID:        "system-template:" + strings.Split(t.Name(), ".")[0],
 			IsSystem:  true,
 			Container: *template,
 		})

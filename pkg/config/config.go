@@ -13,6 +13,7 @@ type Config struct {
 	JWTSecret string
 	UserName  string
 	Password  string
+	UserEmail string
 	Clients   []Client
 }
 
@@ -49,6 +50,19 @@ func initConfig() *Config {
 				EchoMode(huh.EchoModePassword).
 				Validate(huh.ValidateNotEmpty()).
 				Value(&values.Password),
+			huh.NewInput().
+				Title("Email").
+				Description("Email to be used for generating SSL certificates with LetsEncrypt").
+				Placeholder("email@example.com").
+				Validate(func(val string) error {
+					err := huh.ValidateNotEmpty()(val)
+					if err != nil {
+						return err
+					}
+
+					return util.ValidateEmail(val)
+				}).
+				Value(&values.UserEmail),
 		),
 	)
 

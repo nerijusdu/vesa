@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import FieldValue, { FieldValues } from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
 import { createTemplate } from '../templates/templates.api';
@@ -47,6 +47,7 @@ const ContainerDetails: React.FC = () => {
   }
 
   const name = container.name.replace('/', '');
+  const templateId = container.config?.labels?.['template'];
 
   return (
     <VStack gap={2} align="flex-start" maxW="100%">
@@ -114,9 +115,14 @@ const ContainerDetails: React.FC = () => {
         <Button variant="outline" isLoading={isStopping} onClick={() => stop(container.id)}>Stop</Button>
         <Button variant="outline" isLoading={isRestarting} onClick={() => restart(container.id)}>Restart</Button>
         <Button variant="outline" isLoading={isRemoving} onClick={() => confirm('Are you sure?') && remove(container.id)}>Remove</Button>
-        <Button variant="outline" isLoading={isCreating} onClick={() => createTemp(container.id)}>Create template from container</Button>
+        {templateId ? (
+          <Button variant="outline" as={Link} to={`/templates/${templateId}`}>Go to template</Button>
+        ) : (
+          <Button variant="outline" isLoading={isCreating} onClick={() => createTemp(container.id)}>Create template from container</Button>
+        )}
+
       </Flex>
-    </VStack>
+    </VStack >
   );
 };
 

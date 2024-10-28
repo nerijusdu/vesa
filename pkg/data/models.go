@@ -54,9 +54,9 @@ type TraefikRoutesConfig struct {
 }
 
 type TraefikHttpConfig struct {
-	Routers     map[string]TraefikRouter     `yaml:"routers"`
+	Routers     *map[string]TraefikRouter    `yaml:"routers"`
 	Middlewares map[string]TraefikMiddleware `yaml:"middlewares"`
-	Services    map[string]TraefikService    `yaml:"services"`
+	Services    *map[string]TraefikService   `yaml:"services"`
 }
 
 type TraefikRouter struct {

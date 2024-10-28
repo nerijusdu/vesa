@@ -63,13 +63,27 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			middlewares = append(middlewares, "strip-path")
 		}
 
-		traefikConfig.Http.Services[name] = data.TraefikService{
+		var services map[string]data.TraefikService
+		if traefikConfig.Http.Services == nil {
+			services = make(map[string]data.TraefikService)
+		} else {
+			services = *traefikConfig.Http.Services
+		}
+
+		var routers map[string]data.TraefikRouter
+		if traefikConfig.Http.Routers == nil {
+			routers = make(map[string]data.TraefikRouter)
+		} else {
+			routers = *traefikConfig.Http.Routers
+		}
+
+		services[name] = data.TraefikService{
 			LoadBalancer: data.TraefikLoadBalancer{
 				Servers:        []data.TraefikServer{{URL: req.Route}},
 				PassHostHeader: true,
 			},
 		}
-		traefikConfig.Http.Routers[name] = data.TraefikRouter{
+		routers[name] = data.TraefikRouter{
 			EntryPoints: req.Domain.Entrypoings,
 			Service:     name,
 			Rule:        rule,
@@ -80,22 +94,25 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 		}
 
 		if req.Domain.Entrypoings[0] == "websecure" {
-			traefikConfig.Http.Routers[name+"-http"] = data.TraefikRouter{
+			routers[name+"-http"] = data.TraefikRouter{
 				EntryPoints: []string{"web"},
 				Service:     name,
 				Rule:        rule,
 				Middlewares: []string{"redirect-to-https"},
 			}
 		} else {
-			delete(traefikConfig.Http.Routers, name+"-http")
+			delete(routers, name+"-http")
 		}
 
 		if oldName != req.Name {
 			oldName = util.NormalizeName(oldName)
-			delete(traefikConfig.Http.Routers, oldName)
-			delete(traefikConfig.Http.Routers, oldName+"-http")
-			delete(traefikConfig.Http.Services, oldName)
+			delete(routers, oldName)
+			delete(routers, oldName+"-http")
+			delete(services, oldName)
 		}
+
+		traefikConfig.Http.Routers = &routers
+		traefikConfig.Http.Services = &services
 
 		err = api.traefik.SaveRoutes(traefikConfig)
 		if err != nil {
@@ -124,10 +141,16 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 		}
 
 		traefikConfig, err := api.traefik.GetRoutes()
+		routers := *traefikConfig.Http.Routers
+		services := *traefikConfig.Http.Services
 		name := util.NormalizeName(app.Name)
-		delete(traefikConfig.Http.Routers, name)
-		delete(traefikConfig.Http.Routers, name+"-http")
-		delete(traefikConfig.Http.Services, name)
+		if routers != nil {
+			delete(routers, name)
+			delete(routers, name+"-http")
+		}
+		if services != nil {
+			delete(services, name)
+		}
 
 		err = api.traefik.SaveRoutes(traefikConfig)
 		if err != nil {
