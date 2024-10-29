@@ -9,6 +9,8 @@ This is an alternative to docker-compose with a GUI. Why? Because I don't want t
 - Create custom templates to launch containers with predefined settings
   - Create templates form your existing containers
 - Github action to deploy automatically
+- Point domains to any container (or a separate service)
+    - Get SSL certificates from LetsEncrypt
 - Ability to use custom docker registry (or host it yourself)
 
 ## Setup
@@ -49,41 +51,21 @@ To create easy releases using github actions
 
 ## Troubleshooting
 
-If traefik can't times out while connecting to host services:
+### If traefik times out while connecting to host services:
 - Allow docker to access local service with `sudo ufw allow from 172.22.0.0/16 to 172.17.0.1`
+
+### I forgot my password
+- Run `vesa --init`, this will overwrite previous config
+
 
 ## TODO
 
 Docker:
-- [X] View containers
-- [X] Create a container
-- [X] Container networking (connect to other containers)
-  - [X] Multiple networks select
-- [X] Container volumes
   - [ ] Manage volumes
-- [X] Container environment variables
-- [X] Registry auth
   - [ ] Test docker hub auth
-- [X] Save container templates
-- [X] Restart container button
-
-Traefik:
-- [X] Add traefik labels
-- [X] Run traefik container
-- [X] Manage SSL certificates
-- [X] Request user email for certs
-- [X] Custom rules for non-container apps
 
 Other:
-- [X] Web GUI
-- [X] Generate github actions for deployment
-  - [X] Api endpoint to deploy newer version instead of ssh
 - [ ] Secret manager
-- [X] Create a tempate without creating a container
-- [X] Hash passwords and api keys
-- [X] Config update
-- [X] Edit template json
-- [X] Document installation or setting up as a service
 - [ ] Better UI
-- [X] Show docker logs without weird symbols
+- [ ] CLI tool to setup github actions
 - [ ] Is it possible to use vesa in container?
