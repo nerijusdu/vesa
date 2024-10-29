@@ -42,7 +42,7 @@
     "443:443"
   ],
   "envVars": [
-    "TRAEFIK_API_INSECURE=true",
+    "TRAEFIK_API_INSECURE=false",
     "TRAEFIK_PROVIDERS_FILE_FILENAME=/routes.yaml",
     "TRAEFIK_PROVIDERS_DOCKER=true",
     "TRAEFIK_ENTRYPOINTS_web_ADDRESS=:80",

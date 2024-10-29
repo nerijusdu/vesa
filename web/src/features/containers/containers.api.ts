@@ -1,5 +1,6 @@
 import { Container, ContainerDetails, RunContainerApiRequest } from './containers.types';
 import { authRequest, buildQuery } from '../../api/api';
+import ansiRegex from '../../util/strings';
 
 export const getContainers = async (data?: { label?: string }): Promise<Container[]> => {
   const response = await authRequest(`/api/containers${buildQuery(data)}`);
@@ -40,5 +41,8 @@ export const restartContainer = async (id: string): Promise<void> => {
 export const getContainerLogs = async (id: string | undefined): Promise<string> => {
   const data = await authRequest(`/api/containers/${id}/logs`);
   const res = await data.text();
-  return res;
+  return res.replace(ANSI_REGEX, '');
 };
+
+const ANSI_REGEX = ansiRegex();
+

@@ -136,7 +136,37 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 		defer reader.Close()
 
 		w.WriteHeader(http.StatusOK)
-		io.Copy(w, reader)
+
+		header := make([]byte, 8)
+		for {
+			n, err := reader.Read(header)
+			if err != nil {
+				if err != io.EOF {
+					handleError(w, err)
+				}
+				return
+			}
+			if n <= 0 {
+				break
+			}
+
+			// isErr := header[0] == byte(2)
+			size := uint32(header[4])<<24 |
+				uint32(header[5])<<16 |
+				uint32(header[6])<<8 |
+				uint32(header[7])
+
+			buf := make([]byte, size)
+			n, err = reader.Read(buf)
+			if err != nil {
+				if err != io.EOF {
+					handleError(w, err)
+				}
+				return
+			}
+
+			w.Write(buf)
+		}
 	})
 
 	router.Post("/docker/auth", func(w http.ResponseWriter, r *http.Request) {

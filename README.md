@@ -85,5 +85,5 @@ Other:
 - [X] Edit template json
 - [X] Document installation or setting up as a service
 - [ ] Better UI
-- [ ] Show docker logs without weird symbols
+- [X] Show docker logs without weird symbols
 - [ ] Is it possible to use vesa in container?
