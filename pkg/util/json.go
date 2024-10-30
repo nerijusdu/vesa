@@ -102,7 +102,7 @@ func CreateEmptyFile(path string) {
 		panic(err)
 	}
 
-	f, err := os.Create(dir + "/" + path)
+	f, err := os.OpenFile(dir+"/"+path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		panic(err)
 	}
