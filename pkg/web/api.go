@@ -125,12 +125,18 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 	}
 
 	router.Route("/api", func(r chi.Router) {
-		r.Use(oauth.Authorize(c.Config.JWTSecret, nil))
-		api.registerContainerRoutes(r)
-		api.registerNetworkRoutes(r)
-		api.registerProjectRoutes(r)
-		api.registerTemplateRoutes(r)
-		api.registerAppRoutes(r)
+		r.Group(func(r chi.Router) {
+			r.Use(oauth.Authorize(c.Config.JWTSecret, nil))
+			api.registerContainerRoutes(r)
+			api.registerNetworkRoutes(r)
+			api.registerProjectRoutes(r)
+			api.registerAppRoutes(r)
+			api.registerTemplateRoutes(r)
+		})
+		r.Group(func(r chi.Router) {
+			r.Use(AuthorizeApiSecret(r, c.Config))
+			api.registerTemplateRoutesWithApiSecret(r)
+		})
 	})
 
 	fileServer(api.publicRouter, "/", c.StaticContent)

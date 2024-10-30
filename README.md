@@ -65,7 +65,9 @@ Docker:
   - [ ] Test docker hub auth
 
 Other:
-- [ ] Secret manager
+- [ ] Create auto-boot service from CLI?
 - [ ] Better UI
 - [ ] CLI tool to setup github actions
+- [ ] Rework GH actions to not use python
+- [ ] Secret manager
 - [ ] Is it possible to use vesa in container?

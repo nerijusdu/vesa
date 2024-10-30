@@ -2,7 +2,9 @@ package web
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -25,6 +27,47 @@ func setupAuth(router chi.Router, c *config.Config) {
 
 type UserVerifier struct {
 	config *config.Config
+}
+
+func AuthorizeApiSecret(router chi.Router, c *config.Config) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			auth, err := parseAuthorizationHeader(r.Header.Get("Authorization"))
+			if err != nil {
+				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte(err.Error()))
+				return
+			}
+
+			c, ok := util.Find(c.Clients, func(c config.Client) bool {
+				return util.ComparePassword(c.Secret, auth)
+			})
+
+			if !ok {
+				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte("Unauthorized"))
+				return
+			}
+
+			fmt.Println("Authorizing API for client: " + c.ID)
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+func parseAuthorizationHeader(auth string) (string, error) {
+	if len(auth) < 7 {
+		return "", errors.New("Invalid bearer authorization header")
+	}
+
+	authType := strings.ToLower(auth[:6])
+	if authType != "bearer" {
+		return "", errors.New("Invalid bearer authorization header")
+	}
+
+	auth = strings.Replace(strings.ToLower(auth), "bearer ", "", 1)
+	return auth, nil
 }
 
 func (uv *UserVerifier) ValidateUser(username, password, scope string, r *http.Request) error {
