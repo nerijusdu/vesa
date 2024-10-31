@@ -62,7 +62,7 @@ const TemplateDetails: React.FC = () => {
 
       <Flex gap={2}>
         <Button variant="outline" isLoading={isUsing} onClick={() => use(template.id)}>
-          Create container from template
+          Recreate container from template
         </Button>
       </Flex>
 

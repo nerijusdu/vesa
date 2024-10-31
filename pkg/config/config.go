@@ -9,12 +9,13 @@ import (
 )
 
 type Config struct {
-	Port      string
-	JWTSecret string
-	UserName  string
-	Password  string
-	UserEmail string
-	Clients   []Client
+	Port            string
+	JWTSecret       string
+	UserName        string
+	Password        string
+	UserEmail       string
+	EnableDashboard bool
+	Clients         []Client
 }
 
 type Client struct {
@@ -26,8 +27,9 @@ var configFile = "config.json"
 
 func initConfig() *Config {
 	values := &Config{
-		JWTSecret: util.GenerateRandomString(32),
-		Clients:   []Client{},
+		JWTSecret:       util.GenerateRandomString(32),
+		Clients:         []Client{},
+		EnableDashboard: false,
 	}
 
 	form := huh.NewForm(

@@ -18,8 +18,9 @@ type TemplateRepository struct {
 }
 
 type SystemTemplateVars struct {
-	UserEmail string
-	ConfigDir string
+	UserEmail       string
+	ConfigDir       string
+	EnableDashboard string
 }
 
 func NewTemplateRepository(defaultTemplatesDir embed.FS, c *config.Config) *TemplateRepository {
@@ -36,9 +37,14 @@ func NewTemplateRepository(defaultTemplatesDir embed.FS, c *config.Config) *Temp
 	}
 
 	templateVars := SystemTemplateVars{
-		UserEmail: c.UserEmail,
-		ConfigDir: dataDir,
+		UserEmail:       c.UserEmail,
+		ConfigDir:       dataDir,
+		EnableDashboard: "false",
 	}
+	if c.EnableDashboard {
+		templateVars.EnableDashboard = "true"
+	}
+
 	tmpl, err := template.ParseFS(defaultTemplatesDir, "templates/*")
 	if err != nil {
 		panic(err)
