@@ -6,7 +6,7 @@
   "networkId": "",
   "saveAsTemplate": true,
   "restartPolicy": {
-    "name": "no",
+    "name": "always",
     "maximumRetryCount": 0
   },
   "labels": null,
