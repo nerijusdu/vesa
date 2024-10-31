@@ -177,5 +177,27 @@ func useTemplate(api *VesaApi, template data.Template) (string, error) {
 	}
 	template.Container.Labels["template"] = template.ID
 
+	runningContainers, err := api.dockerctrl.GetContainers(dockerctrl.GetContainersRequest{
+		Label: "template=" + template.ID,
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(runningContainers) > 0 {
+		if runningContainers[0].State != "exited" {
+			err = api.dockerctrl.StopContainer(runningContainers[0].ID)
+			if err != nil {
+				return "", err
+			}
+		}
+
+		err = api.dockerctrl.DeleteContainer(runningContainers[0].ID)
+		if err != nil {
+			return "", err
+		}
+	}
+
 	return api.dockerctrl.RunContainer(template.Container)
 }
