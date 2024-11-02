@@ -101,7 +101,7 @@ const UpdateButton = ({ id }: { id: string }) => {
         label="Tag"
       />
       <Button
-        onClick={() => mutate(id)}
+        onClick={() => mutate({ id, tag })}
         isLoading={isLoading}
         mb={2}
       >

@@ -39,8 +39,8 @@ export const saveTemplate = async (template: Partial<Template>): Promise<string>
   return result.id;
 };
 
-export const updateTemplateContainers = async (templateId: string): Promise<void> => {
-  await authRequest(`/api/templates/${templateId}/update-web?tag=latest`, {
+export const updateTemplateContainers = async ({ id, tag }: { id: string; tag: string }): Promise<void> => {
+  await authRequest(`/api/templates/${id}/update-web?tag=${tag}`, {
     method: 'POST',
   });
 };

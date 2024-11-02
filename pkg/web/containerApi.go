@@ -217,8 +217,8 @@ func (api *VesaApi) registerContainerRoutes(router chi.Router) {
 			return
 		}
 
-		for _, v := range auths {
-			v.IdentityToken = ""
+		for i := range auths {
+			auths[i].IdentityToken = ""
 		}
 
 		sendJson(w, auths)

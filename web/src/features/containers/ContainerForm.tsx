@@ -1,7 +1,7 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, Checkbox, Divider, Flex, FormLabel, IconButton } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { FieldArrayWithId, useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, FieldArrayWithId, useFieldArray, useFormContext } from 'react-hook-form';
 import FormInput from '../../components/form/formInput';
 import FormSelect, { NamedValue } from '../../components/form/formSelect';
 import { RunContainerRequest } from './containers.types';
@@ -25,7 +25,7 @@ export type ContainerFieldsProps = {
 
 const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideTemplateCheckbox }) => {
   const [showRetryCount, setShowRetryCount] = useState(false);
-  const { register, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { register, control, formState: { errors } } = useFormContext<RunContainerRequest>();
 
   return (
     <>
@@ -36,9 +36,19 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
         placeholder="postgres:latest"
         required
       />
-      <Checkbox {...register('isLocal')}>
-        Local image
-      </Checkbox>
+      <Controller
+        control={control}
+        name='isLocal'
+        render={({ field: { onChange, value, ref } }) => (
+          <Checkbox
+            onChange={onChange}
+            ref={ref}
+            isChecked={value}
+          >
+            Local image
+          </Checkbox>
+        )}
+      />
       <FormInput
         {...register('name')}
         errors={errors}
@@ -277,7 +287,7 @@ export const EnvVarFields: React.FC = () => {
 };
 
 export const TraefikFields: React.FC = () => {
-  const { register, watch, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { register, control, watch, formState: { errors } } = useFormContext<RunContainerRequest>();
   const pathPrefix = watch('domain.pathPrefix');
 
   return (
@@ -295,12 +305,20 @@ export const TraefikFields: React.FC = () => {
         label="Path prefix (optional)"
         placeholder="/foo"
       />
-      <Checkbox
-        {...register('domain.stripPath')}
-        isDisabled={!pathPrefix}
-      >
-        Rewrite path
-      </Checkbox>
+      <Controller
+        control={control}
+        name='domain.stripPath'
+        render={({ field: { onChange, value, ref } }) => (
+          <Checkbox
+            onChange={onChange}
+            ref={ref}
+            isChecked={value}
+            isDisabled={!pathPrefix}
+          >
+            Rewrite path
+          </Checkbox>
+        )}
+      />
       <FormSelect
         {...register('domain.entrypoints.0')}
         errors={errors}

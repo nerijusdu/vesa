@@ -130,8 +130,7 @@ func (api *VesaApi) handleTemplateUpdate(w http.ResponseWriter, r *http.Request)
 	}
 
 	template.Container.Image = strings.Join(splits, ":")
-	if template.Container.IsLocal {
-		fmt.Println("Skiping pull for local image")
+	if !template.Container.IsLocal {
 		err = api.dockerctrl.PullImage(template.Container.Image)
 		if err != nil {
 			handleError(w, err)

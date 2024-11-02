@@ -1,6 +1,6 @@
 import { Button, Checkbox, Flex, FormLabel, IconButton } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
+import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormContainer from '../../components/form/formContainer';
 import FormInput from '../../components/form/formInput';
@@ -133,12 +133,20 @@ const PathPrefixFields: React.FC = () => {
       </Button>
 
 
-      <Checkbox
-        {...register('domain.stripPath')}
-        isDisabled={!fields.length}
-      >
-        Rewrite path
-      </Checkbox>
+      <Controller
+        control={control}
+        name='domain.stripPath'
+        render={({ field: { onChange, value, ref } }) => (
+          <Checkbox
+            onChange={onChange}
+            ref={ref}
+            isChecked={value}
+            isDisabled={!fields.length}
+          >
+            Rewrite path
+          </Checkbox>
+        )}
+      />
     </>
   );
 };

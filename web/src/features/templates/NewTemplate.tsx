@@ -108,10 +108,10 @@ const NewTemplate: React.FC = () => {
             value={jsonTemplate}
             onChange={(e) => setJsonTemplate(e.target.value)}
           />
-        ):(<ContainerFields
+        ) : (<ContainerFields
           networkOptions={networkOptions}
           hideTemplateCheckbox
-        /> )}
+        />)}
       </FormContainer>
     </FormProvider>
   );
