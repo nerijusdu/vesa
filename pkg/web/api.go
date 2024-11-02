@@ -40,57 +40,27 @@ type dockerCtrlClient interface {
 	DisconnectNetwork(networkID, containerID string) error
 }
 
-type projectsRepository interface {
-	GetProjects() ([]data.Project, error)
-	GetProject(id string) (data.Project, error)
-	SaveProject(data.Project) (string, error)
-	DeleteProject(id string) error
-}
-
-type templateRepository interface {
-	GetTemplates() ([]data.Template, error)
-	GetTemplate(id string) (data.Template, error)
-	SaveTemplate(data.Template) (string, error)
-	DeleteTemplate(id string) error
-}
-
-type authRepository interface {
-	GetAuths() ([]data.RegistryAuth, error)
-	SaveAuth(auth data.RegistryAuth) error
-	GetToken(serverUrl string) (string, error)
-}
-
-type appsRepository interface {
-	GetApps() ([]data.App, error)
-	GetApp(id string) (data.App, error)
-	SaveApp(data.App) (string, string, error)
-	DeleteApp(id string) error
-}
-
-type traefikRepository interface {
-	GetRoutes() (data.TraefikRoutesConfig, error)
-	SaveRoutes(data.TraefikRoutesConfig) error
-}
-
 type VesaApi struct {
 	router       chi.Router
 	publicRouter chi.Router
 	dockerctrl   dockerCtrlClient
-	projects     projectsRepository
-	templates    templateRepository
-	apps         appsRepository
-	traefik      traefikRepository
-	auth         authRepository
+	projects     *data.ProjectsRepository
+	templates    *data.TemplateRepository
+	apps         *data.AppsRepository
+	traefik      *data.TraefikRepository
+	jobs         *data.JobsRepository
+	auth         *data.AuthRepository
 	config       *config.Config
 }
 
 type VesaApiConfig struct {
 	DockerCtrl    dockerCtrlClient
-	Projects      projectsRepository
-	Templates     templateRepository
-	Apps          appsRepository
-	Traefik       traefikRepository
-	Auth          authRepository
+	Projects      *data.ProjectsRepository
+	Templates     *data.TemplateRepository
+	Apps          *data.AppsRepository
+	Traefik       *data.TraefikRepository
+	Jobs          *data.JobsRepository
+	Auth          *data.AuthRepository
 	Config        *config.Config
 	StaticContent embed.FS
 }
@@ -121,6 +91,7 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 		traefik:      c.Traefik,
 		apps:         c.Apps,
 		auth:         c.Auth,
+		jobs:         c.Jobs,
 		config:       c.Config,
 	}
 
@@ -132,6 +103,7 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 			api.registerProjectRoutes(r)
 			api.registerAppRoutes(r)
 			api.registerTemplateRoutes(r)
+			api.registerJobsRoutes(r)
 		})
 		r.Group(func(r chi.Router) {
 			r.Use(AuthorizeApiSecret(r, c.Config))

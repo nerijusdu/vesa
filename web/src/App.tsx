@@ -18,6 +18,9 @@ import { Box } from '@chakra-ui/react';
 import Apps from './features/apps/Apps';
 import AppDetails from './features/apps/AppDetails';
 import NewApp from './features/apps/NewApp';
+import Jobs from './features/jobs/Jobs';
+import NewJob from './features/jobs/NewJob';
+import JobDetails from './features/jobs/JobDetails';
 
 const router = createBrowserRouter([
   {
@@ -104,6 +107,23 @@ const router = createBrowserRouter([
         path: '/apps/:id/edit',
         element: <NewApp />,
       },
+      {
+        path: '/jobs',
+        element: <Jobs />,
+      },
+      {
+        path: '/jobs/:id',
+        element: <JobDetails />,
+      },
+      {
+        path: '/jobs/new',
+        element: <NewJob />,
+      },
+      {
+        path: '/jobs/:id/edit',
+        element: <NewJob />,
+      },
+
       {
         path: '/',
         index: true,

@@ -65,6 +65,8 @@ Docker:
   - [ ] Test docker hub auth
 
 Other:
+- [ ] Cron jobs
+- [ ] Script runner?
 - [ ] Create auto-boot service from CLI?
 - [ ] Better UI
 - [ ] CLI tool to setup github actions

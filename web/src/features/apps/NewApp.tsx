@@ -11,7 +11,7 @@ import { CreateAppRequest, createAppSchema } from './apps.types';
 import { DeleteIcon } from '@chakra-ui/icons';
 
 
-const NewNetwork: React.FC = () => {
+const NewApp: React.FC = () => {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { mutate } = useDefaultMutation(createApp, {
@@ -153,4 +153,4 @@ const PathPrefixFields: React.FC = () => {
 
 
 
-export default NewNetwork;
+export default NewApp;

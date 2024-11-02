@@ -49,6 +49,19 @@ type Apps struct {
 	Apps []App `json:"apps"`
 }
 
+type Job struct {
+	ID       string `json:"id"`
+	Name     string `json:"name" validate:"required"`
+	Url      string `json:"url" validate:"required"`
+	Secret   string `json:"secret"`
+	Schedule string `json:"schedule" validate:"required"`
+	Enabled  bool   `json:"enabled"`
+}
+
+type Jobs struct {
+	Jobs []Job `json:"jobs"`
+}
+
 type TraefikRoutesConfig struct {
 	Http TraefikHttpConfig `yaml:"http"`
 }
