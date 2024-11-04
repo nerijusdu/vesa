@@ -6,6 +6,7 @@ import (
 	"github.com/nerijusdu/vesa/pkg/config"
 	"github.com/nerijusdu/vesa/pkg/data"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
+	"github.com/nerijusdu/vesa/pkg/runner"
 	"github.com/nerijusdu/vesa/pkg/web"
 )
 
@@ -29,6 +30,13 @@ func main() {
 	}
 	defer ctrl.Close()
 
+	existingJobs, err := jobs.GetJobs()
+	if err != nil {
+		panic(err)
+	}
+
+	runner := runner.NewJobRunner(existingJobs)
+
 	api := web.NewVesaApi(web.VesaApiConfig{
 		Config:        c,
 		DockerCtrl:    ctrl,
@@ -37,6 +45,7 @@ func main() {
 		Apps:          apps,
 		Traefik:       traefik,
 		Jobs:          jobs,
+		Runner:        runner,
 		Auth:          auth,
 		StaticContent: content,
 	})

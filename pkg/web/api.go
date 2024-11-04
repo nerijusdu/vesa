@@ -15,6 +15,7 @@ import (
 	"github.com/nerijusdu/vesa/pkg/config"
 	"github.com/nerijusdu/vesa/pkg/data"
 	"github.com/nerijusdu/vesa/pkg/dockerctrl"
+	"github.com/nerijusdu/vesa/pkg/runner"
 )
 
 var validate *validator.Validate
@@ -49,6 +50,7 @@ type VesaApi struct {
 	apps         *data.AppsRepository
 	traefik      *data.TraefikRepository
 	jobs         *data.JobsRepository
+	runner       *runner.JobRunner
 	auth         *data.AuthRepository
 	config       *config.Config
 }
@@ -60,6 +62,7 @@ type VesaApiConfig struct {
 	Apps          *data.AppsRepository
 	Traefik       *data.TraefikRepository
 	Jobs          *data.JobsRepository
+	Runner        *runner.JobRunner
 	Auth          *data.AuthRepository
 	Config        *config.Config
 	StaticContent embed.FS
@@ -93,6 +96,7 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 		auth:         c.Auth,
 		jobs:         c.Jobs,
 		config:       c.Config,
+		runner:       c.Runner,
 	}
 
 	router.Route("/api", func(r chi.Router) {

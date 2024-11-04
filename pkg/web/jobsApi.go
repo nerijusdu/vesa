@@ -47,6 +47,14 @@ func (api *VesaApi) registerJobsRoutes(router chi.Router) {
 			return
 		}
 
+		if req.ID != "" {
+			err := api.runner.RemoveJob(req.ID)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+		}
+
 		id, err := api.jobs.SaveJob(*req)
 		if err != nil {
 			handleError(w, err)
@@ -55,11 +63,27 @@ func (api *VesaApi) registerJobsRoutes(router chi.Router) {
 
 		req.ID = id
 
+		if req.Enabled {
+			err = api.runner.AddJob(*req)
+			if err != nil {
+				handleError(w, err)
+				return
+			}
+		}
+
 		sendJson(w, req)
 	})
 
 	router.Delete("/jobs/{id}", func(w http.ResponseWriter, r *http.Request) {
-		err := api.jobs.DeleteJob(chi.URLParam(r, "id"))
+		id := chi.URLParam(r, "id")
+
+		err := api.runner.RemoveJob(id)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		err = api.jobs.DeleteJob(id)
 		if err != nil {
 			handleError(w, err)
 			return
