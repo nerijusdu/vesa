@@ -10,12 +10,17 @@ import (
 
 type JobRunner struct {
 	scheduler *gocron.Scheduler
+	logs      *data.LogsRepository
 }
 
-func NewJobRunner(initialJobs []data.Job) *JobRunner {
+func NewJobRunner(logs *data.LogsRepository, initialJobs []data.Job) *JobRunner {
 	s, err := gocron.NewScheduler()
 	if err != nil {
 		panic(err)
+	}
+	runner := &JobRunner{
+		scheduler: &s,
+		logs:      logs,
 	}
 
 	for _, job := range initialJobs {
@@ -25,7 +30,7 @@ func NewJobRunner(initialJobs []data.Job) *JobRunner {
 
 		_, err := s.NewJob(
 			gocron.CronJob(job.Schedule, true),
-			gocron.NewTask(runCronJob, job),
+			gocron.NewTask(runner.runCronJob, job),
 			gocron.WithTags(job.ID),
 		)
 
@@ -36,13 +41,13 @@ func NewJobRunner(initialJobs []data.Job) *JobRunner {
 
 	s.Start()
 
-	return &JobRunner{scheduler: &s}
+	return runner
 }
 
 func (runner *JobRunner) AddJob(job data.Job) error {
 	_, err := (*runner.scheduler).NewJob(
 		gocron.CronJob(job.Schedule, true),
-		gocron.NewTask(runCronJob, job),
+		gocron.NewTask(runner.runCronJob, job),
 		gocron.WithTags(job.ID),
 	)
 	if err != nil {
@@ -52,22 +57,16 @@ func (runner *JobRunner) AddJob(job data.Job) error {
 }
 
 func (runner *JobRunner) RemoveJob(id string) error {
-	fmt.Println("Removing job", id)
-	j := (*runner.scheduler).Jobs()
-	for _, job := range j {
-		fmt.Println("Job", job.Name(), job.ID(), job.Tags())
-	}
-
 	(*runner.scheduler).RemoveByTags(id)
 	return nil
 }
 
-func runCronJob(job data.Job) {
-	fmt.Println("Running job", job.Name)
+func (runner *JobRunner) runCronJob(job data.Job) {
+	err := runner.logs.Write(job.ID, "Running job "+job.Name)
 
 	httpReq, err := http.NewRequest("GET", job.Url, nil)
 	if err != nil {
-		fmt.Println("Job failed with error", err)
+		runner.logs.Write(job.ID, "Job failed with error "+err.Error())
 		return
 	}
 
@@ -77,14 +76,17 @@ func runCronJob(job data.Job) {
 
 	resp, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
-		fmt.Println("Job failed with error", err)
+		runner.logs.Write(job.ID, "Job failed with error"+err.Error())
 		return
 	}
 
 	if resp.StatusCode != 200 {
-		fmt.Println("Job failed with status code " + string(resp.StatusCode))
+		runner.logs.Write(
+			job.ID,
+			fmt.Sprintf("Job failed with status code %d", resp.StatusCode),
+		)
 		return
 	}
 
-	fmt.Println("Job finished successfully")
+	runner.logs.Write(job.ID, "Job finished successfully")
 }

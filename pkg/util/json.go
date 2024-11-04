@@ -18,12 +18,19 @@ func GetDataDir() (string, error) {
 	return dirname + "/.config/vesa", nil
 }
 
-type FileEncoder interface {
-	Encode(v any) error
-}
+func ReadTxtFile(file string) (*string, error) {
+	dir, err := GetDataDir()
+	if err != nil {
+		return nil, err
+	}
 
-type FileDecoder interface {
-	Decode(v any) error
+	data, err := os.ReadFile(dir + "/" + file)
+	if err != nil {
+		return nil, err
+	}
+
+	str := string(data)
+	return &str, nil
 }
 
 func ReadFile[T any](file string) (*T, error) {
@@ -69,13 +76,32 @@ func WriteFile[T any](data *T, file string) error {
 	var encoder FileEncoder
 	if strings.HasSuffix(file, ".yaml") {
 		encoder = yaml.NewEncoder(f)
-	} else {
+	} else if strings.HasSuffix(file, ".json") {
 		encoder = json.NewEncoder(f)
+	} else {
+		encoder = NewTxtEncoder(f)
 	}
 
 	if err := encoder.Encode(data); err != nil {
 		return err
 	}
+	return nil
+}
+
+func AppendToFile(file, data string) error {
+	dir, err := GetDataDir()
+	if err != nil {
+		return err
+	}
+	f, err := os.OpenFile(dir+"/"+file, os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	if _, err := f.WriteString(data); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -51,6 +51,7 @@ type VesaApi struct {
 	traefik      *data.TraefikRepository
 	jobs         *data.JobsRepository
 	runner       *runner.JobRunner
+	logs         *data.LogsRepository
 	auth         *data.AuthRepository
 	config       *config.Config
 }
@@ -61,6 +62,7 @@ type VesaApiConfig struct {
 	Templates     *data.TemplateRepository
 	Apps          *data.AppsRepository
 	Traefik       *data.TraefikRepository
+	Logs          *data.LogsRepository
 	Jobs          *data.JobsRepository
 	Runner        *runner.JobRunner
 	Auth          *data.AuthRepository
@@ -94,6 +96,7 @@ func NewVesaApi(c VesaApiConfig) *VesaApi {
 		traefik:      c.Traefik,
 		apps:         c.Apps,
 		auth:         c.Auth,
+		logs:         c.Logs,
 		jobs:         c.Jobs,
 		config:       c.Config,
 		runner:       c.Runner,

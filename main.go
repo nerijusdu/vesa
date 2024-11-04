@@ -24,6 +24,7 @@ func main() {
 	apps := data.NewAppsRepository()
 	traefik := data.NewTraefikRepository()
 	jobs := data.NewJobsRepository()
+	logs := data.NewLogsRepository()
 	ctrl, err := dockerctrl.NewDockerCtrlClient(auth)
 	if err != nil {
 		panic(err)
@@ -35,7 +36,7 @@ func main() {
 		panic(err)
 	}
 
-	runner := runner.NewJobRunner(existingJobs)
+	runner := runner.NewJobRunner(logs, existingJobs)
 
 	api := web.NewVesaApi(web.VesaApiConfig{
 		Config:        c,
@@ -45,6 +46,7 @@ func main() {
 		Apps:          apps,
 		Traefik:       traefik,
 		Jobs:          jobs,
+		Logs:          logs,
 		Runner:        runner,
 		Auth:          auth,
 		StaticContent: content,

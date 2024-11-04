@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/nerijusdu/vesa/pkg/data"
@@ -31,6 +32,16 @@ func (api *VesaApi) registerJobsRoutes(router chi.Router) {
 		}
 
 		sendJson(w, res)
+	})
+
+	router.Get("/jobs/{id}/logs", func(w http.ResponseWriter, r *http.Request) {
+		logs, err := api.logs.GetLogs(chi.URLParam(r, "id"))
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		sendJson(w, strings.Join(logs, "\n"))
 	})
 
 	router.Post("/jobs", func(w http.ResponseWriter, r *http.Request) {
