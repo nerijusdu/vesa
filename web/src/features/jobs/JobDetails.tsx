@@ -1,8 +1,7 @@
-
 import { useQuery } from '@tanstack/react-query';
-import { deleteJob, getJob, getJobLogs } from './jobs.api';
+import { clearJobLogs, deleteJob, getJob, getJobLogs } from './jobs.api';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, Divider, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Button, Divider, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import FieldValue from '../../components/FieldValue';
 import { useDefaultMutation } from '../../hooks';
 import { useEffect, useRef } from 'react';
@@ -18,6 +17,12 @@ const JobDetails: React.FC = () => {
     onSuccess: () => navigate('/jobs'),
   });
 
+  const { mutate: clearLogs } = useDefaultMutation(clearJobLogs, {
+    action: 'clearing logs',
+    invalidateQueries: ['jobs'],
+    onSuccess: () => refetch(),
+  });
+
   const logsRef = useRef<HTMLPreElement>(null);
   useEffect(() => {
     if (!logsRef.current) return;
@@ -31,7 +36,7 @@ const JobDetails: React.FC = () => {
   }
 
   return (
-    <VStack align="flex-start" maxW="100%">
+    <VStack align="flex-start" maxW="100%" w="100%">
       <Heading display="flex" gap={2}>
         {job.name}
         <Button as={Link} to={`/jobs/${job.id}/edit`} variant="link">
@@ -68,8 +73,8 @@ const JobDetails: React.FC = () => {
         <Button flexGrow={1} variant="outline" width="100%" onClick={() => refetch()}>
           Refresh Logs
         </Button>
-        <Button variant="outline" width="100%" onClick={() => null}>
-          Clear Logs TODO
+        <Button variant="outline" width="100%" onClick={() => clearLogs(params.id!)}>
+          Clear Logs
         </Button>
       </HStack>
     </VStack>

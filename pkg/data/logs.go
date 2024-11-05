@@ -54,3 +54,22 @@ func (r *LogsRepository) Write(tag, message string) error {
 	err := util.AppendToFile("logs.txt", log)
 	return err
 }
+
+func (r *LogsRepository) DeleteLogs(tag string) error {
+	content, err := util.ReadTxtFile("logs.txt")
+	if err != nil {
+		return err
+	}
+
+	lines := strings.Split(*content, "\n")
+	newContent := ""
+	for _, line := range lines {
+		if strings.HasPrefix(line, tag) {
+			continue
+		}
+
+		newContent += line + "\n"
+	}
+
+	return util.WriteFile(&newContent, "logs.txt")
+}

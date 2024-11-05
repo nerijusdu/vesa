@@ -16,6 +16,10 @@ export const getJobLogs = async (id: string): Promise<string[]> => {
   return response.json();
 };
 
+export const clearJobLogs = async (id: string) => {
+  await authRequest(`/api/jobs/${id}/logs`, { method: 'DELETE' });
+};
+
 export const createJob = async (job: Omit<Job, 'id'> & { id?: string }): Promise<string> => {
   const response = await authRequest('/api/jobs', {
     method: 'POST',

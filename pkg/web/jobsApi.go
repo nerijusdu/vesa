@@ -44,6 +44,16 @@ func (api *VesaApi) registerJobsRoutes(router chi.Router) {
 		sendJson(w, strings.Join(logs, "\n"))
 	})
 
+	router.Delete("/jobs/{id}/logs", func(w http.ResponseWriter, r *http.Request) {
+		err := api.logs.DeleteLogs(chi.URLParam(r, "id"))
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+
 	router.Post("/jobs", func(w http.ResponseWriter, r *http.Request) {
 		req := &data.Job{}
 		err := json.NewDecoder(r.Body).Decode(req)
