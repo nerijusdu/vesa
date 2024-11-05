@@ -16,8 +16,9 @@ type Log struct {
 }
 
 func NewLogsRepository() *LogsRepository {
-	if !util.FileExists("logs.json") {
-		err := util.AppendToFile("logs.txt", "")
+	if !util.FileExists("logs.txt") {
+		content := ""
+		err := util.WriteFile(&content, "logs.txt")
 		if err != nil {
 			panic(err)
 		}
