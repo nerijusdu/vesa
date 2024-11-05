@@ -4,6 +4,7 @@ import (
 	"embed"
 	"encoding/json"
 	"io"
+	"os"
 	"strings"
 	"text/template"
 
@@ -21,6 +22,48 @@ type SystemTemplateVars struct {
 	UserEmail       string
 	ConfigDir       string
 	EnableDashboard string
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return false
+}
+
+func moveTeamplateToConfigDir(dir embed.FS) {
+	dataDir, err := util.GetDataDir()
+	if err != nil {
+		panic(err)
+	}
+
+	if exists(dataDir + "/templates") {
+		return
+	}
+
+	os.MkdirAll(dataDir+"/templates", 0755)
+
+	entries, err := dir.ReadDir("templates")
+	if err != nil {
+		panic(err)
+	}
+
+	for _, entry := range entries {
+		p := "templates/" + entry.Name()
+		content, err := dir.ReadFile(p)
+		if err != nil {
+			panic(err)
+		}
+		str := string(content)
+		err = util.WriteFile(&str, p)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func NewTemplateRepository(defaultTemplatesDir embed.FS, c *config.Config) *TemplateRepository {
@@ -45,7 +88,9 @@ func NewTemplateRepository(defaultTemplatesDir embed.FS, c *config.Config) *Temp
 		templateVars.EnableDashboard = "true"
 	}
 
-	tmpl, err := template.ParseFS(defaultTemplatesDir, "templates/*")
+	moveTeamplateToConfigDir(defaultTemplatesDir)
+
+	tmpl, err := template.ParseFS(os.DirFS(dataDir), "templates/*")
 	if err != nil {
 		panic(err)
 	}

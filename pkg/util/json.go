@@ -60,6 +60,12 @@ func ReadFile[T any](file string) (*T, error) {
 	return &data, nil
 }
 
+func CheckImplements[T any, I any]() bool {
+	var o T
+	_, ok := interface{}(&o).(I)
+	return ok
+}
+
 func WriteFile[T any](data *T, file string) error {
 	dir, err := GetDataDir()
 	if err != nil {
@@ -74,12 +80,17 @@ func WriteFile[T any](data *T, file string) error {
 	defer f.Close()
 
 	var encoder FileEncoder
-	if strings.HasSuffix(file, ".yaml") {
-		encoder = yaml.NewEncoder(f)
-	} else if strings.HasSuffix(file, ".json") {
-		encoder = json.NewEncoder(f)
-	} else {
+	switch any(*data).(type) {
+	case string:
 		encoder = NewTxtEncoder(f)
+	default:
+		if strings.HasSuffix(file, ".yaml") {
+			encoder = yaml.NewEncoder(f)
+		} else if strings.HasSuffix(file, ".json") {
+			encoder = json.NewEncoder(f)
+		} else {
+			encoder = NewTxtEncoder(f)
+		}
 	}
 
 	if err := encoder.Encode(data); err != nil {
