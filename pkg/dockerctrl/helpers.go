@@ -2,6 +2,7 @@ package dockerctrl
 
 import (
 	"os"
+	"strings"
 
 	"github.com/docker/docker/api/types/mount"
 	"github.com/nerijusdu/vesa/pkg/util"
@@ -24,8 +25,9 @@ func addDomainLabels(req RunContainerRequest) map[string]string {
 		rule := util.BuildTraefikRule(req.Domain.Host, req.Domain.PathPrefixes)
 		req.Labels["traefik.http.routers."+req.Name+".rule"] = rule
 
-		if len(req.Domain.PathPrefixes) > 0 && req.Domain.StripPath {
-			req.Labels["traefik.http.routers."+req.Name+".middlewares"] = "strip-path@file"
+		if len(req.Domain.PathPrefixes) > 0 && req.Domain.StripPrefix {
+			req.Labels["traefik.http.routers."+req.Name+".middlewares"] = "strip-prefix-" + req.Name
+			req.Labels["traefik.http.middlewares.strip-prefix-"+req.Name+".stripprefix.prefixes"] = strings.Join(req.Domain.PathPrefixes, ",")
 		}
 
 		for _, e := range req.Domain.Entrypoints {

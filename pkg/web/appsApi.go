@@ -59,8 +59,15 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			return
 		}
 
-		if req.Domain.StripPath && req.Domain.Host != "" {
-			middlewares = append(middlewares, "strip-path")
+		if req.Domain.StripPrefix && req.Domain.Host != "" {
+			middlewares = append(middlewares, "strip-prefix-"+name)
+			traefikConfig.Http.Middlewares["strip-prefix-"+name] = data.TraefikMiddleware{
+				StripPrefix: &data.StripPrefixMiddleware{
+					Prefixes: req.Domain.PathPrefixes,
+				},
+			}
+		} else {
+			delete(traefikConfig.Http.Middlewares, "strip-prefix-"+name)
 		}
 
 		var services map[string]data.TraefikService
@@ -111,6 +118,7 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			delete(routers, oldName)
 			delete(routers, oldName+"-http")
 			delete(services, oldName)
+			delete(traefikConfig.Http.Middlewares, "strip-prefix-"+oldName)
 		}
 
 		traefikConfig.Http.Routers = &routers
@@ -153,6 +161,7 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 		if services != nil {
 			delete(services, name)
 		}
+		delete(traefikConfig.Http.Middlewares, "strip-prefix-"+name)
 
 		err = api.traefik.SaveRoutes(traefikConfig)
 		if err != nil {

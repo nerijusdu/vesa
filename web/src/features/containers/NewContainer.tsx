@@ -21,7 +21,7 @@ const NewContainer: React.FC = () => {
   const form = useForm<RunContainerRequest>({ resolver: zodResolver(runContainerSchema) });
   const { data: networks } = useQuery(['networks'], getNetworks);
   const networkOptions = useMemo(
-    () => networks?.map(x => ({ value: x.id, name: x.name })) || [],
+    () => networks?.map(x => ({ value: x.id, name: x.name })),
     [networks]
   );
 

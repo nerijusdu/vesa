@@ -44,7 +44,7 @@ const NewTemplate: React.FC = () => {
   const [jsonTemplate, setJsonTemplate] = useState('');
 
   const networkOptions = useMemo(
-    () => networks?.map(x => ({ value: x.id, name: x.name })) || [],
+    () => networks?.map(x => ({ value: x.id, name: x.name })),
     [networks]
   );
   const setFormFromJson = () => {

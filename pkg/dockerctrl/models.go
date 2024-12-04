@@ -118,7 +118,7 @@ type Network struct {
 type DomainConfig struct {
 	Host         string   `json:"host"`
 	PathPrefixes []string `json:"pathPrefixes"`
-	StripPath    bool     `json:"stripPath"`
+	StripPrefix  bool     `json:"stripPrefix"`
 	Entrypoints  []string `json:"entrypoints"`
 }
 

@@ -12,11 +12,6 @@ var middlewares = map[string]TraefikMiddleware{
 			Permanent: true,
 		},
 	},
-	"strip-path": {
-		ReplacePath: &ReplacePathMiddleware{
-			Path: "/",
-		},
-	},
 }
 
 func NewTraefikRepository() *TraefikRepository {

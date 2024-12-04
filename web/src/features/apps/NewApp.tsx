@@ -135,7 +135,7 @@ const PathPrefixFields: React.FC = () => {
 
       <Controller
         control={control}
-        name='domain.stripPath'
+        name='domain.stripPrefix'
         render={({ field: { onChange, value, ref } }) => (
           <Checkbox
             onChange={onChange}

@@ -20,6 +20,10 @@ export const mapContainerToApiRequest = ({
       networkId: x.networkId,
       networkName: networks?.find(n => n.id === x.networkId)?.name,
     })) || [],
+  domain: data.domain && {
+    ...data.domain,
+    pathPrefixes: data.domain?.pathPrefixes.map(x => x.value) || [],
+  },
 });
 
 export const mapApiRequestToContainer = (container: RunContainerApiRequest): RunContainerRequest => ({
@@ -32,5 +36,9 @@ export const mapApiRequestToContainer = (container: RunContainerApiRequest): Run
   restartPolicy: {
     name: container.restartPolicy.name || 'no',
     maximumRetryCount: container.restartPolicy.maximumRetryCount,
+  },
+  domain: container.domain && {
+    ...container.domain,
+    pathPrefixes: container.domain?.pathPrefixes?.map(x => ({ value: x })) || [],
   },
 });

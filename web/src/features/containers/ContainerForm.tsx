@@ -19,7 +19,7 @@ const mountTypes = [
 ];
 
 export type ContainerFieldsProps = {
-  networkOptions: NamedValue<string>[];
+  networkOptions: NamedValue<string>[] | undefined;
   hideTemplateCheckbox?: boolean;
 }
 
@@ -106,6 +106,9 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
 export const NetworkFields: React.FC<Pick<ContainerFieldsProps, 'networkOptions'>> = ({ networkOptions }) => {
   const { control, register, formState: { errors } } = useFormContext<RunContainerRequest>();
   const { fields, append, remove } = useFieldArray({ control, name: 'networks' });
+  if (!networkOptions) {
+    return null;
+  }
 
   return (
     <>
@@ -287,8 +290,10 @@ export const EnvVarFields: React.FC = () => {
 };
 
 export const TraefikFields: React.FC = () => {
-  const { register, control, watch, formState: { errors } } = useFormContext<RunContainerRequest>();
-  const pathPrefix = watch('domain.pathPrefix');
+  const { formState: { errors }, control, register } = useFormContext<RunContainerRequest>();
+  const { fields, append, remove } = useFieldArray({
+    control, name: 'domain.pathPrefixes',
+  });
 
   return (
     <>
@@ -299,34 +304,41 @@ export const TraefikFields: React.FC = () => {
         label="Domain"
         placeholder="example.com"
       />
-      <FormInput
-        {...register('domain.pathPrefix')}
-        errors={errors}
-        label="Path prefix (optional)"
-        placeholder="/foo"
-      />
+      <FormLabel>Path prefix (optional)</FormLabel>
+      {fields.map((f, i) => (
+        <Flex key={f.id} gap={2}>
+          <FormInput
+            {...register(`domain.pathPrefixes.${i}.value` as const)}
+            errors={errors}
+            placeholder="/foo"
+          />
+          <IconButton
+            icon={<DeleteIcon />}
+            aria-label='Remove prefix'
+            size="md"
+            colorScheme="red"
+            onClick={() => remove(i)}
+          />
+        </Flex>
+      ))}
+
+      <Button variant="outline" onClick={() => append({ value: '' })}>
+        Add prefix
+      </Button>
+
       <Controller
         control={control}
-        name='domain.stripPath'
+        name='domain.stripPrefix'
         render={({ field: { onChange, value, ref } }) => (
           <Checkbox
             onChange={onChange}
             ref={ref}
             isChecked={value}
-            isDisabled={!pathPrefix}
+            isDisabled={!fields.length}
           >
             Rewrite path
           </Checkbox>
         )}
-      />
-      <FormSelect
-        {...register('domain.entrypoints.0')}
-        errors={errors}
-        label="Entrypoint"
-        data={[
-          { name: 'http', value: 'web' },
-          { name: 'https (with redirect http -> https)', value: 'websecure' },
-        ]}
       />
     </>
   );

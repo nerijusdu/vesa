@@ -7,7 +7,7 @@ export type App = {
   domain: {
     host: string;
     pathPrefixes?: string[];
-    stripPath?: boolean;
+    stripPrefix?: boolean;
     entrypoints: string[];
   }
 }
@@ -21,7 +21,7 @@ export const createAppSchema = z.object({
     pathPrefixes: z.array(z.object({
       value: z.string(),
     })).default([]),
-    stripPath: z.boolean().optional(),
+    stripPrefix: z.boolean().optional(),
     entrypoints: z.array(z.string().min(3)).length(1),
   }),
 });
