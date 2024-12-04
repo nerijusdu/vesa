@@ -65,7 +65,8 @@ Docker:
   - [ ] Test docker hub auth
 
 Other:
-- [ ] Cron jobs
+- [X] Cron jobs
+- [ ] Add https without redirect entrypoint
 - [ ] Script runner?
 - [ ] Create auto-boot service from CLI?
 - [ ] Better UI

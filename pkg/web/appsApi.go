@@ -83,17 +83,17 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 				PassHostHeader: true,
 			},
 		}
-		routers[name] = data.TraefikRouter{
+		webRouter := data.TraefikRouter{
 			EntryPoints: req.Domain.Entrypoings,
 			Service:     name,
 			Rule:        rule,
 			Middlewares: middlewares,
-			Tls: &data.TraefikTlsConfig{
-				CertResolver: "vesaresolver",
-			},
 		}
 
 		if req.Domain.Entrypoings[0] == "websecure" {
+			webRouter.Tls = &data.TraefikTlsConfig{
+				CertResolver: "vesaresolver",
+			}
 			routers[name+"-http"] = data.TraefikRouter{
 				EntryPoints: []string{"web"},
 				Service:     name,
@@ -103,6 +103,8 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 		} else {
 			delete(routers, name+"-http")
 		}
+
+		routers[name] = webRouter
 
 		if oldName != req.Name {
 			oldName = util.NormalizeName(oldName)
