@@ -9,6 +9,7 @@ import { useDefaultMutation } from '../../hooks';
 import { createApp, getApp } from './apps.api';
 import { CreateAppRequest, createAppSchema } from './apps.types';
 import { DeleteIcon } from '@chakra-ui/icons';
+import { TraefikFields } from '../containers/ContainerForm';
 
 
 const NewApp: React.FC = () => {
@@ -71,86 +72,10 @@ const NewApp: React.FC = () => {
           placeholder="http://host.docker.internal:3000"
         />
 
-        <FormLabel>Domain routing setup</FormLabel>
-        <FormInput
-          {...register('domain.host')}
-          errors={errors}
-          label="Domain"
-          placeholder="example.com"
-        />
-
-        <PathPrefixFields />
-
-        <FormSelect
-          {...register('domain.entrypoints.0')}
-          errorField="entrypoint"
-          errors={{
-            ...errors,
-            entrypoint: errors?.domain?.entrypoints?.[0]
-              ? { message: 'Select an entrypoint' }
-              : undefined as any,
-          }}
-          label="Entrypoint"
-          data={[
-            { name: 'http', value: 'web' },
-            { name: 'https (with redirect http -> https)', value: 'websecure' },
-          ]}
-        />
-
+        <TraefikFields />
       </FormContainer>
     </FormProvider>
   );
 };
-
-const PathPrefixFields: React.FC = () => {
-  const { formState: { errors }, control, register } = useFormContext<CreateAppRequest>();
-  const { fields, append, remove } = useFieldArray({
-    control, name: 'domain.pathPrefixes',
-  });
-
-  return (
-    <>
-      <FormLabel>Path prefix (optional)</FormLabel>
-      {fields.map((f, i) => (
-        <Flex key={f.id} gap={2}>
-          <FormInput
-            {...register(`domain.pathPrefixes.${i}.value` as const)}
-            errors={errors}
-            placeholder="/foo"
-          />
-          <IconButton
-            icon={<DeleteIcon />}
-            aria-label='Remove prefix'
-            size="md"
-            colorScheme="red"
-            onClick={() => remove(i)}
-          />
-        </Flex>
-      ))}
-
-      <Button variant="outline" onClick={() => append({ value: '' })}>
-        Add prefix
-      </Button>
-
-
-      <Controller
-        control={control}
-        name='domain.stripPrefix'
-        render={({ field: { onChange, value, ref } }) => (
-          <Checkbox
-            onChange={onChange}
-            ref={ref}
-            isChecked={value}
-            isDisabled={!fields.length}
-          >
-            Rewrite path
-          </Checkbox>
-        )}
-      />
-    </>
-  );
-};
-
-
 
 export default NewApp;

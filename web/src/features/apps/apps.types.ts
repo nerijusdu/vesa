@@ -23,6 +23,10 @@ export const createAppSchema = z.object({
     })).default([]),
     stripPrefix: z.boolean().optional(),
     entrypoints: z.array(z.string().min(3)).length(1),
+    headers: z.array(z.object({
+      name: z.string(),
+      value: z.string(),
+    })).optional().nullish(),
   }),
 });
 

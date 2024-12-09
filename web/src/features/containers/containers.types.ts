@@ -88,7 +88,11 @@ export const runContainerSchema = z.object({
       value: z.string(),
     })).default([]),
     stripPrefix: z.boolean().optional(),
-    entrypoints: z.array(z.string()).optional().nullish(),
+    entrypoints: z.array(z.string().min(3)).length(1),
+    headers: z.array(z.object({
+      name: z.string(),
+      value: z.string(),
+    })).optional().nullish(),
   }).optional(),
   isLocal: z.boolean().optional(),
   networks: z.array(z.object({
@@ -103,7 +107,7 @@ export type RunContainerRequest = z.infer<typeof runContainerSchema>;
 export type RunContainerApiRequest = Omit<RunContainerRequest, 'ports' | 'envVars' | 'domain'> & {
   ports: string[];
   envVars: string[];
-  domain?: Omit<RunContainerRequest['domain'], 'pathPrefixes'> & {
+  domain?: Omit<Required<RunContainerRequest>['domain'], 'pathPrefixes'> & {
     pathPrefixes: string[];
   };
 };

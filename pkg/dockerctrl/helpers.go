@@ -30,6 +30,13 @@ func addDomainLabels(req RunContainerRequest) map[string]string {
 			req.Labels["traefik.http.middlewares.strip-prefix-"+req.Name+".stripprefix.prefixes"] = strings.Join(req.Domain.PathPrefixes, ",")
 		}
 
+		if len(req.Domain.Headers) > 0 {
+			req.Labels["traefik.http.routers."+req.Name+".middlewares"] = "add-headers-" + req.Name
+			for _, h := range req.Domain.Headers {
+				req.Labels["traefik.http.middlewares.add-headers-"+req.Name+".headers.customrequestheaders"+h.Name] = h.Value
+			}
+		}
+
 		for _, e := range req.Domain.Entrypoints {
 			req.Labels["traefik.http.routers."+req.Name+".entrypoints"] = e
 

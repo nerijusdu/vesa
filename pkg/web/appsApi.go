@@ -70,6 +70,17 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			delete(traefikConfig.Http.Middlewares, "strip-prefix-"+name)
 		}
 
+		if len(req.Domain.Headers) > 0 && req.Domain.Host != "" {
+			middlewares = append(middlewares, "add-headers-"+name)
+			headers := make(map[string]string)
+			for _, h := range req.Domain.Headers {
+				headers[h.Name] = h.Value
+			}
+			traefikConfig.Http.Middlewares["add-headers-"+name] = data.TraefikMiddleware{
+				Headers: &data.HeadersMiddleware{CustomRequestHeaders: headers},
+			}
+		}
+
 		var services map[string]data.TraefikService
 		if traefikConfig.Http.Services == nil {
 			services = make(map[string]data.TraefikService)
@@ -91,13 +102,13 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			},
 		}
 		webRouter := data.TraefikRouter{
-			EntryPoints: req.Domain.Entrypoings,
+			EntryPoints: req.Domain.Entrypoints,
 			Service:     name,
 			Rule:        rule,
 			Middlewares: middlewares,
 		}
 
-		if req.Domain.Entrypoings[0] == "websecure" {
+		if req.Domain.Entrypoints[0] == "websecure" {
 			webRouter.Tls = &data.TraefikTlsConfig{
 				CertResolver: "vesaresolver",
 			}
@@ -119,6 +130,7 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			delete(routers, oldName+"-http")
 			delete(services, oldName)
 			delete(traefikConfig.Http.Middlewares, "strip-prefix-"+oldName)
+			delete(traefikConfig.Http.Middlewares, "add-headers-"+oldName)
 		}
 
 		traefikConfig.Http.Routers = &routers
@@ -162,6 +174,7 @@ func (api *VesaApi) registerAppRoutes(router chi.Router) {
 			delete(services, name)
 		}
 		delete(traefikConfig.Http.Middlewares, "strip-prefix-"+name)
+		delete(traefikConfig.Http.Middlewares, "add-headers-"+name)
 
 		err = api.traefik.SaveRoutes(traefikConfig)
 		if err != nil {

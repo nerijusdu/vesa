@@ -120,6 +120,12 @@ type DomainConfig struct {
 	PathPrefixes []string `json:"pathPrefixes"`
 	StripPrefix  bool     `json:"stripPrefix"`
 	Entrypoints  []string `json:"entrypoints"`
+	Headers      []Header `json:"headers"`
+}
+
+type Header struct {
+	Name  string `json:"name" validate:"required"`
+	Value string `json:"value" validate:"required"`
 }
 
 type NetworkContainer struct {

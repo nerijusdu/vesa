@@ -61,9 +61,6 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
         label="Command"
         placeholder="postgres -p 5432"
       />
-
-      <NetworkFields networkOptions={networkOptions} />
-
       <FormSelect
         {...register('restartPolicy.name', {
           onChange: e => {
@@ -74,7 +71,6 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
         data={restartPolicies}
         errors={errors}
       />
-
       {showRetryCount && (
         <FormInput
           {...register('restartPolicy.maximumRetryCount')}
@@ -84,11 +80,24 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
         />
       )}
 
+
+      <Divider my={2} />
+
+      <NetworkFields networkOptions={networkOptions} />
+
+      <Divider my={2} />
+
       <PortFields />
+
+      <Divider my={2} />
 
       <MountFields />
 
+      <Divider my={2} />
+
       <EnvVarFields />
+
+      <Divider my={2} />
 
       <TraefikFields />
 
@@ -294,6 +303,9 @@ export const TraefikFields: React.FC = () => {
   const { fields, append, remove } = useFieldArray({
     control, name: 'domain.pathPrefixes',
   });
+  const { fields: headers, append: appendHeaders, remove: removeHeaders } = useFieldArray({
+    control, name: 'domain.headers',
+  });
 
   return (
     <>
@@ -336,10 +348,52 @@ export const TraefikFields: React.FC = () => {
             isChecked={value}
             isDisabled={!fields.length}
           >
-            Rewrite path
+            Stripe prefix for requests
           </Checkbox>
         )}
       />
+
+      <FormSelect
+        {...register('domain.entrypoints.0')}
+        errorField="entrypoint"
+        errors={{
+          ...errors,
+          entrypoint: errors?.domain?.entrypoints?.[0]
+            ? { message: 'Select an entrypoint' }
+            : undefined as any,
+        }}
+        label="Entrypoint"
+        data={[
+          { name: 'http', value: 'web' },
+          { name: 'https (with redirect http -> https)', value: 'websecure' },
+        ]}
+      />
+
+      <FormLabel>Custom headers (optional)</FormLabel>
+      {headers.map((f, i) => (
+        <Flex key={f.id} gap={2}>
+          <FormInput
+            {...register(`domain.headers.${i}.name` as const)}
+            errors={errors}
+            placeholder="X-Frame-Options"
+          />
+          <FormInput
+            {...register(`domain.headers.${i}.value` as const)}
+            errors={errors}
+            placeholder="DENY"
+          />
+          <IconButton
+            icon={<DeleteIcon />}
+            aria-label='Remove header'
+            size="md"
+            colorScheme="red"
+            onClick={() => removeHeaders(i)}
+          />
+        </Flex>
+      ))}
+      <Button variant="outline" onClick={() => appendHeaders({ name: '', value: '' })}>
+        Add header
+      </Button>
     </>
   );
 };

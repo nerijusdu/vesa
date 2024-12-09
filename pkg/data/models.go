@@ -34,15 +34,10 @@ type RegistryAuth struct {
 }
 
 type App struct {
-	ID     string `json:"id"`
-	Name   string `json:"name" validate:"required"`
-	Route  string `json:"route" validate:"required"`
-	Domain struct {
-		Host         string   `json:"host" validate:"required"`
-		PathPrefixes []string `json:"pathPrefixes"`
-		StripPrefix  bool     `json:"stripPrefix"`
-		Entrypoings  []string `json:"entrypoints" validate:"required"`
-	} `json:"domain" validate:"required"`
+	ID     string                  `json:"id"`
+	Name   string                  `json:"name" validate:"required"`
+	Route  string                  `json:"route" validate:"required"`
+	Domain dockerctrl.DomainConfig `json:"domain" validate:"required"`
 }
 
 type Apps struct {
@@ -88,6 +83,7 @@ type TraefikMiddleware struct {
 	RedirectScheme *RedirectSchemeMiddleware `yaml:"redirectScheme,omitempty"`
 	ReplacePath    *ReplacePathMiddleware    `yaml:"replacePath,omitempty"`
 	StripPrefix    *StripPrefixMiddleware    `yaml:"stripPrefix,omitempty"`
+	Headers        *HeadersMiddleware        `yaml:"headers,omitempty"`
 }
 
 type RedirectSchemeMiddleware struct {
@@ -101,6 +97,10 @@ type ReplacePathMiddleware struct {
 
 type StripPrefixMiddleware struct {
 	Prefixes []string `yaml:"prefixes"`
+}
+
+type HeadersMiddleware struct {
+	CustomRequestHeaders map[string]string `yaml:"customRequestHeaders"`
 }
 
 type TraefikService struct {
