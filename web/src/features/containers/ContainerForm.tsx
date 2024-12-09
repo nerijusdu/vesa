@@ -348,7 +348,7 @@ export const TraefikFields: React.FC = () => {
             isChecked={value}
             isDisabled={!fields.length}
           >
-            Stripe prefix for requests
+            Strip prefix for requests
           </Checkbox>
         )}
       />
