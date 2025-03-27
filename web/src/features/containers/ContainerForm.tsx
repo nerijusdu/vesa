@@ -1,6 +1,6 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { Button, Checkbox, Divider, Flex, FormLabel, IconButton } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { Button, Checkbox, Collapse, Divider, Flex, FormLabel, IconButton } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { Controller, FieldArrayWithId, useFieldArray, useFormContext } from 'react-hook-form';
 import FormInput from '../../components/form/formInput';
 import FormSelect, { NamedValue } from '../../components/form/formSelect';
@@ -302,7 +302,7 @@ export const EnvVarFields: React.FC = () => {
 };
 
 export const TraefikFields: React.FC = () => {
-  const { formState: { errors }, control, register } = useFormContext<RunContainerRequest>();
+  const { formState: { errors, defaultValues }, control, register, watch } = useFormContext<RunContainerRequest>();
   const { fields, append, remove } = useFieldArray({
     control, name: 'domain.pathPrefixes',
   });
@@ -310,93 +310,112 @@ export const TraefikFields: React.FC = () => {
     control, name: 'domain.headers',
   });
 
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    if (!isOpen && (
+      defaultValues?.domain?.host || defaultValues?.domain?.pathPrefixes?.length
+    )) {
+      setIsOpen(true);
+    }
+  }, [defaultValues]);
+
   return (
     <>
-      <FormLabel>Domain routing setup</FormLabel>
-      <FormInput
-        {...register('domain.host')}
-        errors={errors}
-        label="Domain"
-        placeholder="example.com"
-      />
-      <FormLabel>Path prefix (optional)</FormLabel>
-      {fields.map((f, i) => (
-        <Flex key={f.id} gap={2}>
+      <FormLabel cursor="pointer" _hover={{ textDecoration: 'underline' }} onClick={() => setIsOpen(x => !x)}>
+        Domain routing setup
+      </FormLabel>
+      <Collapse  in={isOpen}>
+        <Flex
+          flexDir="column"
+          w="700px"
+          gap={2}
+        >
           <FormInput
-            {...register(`domain.pathPrefixes.${i}.value` as const)}
+            {...register('domain.host')}
             errors={errors}
-            placeholder="/foo"
+            label="Host"
+            placeholder="example.com"
           />
-          <IconButton
-            icon={<DeleteIcon />}
-            aria-label='Remove prefix'
-            size="md"
-            colorScheme="red"
-            onClick={() => remove(i)}
+          <FormLabel>Path prefix (optional)</FormLabel>
+          {fields.map((f, i) => (
+            <Flex key={f.id} gap={2}>
+              <FormInput
+                {...register(`domain.pathPrefixes.${i}.value` as const)}
+                errors={errors}
+                placeholder="/foo"
+              />
+              <IconButton
+                icon={<DeleteIcon />}
+                aria-label='Remove prefix'
+                size="md"
+                colorScheme="red"
+                onClick={() => remove(i)}
+              />
+            </Flex>
+          ))}
+
+          <Button variant="outline" onClick={() => append({ value: '' })}>
+            Add prefix
+          </Button>
+
+          <Controller
+            control={control}
+            name='domain.stripPrefix'
+            render={({ field: { onChange, value, ref } }) => (
+              <Checkbox
+                onChange={onChange}
+                ref={ref}
+                isChecked={value}
+                isDisabled={!fields.length}
+              >
+                Strip prefix for requests
+              </Checkbox>
+            )}
           />
+
+          <FormSelect
+            {...register('domain.entrypoints.0')}
+            errorField="entrypoint"
+            errors={{
+              ...errors,
+              entrypoint: errors?.domain?.entrypoints?.[0]
+                ? { message: 'Select an entrypoint' }
+                : undefined as any,
+            }}
+            label="Entrypoint"
+            data={[
+              { name: 'http', value: 'web' },
+              { name: 'https (with redirect http -> https)', value: 'websecure' },
+            ]}
+          />
+
+          <FormLabel>Custom headers (optional)</FormLabel>
+          {headers.map((f, i) => (
+            <Flex key={f.id} gap={2}>
+              <FormInput
+                {...register(`domain.headers.${i}.name` as const)}
+                errors={errors}
+                placeholder="X-Frame-Options"
+              />
+              <FormInput
+                {...register(`domain.headers.${i}.value` as const)}
+                errors={errors}
+                placeholder="DENY"
+              />
+              <IconButton
+                icon={<DeleteIcon />}
+                aria-label='Remove header'
+                size="md"
+                colorScheme="red"
+                onClick={() => removeHeaders(i)}
+              />
+            </Flex>
+          ))}
+          <Button variant="outline" onClick={() => appendHeaders({ name: '', value: '' })}>
+            Add header
+          </Button>
         </Flex>
-      ))}
-
-      <Button variant="outline" onClick={() => append({ value: '' })}>
-        Add prefix
-      </Button>
-
-      <Controller
-        control={control}
-        name='domain.stripPrefix'
-        render={({ field: { onChange, value, ref } }) => (
-          <Checkbox
-            onChange={onChange}
-            ref={ref}
-            isChecked={value}
-            isDisabled={!fields.length}
-          >
-            Strip prefix for requests
-          </Checkbox>
-        )}
-      />
-
-      <FormSelect
-        {...register('domain.entrypoints.0')}
-        errorField="entrypoint"
-        errors={{
-          ...errors,
-          entrypoint: errors?.domain?.entrypoints?.[0]
-            ? { message: 'Select an entrypoint' }
-            : undefined as any,
-        }}
-        label="Entrypoint"
-        data={[
-          { name: 'http', value: 'web' },
-          { name: 'https (with redirect http -> https)', value: 'websecure' },
-        ]}
-      />
-
-      <FormLabel>Custom headers (optional)</FormLabel>
-      {headers.map((f, i) => (
-        <Flex key={f.id} gap={2}>
-          <FormInput
-            {...register(`domain.headers.${i}.name` as const)}
-            errors={errors}
-            placeholder="X-Frame-Options"
-          />
-          <FormInput
-            {...register(`domain.headers.${i}.value` as const)}
-            errors={errors}
-            placeholder="DENY"
-          />
-          <IconButton
-            icon={<DeleteIcon />}
-            aria-label='Remove header'
-            size="md"
-            colorScheme="red"
-            onClick={() => removeHeaders(i)}
-          />
-        </Flex>
-      ))}
-      <Button variant="outline" onClick={() => appendHeaders({ name: '', value: '' })}>
-        Add header
-      </Button>
+      </Collapse>
     </>
   );
 };
