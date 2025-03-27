@@ -80,7 +80,7 @@ export const runContainerSchema = z.object({
   })),
   restartPolicy: z.object({
     name: z.string(),
-    maximumRetryCount: z.number().optional(),
+    maximumRetryCount: z.coerce.number().optional(),
   }),
   domain: z.object({
     host: z.string().optional(),

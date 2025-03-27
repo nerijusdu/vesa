@@ -22,7 +22,7 @@ export const mapContainerToApiRequest = ({
     })) || [],
   domain: data.domain && {
     ...data.domain,
-    pathPrefixes: data.domain?.pathPrefixes.map(x => x.value) || [],
+    pathPrefixes: data.domain?.pathPrefixes?.map(x => x.value) || [],
     headers: data.domain?.headers?.filter(x => x.name && x.value) || [],
   },
 });

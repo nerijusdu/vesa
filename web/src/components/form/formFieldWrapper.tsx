@@ -21,6 +21,10 @@ const errorMessages: Record<string, string> = {
   'required': 'This field is required',
 };
 
+const getNestedError = (name: string, errors: any): any => {
+  return name.split('.').reduce((acc, part) => acc && acc[part], errors);
+};
+
 const FormFieldWrapper: React.FC<PropsWithChildren<FormFieldWrapperProps>> = ({
   label,
   containerProps = {},
@@ -30,10 +34,10 @@ const FormFieldWrapper: React.FC<PropsWithChildren<FormFieldWrapperProps>> = ({
   helperText,
   alignLabel,
   children,
-  required
+  required,
 }) => {
-  const isInvalid = Boolean(name && errors && errors[errorField || name]);
-  const error = errors?.[errorField || name];
+  const isInvalid = Boolean(name && errors && getNestedError(errorField || name, errors));
+  const error = getNestedError(errorField || name, errors);
   const errorMsg = error?.message || errorMessages[error?.type ?? ''];
 
   return (

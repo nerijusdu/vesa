@@ -18,3 +18,4 @@ web/node_modules/
 server/public/
 bin/
 **/*.db
+tmp/

@@ -24,8 +24,8 @@ export type ContainerFieldsProps = {
 }
 
 const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideTemplateCheckbox }) => {
-  const [showRetryCount, setShowRetryCount] = useState(false);
-  const { register, control, formState: { errors } } = useFormContext<RunContainerRequest>();
+  const { register, control, formState: { errors }, watch, setValue } = useFormContext<RunContainerRequest>();
+  const showRetryCount = watch('restartPolicy.name') === 'on-failure';
 
   return (
     <>
@@ -64,7 +64,9 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
       <FormSelect
         {...register('restartPolicy.name', {
           onChange: e => {
-            setShowRetryCount(e.target.value === 'on-failure');
+            if (e.target.value !== 'on-failure') {
+              setValue('restartPolicy.maximumRetryCount', undefined);
+            }
           },
         })}
         label="Restart policy"
@@ -76,6 +78,7 @@ const ContainerFields: React.FC<ContainerFieldsProps> = ({ networkOptions, hideT
           {...register('restartPolicy.maximumRetryCount')}
           label="Retry count"
           errors={errors}
+          type="number"
           placeholder="5"
         />
       )}
