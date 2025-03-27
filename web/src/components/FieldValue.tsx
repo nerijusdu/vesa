@@ -12,6 +12,7 @@ export type FieldValueProps = {
 export type LinkedValue = {
   label: string;
   link: string;
+  external?: boolean
 }
 
 export type FieldValuesProps = {
@@ -98,15 +99,25 @@ const Value: React.FC<{ value?: Value; hidden: boolean }> = ({ value, hidden }) 
   }
 
   if (typeof value === 'object') {
-    return (
-      <Link 
-        as={RouterLink} 
-        to={value.link} 
-        fontFamily="mono"
-      >
-        {value.label}
-      </Link>
-    );
+    return value.external
+      ? (
+        <Link
+          as={'a'}
+          href={value.link}
+          target="_blank"
+          fontFamily="mono"
+        >
+          {value.label}
+        </Link>
+      ) : (
+        <Link
+          as={RouterLink}
+          to={value.link}
+          fontFamily="mono"
+        >
+          {value.label}
+        </Link>
+      );
   }
 
   return (

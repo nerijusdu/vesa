@@ -7,6 +7,22 @@ import { useDefaultMutation } from '../../hooks';
 import { createTemplate } from '../templates/templates.api';
 import { deleteContainer, getContainer, getContainerLogs, restartContainer, startContainer, stopContainer } from './containers.api';
 
+const getRoutesFromLabels = (labels: Record<string, string> = {}) => {
+  const traefikKeys = Object.keys(labels).filter(x => x.startsWith('traefik.http.routers'));
+  const ruleKey = traefikKeys.find(x => x.endsWith('.rule'));
+  if (!ruleKey) return null;
+
+  const isSecure = traefikKeys
+    .filter(x => x.endsWith('.entrypoints'))
+    .map(x => labels[x])
+    .some(x => x === 'websecure');
+
+  const domain = labels[ruleKey]?.split('Host(`')[1]?.split('`)')[0] || '';
+  const prefixes = labels[ruleKey]?.split('PathPrefix(`').slice(1).map(x => x.split('`)')[0]) || [''];
+
+  return prefixes.map(p => `${isSecure ? 'https' : 'http'}://${domain}${p}`);
+};
+
 const ContainerDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const logsRef = useRef<HTMLPreElement>(null);
@@ -85,6 +101,15 @@ const ContainerDetails: React.FC = () => {
       <FieldValues
         label="Mounts"
         values={container.mounts?.map(m => `${m.type} - ${m.name || m.source}:${m.target}`)}
+      />
+
+      <FieldValues
+        label="Routes"
+        values={getRoutesFromLabels(container.config?.labels)?.map(x => ({
+          label: x,
+          link: x,
+          external: true,
+        }))}
       />
 
       <Divider w="100%" />
